@@ -5,6 +5,7 @@ from .views.subjects.creates.subject_create_view import subject_create_view
 from .views.subjects.details.subject_detail_view import subject_detail_view
 from .views.subjects.updates.subject_update_view import subject_update_view
 from .views.visits.visit_dashboard_view import visit_dashboard_view
+from .views.screening.screening_create_view import screening_create_view
 
 app_name = "herbal"
 
@@ -32,8 +33,8 @@ urlpatterns = [
     ),
     
     path(
-        "subjects/<int:pk>/",
-        subject_detail_view,
+        "screening/<int:pk>/",
+        screening_create_view,
         name="screening-create"
     ),
 ]

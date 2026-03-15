@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <h3>Screening - {{ subject.subject_id }}</h3>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label>Screening Date</label>
+                    {{ form.screening_date }}
+                </div>
+
+                <div class="mb-3">
+                    <label>Age Confirmed (≥18)</label>
+                    {{ form.age_eligible }}
+                </div>
+
+                <div class="mb-3">
+                    <label>inclusion_criteria_met</label>
+                    {{ form.inclusion_criteria_met }}
+                </div>
+
+                <div class="mb-3">
+                    <label>exclusion_criteria_present</label>
+                    {{ form.exclusion_criteria_present }}
+                </div>
+
+                <div class="mb-3">
+                    <label>Eligibility</label>
+                    {{ form.eligible }}
+                </div>
+
+                <div class="mb-3">
+                    <label>Notes</label>
+                    {{ form.comments }}
+                </div>
+
+                <button class="btn btn-primary">
+                    Save Screening
+                </button>
+
+                <a href="{% url 'herbal:subjects-detail' subject.pk %}" class="btn btn-secondary">
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
