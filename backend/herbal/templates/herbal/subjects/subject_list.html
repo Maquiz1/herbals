@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% load querystring %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row mb-3">
+
+        <div class="col-md-3">
+            <div class="card text-center bg-light">
+                <div class="card-body">
+                    <h4>{{ total_subjects }}</h4>
+                    <p>Total Subjects</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center bg-info text-white">
+                <div class="card-body">
+                    <h4>{{ registered_count }}</h4>
+                    <p>Registered</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center bg-warning text-dark">
+                <div class="card-body">
+                    <h4>{{ screened_count }}</h4>
+                    <p>Screened</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center bg-success text-white">
+                <div class="card-body">
+                    <h4>{{ enrolled_count }}</h4>
+                    <p>Enrolled</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    {% include "includes/_filters/_form_filters.html" %}
+
+    <h3>Subjects</h3>
+
+    <div class="card">
+        <a href="{% url 'herbal:subject-create' %}" class="btn btn-success mb-3">
+
+            Add Subject
+
+        </a>
+
+        <div class="card-body">
+
+            <table class="table table-striped table-bordered">
+
+                <thead>
+
+                    <tr>
+                        <th>Subject ID</th>
+                        <th>Site</th>
+                        <th>Date Registered</th>
+                        <th>Status</th>
+                        <th>Progress</th>
+                        <th>Actions</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for subject in page_obj %}
+
+                    <tr>
+
+                        <td>{{ subject.subject_id }}</td>
+
+                        <td>{{ subject.site }}</td>
+
+                        <td>{{ subject.created_at }}</td>
+                        <td>
+
+                            <span class="badge
+                                {% if subject.status == 'registered' %}bg-secondary
+                                {% elif subject.status == 'screened' %}bg-warning
+                                {% elif subject.status == 'enrolled' %}bg-success
+                                {% endif %}">
+
+                                {{ subject.status|title }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <div class="progress" style="height: 18px;">
+
+                                <div class="progress-bar
+                                    {% if subject.status == 'registered' %}bg-secondary
+                                    {% elif subject.status == 'screened' %}bg-warning
+                                    {% elif subject.status == 'enrolled' %}bg-success
+                                    {% endif %}" role="progressbar" style="width: {{ subject.progress }}%;">
+
+                                    {{ subject.progress }}%
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <a class="btn btn-sm btn-primary"
+                                href="{% url 'herbal:subjects-detail' subject.pk %}?{{ request.GET.urlencode }}">
+                                View
+                            </a>
+
+                            <a class="btn btn-sm btn-warning" href="{% url 'herbal:subjects-update' subject.pk %}">
+                                Edit
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="5" class="text-center">
+                            No subjects found
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+    {% include "includes/_filters/_paginator.html" %}
+
+</div>
+
+{% endblock %}

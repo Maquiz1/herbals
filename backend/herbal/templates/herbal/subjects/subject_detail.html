@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% load querystring %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h3>Subject Detail</h3>
+
+        <a href="{% url 'herbal:subjects-list' %}?{{ request.GET.urlencode }}" class="btn btn-secondary">
+            Back
+        </a>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <table class="table table-bordered">
+
+                <tr>
+                    <th>Subject ID</th>
+                    <td>{{ subject.subject_id }}</td>
+                </tr>
+
+                <tr>
+                    <th>Site</th>
+                    <td>{{ subject.site }}</td>
+                </tr>
+
+                <tr>
+                    <th>First Name</th>
+                    <td>{{ subject.first_name }}</td>
+                </tr>
+
+                <tr>
+                    <th>Last Name</th>
+                    <td>{{ subject.last_name }}</td>
+                </tr>
+
+                <tr>
+                    <th>Sex</th>
+                    <td>{{ subject.sex }}</td>
+                </tr>
+
+                <tr>
+                    <th>Date of Birth</th>
+                    <td>{{ subject.date_of_birth }}</td>
+                </tr>
+
+                <tr>
+                    <th>Date Registered</th>
+                    <td>{{ subject.created_at }}</td>
+                </tr>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <hr>
+
+    <h4>Screening</h4>
+
+    {% if screening %}
+
+    <div class="card mb-3">
+        <div class="card-body">
+
+            <p><strong>Date:</strong> {{ screening.screening_date }}</p>
+            <p><strong>Eligibility:</strong> {{ screening.get_eligibility_display }}</p>
+
+        </div>
+    </div>
+
+    {% else %}
+
+    <a href="{% url 'herbal:screening-create' subject.pk %}" class="btn btn-primary">
+        Add Screening
+    </a>
+
+    {% endif %}
+
+
+    <hr>
+
+    <hr>
+
+    <h4>Enrollment</h4>
+
+    {% if enrollment %}
+
+    <div class="card mb-3">
+        <div class="card-body">
+
+            <p><strong>Enrollment Date:</strong> {{ enrollment.enrollment_date }}</p>
+
+        </div>
+    </div>
+
+    {% elif screening and screening.eligibility == "eligible" %}
+
+    <a href="{% url 'herbal:enrollment-create' subject.pk %}" class="btn btn-success">
+        Enroll Subject
+    </a>
+
+    {% else %}
+
+    <p class="text-muted">Subject is not eligible for enrollment.</p>
+
+    {% endif %}
+
+
+    <hr>
+
+    <h4>Visit Schedule</h4>
+
+    {% if visits %}
+
+    <table class="table table-bordered">
+
+        <thead>
+
+            <tr>
+                <th>Visit</th>
+                <th>Scheduled Date</th>
+                <th>Status</th>
+                <th>Actual Visit Date</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for visit in visits %}
+
+            <tr>
+
+                <td>{{ visit.get_visit_day_display }}</td>
+
+                <td>{{ visit.scheduled_date }}</td>
+
+                <td>
+
+                    {% if visit.status == "completed" %}
+                    <span class="badge bg-success">Completed</span>
+
+                    {% elif visit.is_overdue %}
+                    <span class="badge bg-danger">Overdue</span>
+
+                    {% else %}
+                    <span class="badge bg-warning">Pending</span>
+                    {% endif %}
+
+                </td>
+
+                <td>{{ visit.actual_visit_date|default:"-" }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <p>No visits scheduled yet.</p>
+
+    {% endif %}
+
+
+</div>
+
+{% endblock %}
