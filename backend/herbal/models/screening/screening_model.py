@@ -2,9 +2,10 @@
 
 from django.db import models
 from ..subjects.subject_model import Subject
+from core.models import BaseModel
 
 
-class Screening(models.Model):
+class Screening(BaseModel):
 
     subject = models.OneToOneField(
         Subject,

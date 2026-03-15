@@ -1,6 +1,6 @@
 from django.db import models
 from core.models import BaseModel
-from herbal.models.subjects.subject_model import Subject
+from herbal.models.enrollments.enrollment_model import Enrollment
 
 
 VISIT_TYPES = [
@@ -17,10 +17,10 @@ VISIT_TYPES = [
 
 class Visit(BaseModel):
 
-    subject = models.ForeignKey(
-        Subject,
+    enrollment = models.ForeignKey(
+        Enrollment,
         on_delete=models.CASCADE,
-        related_name="visits"
+        related_name="visits_enrollment"
     )
 
     visit_type = models.CharField(
@@ -37,5 +37,5 @@ class Visit(BaseModel):
 
     completed = models.BooleanField(default=False)
 
-    def __str__(self):
-        return f"{self.subject.subject_id} - {self.visit_type}"
+    # def __str__(self):
+    #     return f"{self.subject.subject_id} - {self.visit_type}"

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <h3>Enroll Subject - {{ subject.subject_id }}</h3>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label>Enrollment Date</label>
+                    {{ form.enrollment_date }}
+                </div>
+
+                <div class="mb-3">
+                    <label>Consent Signed</label>
+                    {{ form.consent_signed }}
+                </div>
+
+                <div class="mb-3">
+                    <label>Enrolled By</label>
+                    {{ form.enrolled_by }}
+                </div>
+
+                <div class="mb-3">
+                    <label>Status</label>
+                    {{ form.status }}
+                </div>
+
+                <button class="btn btn-success">
+                    Save Enrollment
+                </button>
+
+                <a href="{% url 'herbal:subjects-detail' subject.pk %}" class="btn btn-secondary">
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
