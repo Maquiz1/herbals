@@ -8,13 +8,16 @@ class CRF1Form(forms.ModelForm):
         model = CRF1
 
         fields = [
+            "visit_date",
             "temperature",
             "blood_pressure",
             "notes",
         ]
 
         widgets = {
-
+            "visit_date": forms.DateInput(
+                attrs={"type": "date", "class": "form-control"}
+            ),
             "temperature": forms.NumberInput(
                 attrs={"class": "form-control"}
             ),
