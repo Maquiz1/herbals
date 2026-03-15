@@ -207,33 +207,73 @@
                 <!-- CRF2 -->
 
                 <td>
-                    <a class="btn btn-sm btn-primary" href="{% url 'herbal:crf2-create' visit.pk %}">
-                        CRF2
+                    {% if visit.crf1 %}
+
+                    <a href="{% url 'herbal:crf2-update' visit.pk %}" class="btn btn-sm btn-warning">
+                        Edit
                     </a>
+
+                    {% else %}
+
+                    <a href="{% url 'herbal:crf2-create' visit.pk %}" class="btn btn-sm btn-primary">
+                        Create
+                    </a>
+
+                    {% endif %}
                 </td>
 
                 <!-- CRF3 -->
 
                 <td>
-                    <a class="btn btn-sm btn-primary" href="{% url 'herbal:crf3-create' visit.pk %}">
-                        CRF3
+                    {% if visit.crf1 %}
+
+                    <a href="{% url 'herbal:crf3-update' visit.pk %}" class="btn btn-sm btn-warning">
+                        Edit
                     </a>
+
+                    {% else %}
+
+                    <a href="{% url 'herbal:crf3-create' visit.pk %}" class="btn btn-sm btn-primary">
+                        Create
+                    </a>
+
+                    {% endif %}
                 </td>
 
                 <!-- CRF4 -->
 
                 <td>
-                    <a class="btn btn-sm btn-primary" href="{% url 'herbal:crf4-create' visit.pk %}">
-                        CRF4
+                    {% if visit.crf1 %}
+
+                    <a href="{% url 'herbal:crf4-update' visit.pk %}" class="btn btn-sm btn-warning">
+                        Edit
                     </a>
+
+                    {% else %}
+
+                    <a href="{% url 'herbal:crf4-create' visit.pk %}" class="btn btn-sm btn-primary">
+                        Create
+                    </a>
+
+                    {% endif %}
                 </td>
 
                 <!-- CRF7 -->
 
                 <td>
-                    <a class="btn btn-sm btn-primary" href="{% url 'herbal:crf7-create' visit.pk %}">
-                        CRF7
+                    {% if visit.crf1 %}
+
+                    <a href="{% url 'herbal:crf7-update' visit.pk %}" class="btn btn-sm btn-warning">
+                        Edit
                     </a>
+
+                    {% else %}
+
+                    <a href="{% url 'herbal:crf7-create' visit.pk %}" class="btn btn-sm btn-primary">
+                        Create
+                    </a>
+
+                    {% endif %}
                 </td>
             </tr>
 
