@@ -8,18 +8,18 @@ class CRF3Form(forms.ModelForm):
         model = CRF3
 
         fields = [
-            "temperature",
-            "blood_pressure",
+            "symptoms",
+            "severity",
             "notes",
         ]
 
         widgets = {
 
-            "temperature": forms.NumberInput(
+            "symptoms": forms.TextInput(
                 attrs={"class": "form-control"}
             ),
 
-            "blood_pressure": forms.TextInput(
+            "severity": forms.Select(
                 attrs={"class": "form-control"}
             ),
 

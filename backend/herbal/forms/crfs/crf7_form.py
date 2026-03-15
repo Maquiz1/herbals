@@ -1,6 +1,7 @@
 from django import forms
 from herbal.models.crfs.crf7.crf7_model import CRF7
 
+
 class CRF7Form(forms.ModelForm):
 
     class Meta:
@@ -8,22 +9,13 @@ class CRF7Form(forms.ModelForm):
         model = CRF7
 
         fields = [
-            "temperature",
-            "blood_pressure",
-            "notes",
+            "investigator_notes",
+            "follow_up_needed",
         ]
 
         widgets = {
-
-            "temperature": forms.NumberInput(
-                attrs={"class": "form-control"}
-            ),
-
-            "blood_pressure": forms.TextInput(
-                attrs={"class": "form-control"}
-            ),
-
-            "notes": forms.Textarea(
-                attrs={"class": "form-control"}
+            "investigator_notes": forms.Textarea(attrs={"class": "form-control"}),
+            "follow_up_needed": forms.CheckboxInput(
+                attrs={"class": "form-check-input"}
             ),
         }

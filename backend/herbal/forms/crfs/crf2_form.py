@@ -8,22 +8,22 @@ class CRF2Form(forms.ModelForm):
         model = CRF2
 
         fields = [
-            "temperature",
-            "blood_pressure",
-            "notes",
+            "lab_result",
+            "test_date",
+            "comments",
         ]
 
         widgets = {
 
-            "temperature": forms.NumberInput(
+            "lab_result": forms.NumberInput(
                 attrs={"class": "form-control"}
             ),
 
-            "blood_pressure": forms.TextInput(
-                attrs={"class": "form-control"}
+            "test_date": forms.DateInput(
+                attrs={"type": "date", "class": "form-control"}
             ),
 
-            "notes": forms.Textarea(
+            "comments": forms.Textarea(
                 attrs={"class": "form-control"}
             ),
         }
