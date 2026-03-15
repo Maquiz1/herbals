@@ -3,8 +3,9 @@
 from django.db import models
 from ...visits.visit_schedule_model import VisitSchedule
 from ...enrollments.enrollment_model import Enrollment
+from core.models import BaseModel
 
-class CRF5(models.Model):
+class CRF5(BaseModel):
 
     enrollment = models.ForeignKey(
         Enrollment,

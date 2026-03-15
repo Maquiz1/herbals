@@ -2,8 +2,9 @@
 
 from django.db import models
 from ...enrollments.enrollment_model import Enrollment
+from core.models import BaseModel
 
-class CRF6(models.Model):
+class CRF6(BaseModel):
 
     enrollment = models.OneToOneField(
         Enrollment,

@@ -131,6 +131,7 @@
     <a class="btn btn-danger" href="{% url 'herbal:crf6-create' subject.pk %}">
         Termination (CRF6)
     </a>
+    <hr>
     <table class="table table-bordered">
 
         <thead>
@@ -184,13 +185,13 @@
 
                     {% if visit.crf1 %}
 
-                    <a href="{% url 'herbal:crf1-update' visit.pk %}" class="btn btn-sm btn-warning">
+                    <a href="{% url 'herbal:crf1-update' visit.pk %}" class="btn btn-sm btn-secondary">
                         Edit
                     </a>
 
                     {% else %}
 
-                    <a href="{% url 'herbal:crf1-create' visit.pk %}" class="btn btn-sm btn-primary">
+                    <a href="{% url 'herbal:crf1-create' visit.pk %}" class="btn btn-sm btn-warning">
                         Create
                     </a>
 
@@ -209,13 +210,13 @@
                 <td>
                     {% if visit.crf2 %}
 
-                    <a href="{% url 'herbal:crf2-update' visit.pk %}" class="btn btn-sm btn-warning">
+                    <a href="{% url 'herbal:crf2-update' visit.pk %}" class="btn btn-sm btn-secondary">
                         Edit
                     </a>
 
                     {% else %}
 
-                    <a href="{% url 'herbal:crf2-create' visit.pk %}" class="btn btn-sm btn-primary">
+                    <a href="{% url 'herbal:crf2-create' visit.pk %}" class="btn btn-sm btn-warning">
                         Create
                     </a>
 
@@ -227,13 +228,13 @@
                 <td>
                     {% if visit.crf3 %}
 
-                    <a href="{% url 'herbal:crf3-update' visit.pk %}" class="btn btn-sm btn-warning">
+                    <a href="{% url 'herbal:crf3-update' visit.pk %}" class="btn btn-sm btn-secondary">
                         Edit
                     </a>
 
                     {% else %}
 
-                    <a href="{% url 'herbal:crf3-create' visit.pk %}" class="btn btn-sm btn-primary">
+                    <a href="{% url 'herbal:crf3-create' visit.pk %}" class="btn btn-sm btn-warning">
                         Create
                     </a>
 
@@ -245,13 +246,13 @@
                 <td>
                     {% if visit.crf4 %}
 
-                    <a href="{% url 'herbal:crf4-update' visit.pk %}" class="btn btn-sm btn-warning">
+                    <a href="{% url 'herbal:crf4-update' visit.pk %}" class="btn btn-sm btn-secondary">
                         Edit
                     </a>
 
                     {% else %}
 
-                    <a href="{% url 'herbal:crf4-create' visit.pk %}" class="btn btn-sm btn-primary">
+                    <a href="{% url 'herbal:crf4-create' visit.pk %}" class="btn btn-sm btn-warning">
                         Create
                     </a>
 
@@ -263,13 +264,13 @@
                 <td>
                     {% if visit.crf7 %}
 
-                    <a href="{% url 'herbal:crf7-update' visit.pk %}" class="btn btn-sm btn-warning">
+                    <a href="{% url 'herbal:crf7-update' visit.pk %}" class="btn btn-sm btn-secondary">
                         Edit
                     </a>
 
                     {% else %}
 
-                    <a href="{% url 'herbal:crf7-create' visit.pk %}" class="btn btn-sm btn-primary">
+                    <a href="{% url 'herbal:crf7-create' visit.pk %}" class="btn btn-sm btn-warning">
                         Create
                     </a>
 

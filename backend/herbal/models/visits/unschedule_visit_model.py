@@ -2,8 +2,9 @@
 
 from django.db import models
 from ..enrollments.enrollment_model import Enrollment
+from core.models import BaseModel
 
-class UnscheduledVisit(models.Model):
+class UnscheduledVisit(BaseModel):
 
     enrollment = models.ForeignKey(
         Enrollment,

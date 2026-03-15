@@ -2,11 +2,11 @@
 
 from django.db import models
 from ...visits.visit_schedule_model import VisitSchedule
+from core.models import BaseModel
 
 
 
-
-class CRF4(models.Model):
+class CRF4(BaseModel):
 
     visit = models.OneToOneField(
         VisitSchedule,

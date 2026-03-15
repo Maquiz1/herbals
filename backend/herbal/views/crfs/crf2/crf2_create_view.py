@@ -12,9 +12,6 @@ def crf2_create_view(request, pk):
     if hasattr(visit, "crf2"):
         return redirect("herbal:subjects-detail", pk=visit.subject.pk)
 
-    if visit.visit_day != "D0":
-        return redirect("herbal:subjects-detail", pk=visit.subject.pk)
-
     if request.method == "POST":
 
         form = CRF2Form(request.POST)
