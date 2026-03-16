@@ -21,6 +21,8 @@ def is_reviewer(user):
 def is_monitor(user):
     return has_role(user, "Monitor")
 
+def is_coordinator(user):
+    return has_role(user, "Coordinator")
 
 def is_pi(user):
     return has_role(user, "PI")
