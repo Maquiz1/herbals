@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 
 from herbal.services.access_control import get_accessible_subjects
 from herbal.models import Screening, VisitSchedule,CRF5
-
+from herbal.models.queries.query_model import DataQuery
 
 @login_required
 def subject_detail_view(request, pk):
@@ -47,6 +47,10 @@ def subject_detail_view(request, pk):
     if total_visits > 0:
         progress_percent = int((completed_visits / total_visits) * 100)
     
+    
+    queries = DataQuery.objects.filter(
+        visit__in=visits
+    )
     context = {
         "subject": subject,
         "screening": screening,
@@ -59,6 +63,8 @@ def subject_detail_view(request, pk):
         "completed_visits": completed_visits,
         "total_visits": total_visits,
         "progress_percent": progress_percent,
+        
+        "queries": queries,
     }
 
     return render(

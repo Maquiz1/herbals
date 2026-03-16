@@ -72,11 +72,8 @@ urlpatterns = [
     path("crf7/<int:pk>/", crf7_create_view, name="crf7-create"),
     path("crf7/<int:pk>/update/", crf7_update_view, name="crf7-update"),
     
-    
-    
-    
     # QUERIES
     path("query/<int:visit_id>/create/", query_create_view, name="query-create"),
-    path("query/<int:visit_id>/response/", query_response_view, name="query-response"),
-    path("query/<int:visit_id>/close/", query_close_view, name="query-close"),
+    path("query/<int:pk>/response/", query_response_view, name="query-response"),
+    path("query/<int:pk>/close/", query_close_view, name="query-close"),
 ]
