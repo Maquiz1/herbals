@@ -1,14 +1,14 @@
 # herbal/models/enrollments/enrollment_model.py
 
 from django.db import models
-from ..subjects.subject_model import Subject
+from ..screening.screening_model import Screening
 from core.models import BaseModel
 
 
 class Enrollment(BaseModel):
 
-    subject = models.OneToOneField(
-        Subject,
+    screening = models.OneToOneField(
+        Screening,
         on_delete=models.CASCADE,
         related_name="enrollment"
     )
@@ -34,4 +34,4 @@ class Enrollment(BaseModel):
     )
 
     def __str__(self):
-        return f"Enrollment - {self.subject}"
+        return f"Enrollment - {self.screening}"

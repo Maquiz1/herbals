@@ -18,6 +18,9 @@ def enrollment_create_view(request, pk):
     if hasattr(subject, "enrollment"):
         return redirect("herbal:subjects-detail", pk=subject.pk)
 
+    if not subject.screening or not subject.screening.eligible:
+        return redirect("herbal:subjects-detail", pk=subject.pk)
+
     if request.method == "POST":
 
         form = EnrollmentForm(request.POST)

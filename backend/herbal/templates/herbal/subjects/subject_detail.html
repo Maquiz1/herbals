@@ -74,8 +74,14 @@
         <div class="card-body">
 
             <p><strong>Date:</strong> {{ screening.screening_date }}</p>
-            <p><strong>Eligibility:</strong> {{ screening.eligible }}</p>
-
+            <p>
+                <strong>Eligibility:</strong>
+                {% if screening.eligible %}
+                <span class="badge bg-success">Eligible</span>
+                {% else %}
+                <span class="badge bg-danger">Not Eligible</span>
+                {% endif %}
+            </p>
         </div>
     </div>
 
@@ -124,11 +130,11 @@
     {% if visits %}
     <h5>Other Forms</h5>
 
-    <a class="btn btn-warning" href="{% url 'herbal:crf5-create' subject.pk %}">
+    <a class="btn btn-warning" href="{% url 'herbal:crf5-create' enrollment.pk %}">
         Adverse Event (CRF5)
     </a>
 
-    <a class="btn btn-danger" href="{% url 'herbal:crf6-create' subject.pk %}">
+    <a class="btn btn-danger" href="{% url 'herbal:crf6-create' enrollment.pk %}">
         Termination (CRF6)
     </a>
     <hr>

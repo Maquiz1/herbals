@@ -19,4 +19,4 @@ class UnscheduledVisit(BaseModel):
     notes = models.TextField(blank=True)
 
     def __str__(self):
-        return f"Unscheduled - {self.enrollment.patient}"
+        return f"Unscheduled - {self.enrollment.screening.subject}"

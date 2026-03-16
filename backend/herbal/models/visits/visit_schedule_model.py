@@ -70,7 +70,7 @@ class VisitSchedule(BaseModel):
 
     @property
     def subject(self):
-        return self.enrollment.subject
+        return self.enrollment.screening.subject
 
     def __str__(self):
-        return f"{self.enrollment.subject.subject_id} - {self.visit_day}"
+        return f"{self.enrollment.screening.subject.subject_id} - {self.visit_day}"

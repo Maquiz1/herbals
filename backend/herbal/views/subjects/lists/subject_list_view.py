@@ -25,28 +25,42 @@ def subject_list_view(request):
     subjects = apply_filters(subjects, request, ["site"])
 
     # -------- COUNTS BEFORE STATUS FILTER --------
+
     total_subjects = subjects.count()
 
-    registered_count = subjects.filter(is_active=True).count()
+    registered_count = subjects.filter(
+        screening__isnull=True
+    ).count()
 
     screened_count = subjects.filter(
         screening__isnull=False
     ).count()
 
     enrolled_count = subjects.filter(
-        enrollment__isnull=False
+        screening__enrollment__isnull=False
     ).count()
+
     # ---------------------------------------------
 
     # STATUS FILTER (for table)
+
     if status == "registered":
-        subjects = subjects.filter(is_active=True)
+
+        subjects = subjects.filter(
+            screening__isnull=True
+        )
 
     elif status == "screened":
-        subjects = subjects.filter(screening__isnull=False)
+
+        subjects = subjects.filter(
+            screening__isnull=False
+        )
 
     elif status == "enrolled":
-        subjects = subjects.filter(enrollment__isnull=False)
+
+        subjects = subjects.filter(
+            screening__enrollment__isnull=False
+        )
 
     page_obj = paginate_queryset(request, subjects)
 
@@ -58,7 +72,6 @@ def subject_list_view(request):
         "status": status,
         "sites": sites,
 
-        # counts
         "total_subjects": total_subjects,
         "registered_count": registered_count,
         "screened_count": screened_count,
