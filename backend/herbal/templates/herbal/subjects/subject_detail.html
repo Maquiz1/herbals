@@ -321,7 +321,7 @@
             <th>Scheduled Date</th>
             <th>Status</th>
             <th>Actual Visit Date</th>
-
+            <th>Queries</th>
             <th class="text-center">CRF1</th>
             <th class="text-center">CRF2</th>
             <th class="text-center">CRF3</th>
@@ -370,7 +370,24 @@
 
             <td>{{ visit.actual_visit_date|default:"-" }}</td>
 
+            <td>
 
+            <a href="{% url 'herbal:query-create' visit.pk %}" 
+            class="btn btn-sm btn-outline-danger">
+
+            Raise Query
+
+            </a>
+
+            {% if visit.queries.count %}
+
+            <span class="badge bg-danger">
+            {{ visit.queries.count }}
+            </span>
+
+            {% endif %}
+
+            </td>
             <!-- CRF1 (DAY 0 ONLY) -->
 
             <td class="text-center">
@@ -498,6 +515,68 @@
 </div>
 
 
+<hr>
+<h4>Data Queries</h4>
+
+<table class="table table-bordered">
+
+<thead>
+
+<tr>
+<th>Visit</th>
+<th>Field</th>
+<th>Query</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for query in queries %}
+
+<tr>
+
+<td>{{ query.visit.get_visit_day_display }}</td>
+
+<td>{{ query.field_name }}</td>
+
+<td>{{ query.query_text }}</td>
+
+<td>{{ query.status }}</td>
+
+<td>
+
+{% if query.status == "open" %}
+
+<a href="{% url 'herbal:query-response' query.pk %}" 
+class="btn btn-sm btn-warning">
+
+Respond
+
+</a>
+
+{% elif query.status == "answered" %}
+
+<a href="{% url 'herbal:query-close' query.pk %}" 
+class="btn btn-sm btn-success">
+
+Close
+
+</a>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
 <hr>
 
 <h6>Legend</h6>

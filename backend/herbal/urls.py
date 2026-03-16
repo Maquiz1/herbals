@@ -25,6 +25,11 @@ from .views.crfs.crf6.crf6_update_view import crf6_update_view
 from .views.crfs.crf7.crf7_create_view import crf7_create_view
 from .views.crfs.crf7.crf7_update_view import crf7_update_view
 
+# QUERIES
+from. views.queries.query_create_view import query_create_view
+from. views.queries.query_response_view import query_response_view
+from. views.queries.query_close_view import query_close_view
+
 app_name = "herbal"
 
 urlpatterns = [
@@ -66,4 +71,12 @@ urlpatterns = [
     # CRF7
     path("crf7/<int:pk>/", crf7_create_view, name="crf7-create"),
     path("crf7/<int:pk>/update/", crf7_update_view, name="crf7-update"),
+    
+    
+    
+    
+    # QUERIES
+    path("query/<int:visit_id>/create/", query_create_view, name="query-create"),
+    path("query/<int:visit_id>/response/", query_response_view, name="query-response"),
+    path("query/<int:visit_id>/close/", query_close_view, name="query-close"),
 ]
