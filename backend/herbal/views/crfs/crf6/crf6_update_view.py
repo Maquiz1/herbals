@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 from herbal.models.crfs.crf6.crf6_model import CRF6
+from herbal.models import VisitSchedule
 from herbal.forms.crfs.crf6_form import CRF6Form
 
 
@@ -20,7 +21,13 @@ def crf6_update_view(request, pk):
 
         if form.is_valid():
 
-            form.save()
+            crf = form.save()
+
+            # mark future visits N/A
+            VisitSchedule.objects.filter(
+                enrollment=enrollment,
+                status="pending"
+            ).update(status="na")
 
             return redirect(
                 "herbal:subjects-detail",

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
-from herbal.models import Enrollment
+from herbal.models import Enrollment, VisitSchedule
 from herbal.forms.crfs.crf6_form import CRF6Form
 
 
@@ -12,7 +12,6 @@ def crf6_create_view(request, pk):
 
     subject = enrollment.screening.subject
 
-    # prevent duplicate termination
     if hasattr(enrollment, "termination"):
         return redirect("herbal:subjects-detail", pk=subject.pk)
 
@@ -28,11 +27,20 @@ def crf6_create_view(request, pk):
 
             crf.save()
 
-            # update enrollment status
+            # mark enrollment terminated
             enrollment.status = "terminated"
             enrollment.save()
 
-            return redirect("herbal:subjects-detail", pk=subject.pk)
+            # set future visits to N/A
+            VisitSchedule.objects.filter(
+                enrollment=enrollment,
+                status="pending"
+            ).update(status="na")
+
+            return redirect(
+                "herbal:subjects-detail",
+                pk=subject.pk
+            )
 
     else:
 

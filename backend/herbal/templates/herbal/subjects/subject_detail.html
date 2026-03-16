@@ -276,6 +276,9 @@
                     {% if visit.status == "completed" %}
                     <span class="badge bg-success">Completed</span>
 
+                    {% elif visit.status == "na" %}
+                    <span class="badge bg-secondary">N/A</span>
+
                     {% elif visit.is_overdue %}
                     <span class="badge bg-danger">Overdue</span>
 
