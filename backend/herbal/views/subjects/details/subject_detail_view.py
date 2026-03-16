@@ -32,12 +32,33 @@ def subject_detail_view(request, pk):
             enrollment=enrollment
         ).order_by("-event_date")
     
+    
+    completed_visits = 0
+    total_visits = 0
+
+    if visits:
+
+        total_visits = visits.count()
+
+        completed_visits = visits.filter(status="completed").count()
+
+    progress_percent = 0
+
+    if total_visits > 0:
+        progress_percent = int((completed_visits / total_visits) * 100)
+    
     context = {
         "subject": subject,
         "screening": screening,
         "enrollment": enrollment,
         "visits": visits,
-        "adverse_events":adverse_events
+        "adverse_events":adverse_events,
+        
+        
+        
+        "completed_visits": completed_visits,
+        "total_visits": total_visits,
+        "progress_percent": progress_percent,
     }
 
     return render(

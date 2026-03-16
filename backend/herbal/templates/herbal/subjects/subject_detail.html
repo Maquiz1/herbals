@@ -240,181 +240,294 @@
     {% endif %}
 
 
-    <!-- VISIT TABLE -->
+    <h5>Visit Progress</h5>
 
-    <table class="table table-bordered table-striped">
+    <div class="mb-3">
 
-        <thead>
+        <strong>{{ completed_visits }} / {{ total_visits }} visits completed</strong>
 
-            <tr>
-                <th>Visit</th>
-                <th>Scheduled Date</th>
-                <th>Status</th>
-                <th>Actual Visit Date</th>
+        <div class="progress mt-2" style="height:20px;">
 
-                <th class="text-center">CRF1</th>
-                <th class="text-center">CRF2</th>
-                <th class="text-center">CRF3</th>
-                <th class="text-center">CRF4</th>
-                <th class="text-center">CRF7</th>
-            </tr>
+            {% if progress_percent < 30 %} 
+                <div class="progress-bar bg-danger"
+            {% elif progress_percent < 70 %} 
+                <div class="progress-bar bg-warning text-dark"
+            {% else %}
+                <div class="progress-bar bg-success"
+            {% endif %}
+                role="progressbar" style="width: {{ progress_percent }}%;">
+                {{ progress_percent }}%
+        </div>
 
-        </thead>
-
-        <tbody>
-
-            {% for visit in visits %}
-
-            <tr>
-
-                <td>{{ visit.get_visit_day_display }}</td>
-
-                <td>{{ visit.scheduled_date }}</td>
-
-                <td>
-
-                    {% if visit.status == "completed" %}
-                    <span class="badge bg-success">Completed</span>
-
-                    {% elif visit.status == "na" %}
-                    <span class="badge bg-secondary">N/A</span>
-
-                    {% elif visit.is_overdue %}
-                    <span class="badge bg-danger">Overdue</span>
-
-                    {% else %}
-                    <span class="badge bg-warning text-dark">Pending</span>
-                    {% endif %}
-
-                </td>
-
-                <td>{{ visit.actual_visit_date|default:"-" }}</td>
-
-
-                <!-- CRF1 (DAY 0 ONLY) -->
-
-                <td class="text-center">
-
-                    {% if visit.visit_day == "D0" %}
-
-                    {% if visit.crf1 %}
-
-                    <a href="{% url 'herbal:crf1-update' visit.pk %}" class="btn btn-sm btn-secondary">
-                        Edit
-                    </a>
-
-                    {% else %}
-
-                    <a href="{% url 'herbal:crf1-create' visit.pk %}" class="btn btn-sm btn-warning">
-                        Create
-                    </a>
-
-                    {% endif %}
-
-                    {% else %}
-                    N/A
-                    {% endif %}
-
-                </td>
-
-
-                <!-- CRF2 -->
-
-                <td class="text-center">
-
-                    {% if visit.crf2 %}
-
-                    <a href="{% url 'herbal:crf2-update' visit.pk %}" class="btn btn-sm btn-secondary">
-                        Edit
-                    </a>
-
-                    {% else %}
-
-                    <a href="{% url 'herbal:crf2-create' visit.pk %}" class="btn btn-sm btn-warning">
-                        Create
-                    </a>
-
-                    {% endif %}
-
-                </td>
-
-
-                <!-- CRF3 -->
-
-                <td class="text-center">
-
-                    {% if visit.crf3 %}
-
-                    <a href="{% url 'herbal:crf3-update' visit.pk %}" class="btn btn-sm btn-secondary">
-                        Edit
-                    </a>
-
-                    {% else %}
-
-                    <a href="{% url 'herbal:crf3-create' visit.pk %}" class="btn btn-sm btn-warning">
-                        Create
-                    </a>
-
-                    {% endif %}
-
-                </td>
-
-
-                <!-- CRF4 -->
-
-                <td class="text-center">
-
-                    {% if visit.crf4 %}
-
-                    <a href="{% url 'herbal:crf4-update' visit.pk %}" class="btn btn-sm btn-secondary">
-                        Edit
-                    </a>
-
-                    {% else %}
-
-                    <a href="{% url 'herbal:crf4-create' visit.pk %}" class="btn btn-sm btn-warning">
-                        Create
-                    </a>
-
-                    {% endif %}
-
-                </td>
-
-
-                <!-- CRF7 -->
-
-                <td class="text-center">
-
-                    {% if visit.crf7 %}
-
-                    <a href="{% url 'herbal:crf7-update' visit.pk %}" class="btn btn-sm btn-secondary">
-                        Edit
-                    </a>
-
-                    {% else %}
-
-                    <a href="{% url 'herbal:crf7-create' visit.pk %}" class="btn btn-sm btn-warning">
-                        Create
-                    </a>
-
-                    {% endif %}
-
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
-
-    {% else %}
-
-    <p class="text-muted">No visits scheduled yet.</p>
-
-    {% endif %}
+    </div>
 
 </div>
 
+<hr>
+
+<h5>Visit Timeline</h5>
+
+<div class="d-flex flex-wrap gap-2 mb-3">
+
+    {% for visit in visits %}
+
+    <div class="text-center">
+        <a href="#visit{{ visit.id }}">
+            <div title="{{ visit.get_visit_day_display }} - {{ visit.status }}"
+                class="rounded-circle d-flex align-items-center justify-content-center" style="
+                    width:60px;
+                    height:60px;
+                    font-weight:bold;
+
+                    {% if visit.status == 'completed' %}
+                    background:#28a745;color:white;
+
+                    {% elif visit.status == 'missed' %}
+                    background:#343a40;color:white;
+
+                    {% elif visit.status == 'na' %}
+                    background:#6c757d;color:white;
+
+                    {% elif visit.is_overdue %}
+                    background:#dc3545;color:white;
+
+                    {% else %}
+                    background:#ffc107;color:black;
+                    {% endif %}
+                    ">
+
+                {{ visit.visit_day }}
+
+            </div>
+
+            <small>{{ visit.scheduled_date }}</small>
+        </a>
+    </div>
+
+    {% endfor %}
+
+</div>
+
+<!-- VISIT TABLE -->
+
+
+<table class="table table-bordered table-striped">
+
+    <hr>
+    <thead>
+
+        <a href="#visit{{ visit.id }}">
+            <th>Visit</th>
+            <th>Scheduled Date</th>
+            <th>Status</th>
+            <th>Actual Visit Date</th>
+
+            <th class="text-center">CRF1</th>
+            <th class="text-center">CRF2</th>
+            <th class="text-center">CRF3</th>
+            <th class="text-center">CRF4</th>
+            <th class="text-center">CRF7</th>
+            </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for visit in visits %}
+
+        <tr>
+
+            <td>{{ visit.get_visit_day_display }}</td>
+
+            <td>{{ visit.scheduled_date }}</td>
+
+            <td>
+
+                {% if visit.status == "completed" %}
+                <span class="badge bg-success">Completed</span>
+
+                {% elif visit.status == "missed" %}
+                <span class="badge bg-dark">Missed</span>
+
+                {% elif visit.status == "na" %}
+                <span class="badge bg-secondary">N/A</span>
+
+                {% elif visit.is_overdue %}
+                <span class="badge bg-danger">Overdue</span>
+
+                {% else %}
+                <span class="badge bg-warning text-dark">Pending</span>
+                {% endif %}
+
+                {% if visit.status == "pending" and visit.is_overdue %}
+
+                <a href="{% url 'herbal:visit-mark-missed' visit.pk %}" class="btn btn-sm btn-dark">
+                    Mark Missed
+                </a>
+
+                {% endif %}
+            </td>
+
+            <td>{{ visit.actual_visit_date|default:"-" }}</td>
+
+
+            <!-- CRF1 (DAY 0 ONLY) -->
+
+            <td class="text-center">
+
+                {% if visit.visit_day == "D0" %}
+
+                {% if visit.crf1 %}
+
+                <a href="{% url 'herbal:crf1-update' visit.pk %}" class="btn btn-sm btn-secondary">
+                    Edit
+                </a>
+
+                {% else %}
+
+                <a href="{% url 'herbal:crf1-create' visit.pk %}" class="btn btn-sm btn-warning">
+                    Create
+                </a>
+
+                {% endif %}
+
+                {% else %}
+                N/A
+                {% endif %}
+
+            </td>
+
+
+            <!-- CRF2 -->
+
+            <td class="text-center">
+
+                {% if visit.crf2 %}
+
+                <a href="{% url 'herbal:crf2-update' visit.pk %}" class="btn btn-sm btn-secondary">
+                    Edit
+                </a>
+
+                {% else %}
+
+                <a href="{% url 'herbal:crf2-create' visit.pk %}" class="btn btn-sm btn-warning">
+                    Create
+                </a>
+
+                {% endif %}
+
+            </td>
+
+
+            <!-- CRF3 -->
+
+            <td class="text-center">
+
+                {% if visit.crf3 %}
+
+                <a href="{% url 'herbal:crf3-update' visit.pk %}" class="btn btn-sm btn-secondary">
+                    Edit
+                </a>
+
+                {% else %}
+
+                <a href="{% url 'herbal:crf3-create' visit.pk %}" class="btn btn-sm btn-warning">
+                    Create
+                </a>
+
+                {% endif %}
+
+            </td>
+
+
+            <!-- CRF4 -->
+
+            <td class="text-center">
+
+                {% if visit.crf4 %}
+
+                <a href="{% url 'herbal:crf4-update' visit.pk %}" class="btn btn-sm btn-secondary">
+                    Edit
+                </a>
+
+                {% else %}
+
+                <a href="{% url 'herbal:crf4-create' visit.pk %}" class="btn btn-sm btn-warning">
+                    Create
+                </a>
+
+                {% endif %}
+
+            </td>
+
+
+            <!-- CRF7 -->
+
+            <td class="text-center">
+
+                {% if visit.crf7 %}
+
+                <a href="{% url 'herbal:crf7-update' visit.pk %}" class="btn btn-sm btn-secondary">
+                    Edit
+                </a>
+
+                {% else %}
+
+                <a href="{% url 'herbal:crf7-create' visit.pk %}" class="btn btn-sm btn-warning">
+                    Create
+                </a>
+
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% else %}
+
+<p class="text-muted">No visits scheduled yet.</p>
+
+{% endif %}
+
+</div>
+
+
+<hr>
+
+<h6>Legend</h6>
+
+<div class="d-flex flex-wrap gap-4">
+
+    <div><i class="fas fa-check"></i>
+        <span class="badge bg-success">Completed</span>
+        <small>All required CRFs filled for the visit</small>
+    </div>
+
+    <div>
+        <span class="badge bg-warning text-dark">Pending</span>
+        <small>Visit scheduled but data collection not yet completed</small>
+    </div>
+
+    <div>
+        <span class="badge bg-danger">Overdue</span>
+        <small>Scheduled date passed and visit still pending</small>
+    </div>
+
+    <div>
+        <span class="badge bg-dark">Missed</span>
+        <small>Visit was not performed and reason recorded</small>
+    </div>
+
+    <div>
+        <span class="badge bg-secondary">N/A</span>
+        <small>Visit not applicable due to termination or study completion</small>
+    </div>
+
+</div>
 {% endblock %}

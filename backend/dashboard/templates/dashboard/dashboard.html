@@ -2,82 +2,189 @@
 
 {% block content %}
 
-<div class="row">
+<div class="container-fluid">
 
-    <div class="col-md-3">
+    <h3 class="mb-4">Clinical Trial Dashboard</h3>
 
-        <div class="card dashboard-card">
+    <div class="row g-3">
 
-            <div class="card-body text-center">
+        <!-- TOTAL SUBJECTS -->
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body text-center">
+                    <h2>{{ total_subjects }}</h2>
+                    <p>Total Subjects</p>
+                </div>
+            </div>
+        </div>
 
-                <h2>{{ total_subjects }}</h2>
+        <!-- SCREENED -->
+        <div class="col-md-3">
+            <div class="card text-white bg-info">
+                <div class="card-body text-center">
+                    <h2>{{ screened_subjects }}</h2>
+                    <p>Screened</p>
+                </div>
+            </div>
+        </div>
 
-                <p>Total Subjects</p>
+        <!-- ENROLLED -->
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body text-center">
+                    <h2>{{ enrolled_subjects }}</h2>
+                    <p>Enrolled</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADVERSE EVENTS -->
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body text-center">
+                    <h2>{{ adverse_events }}</h2>
+                    <p>Adverse Events</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <hr>
+    <h4>Recruitment Progress</h4>
+
+    <div class="card mb-4">
+        <div class="card-body">
+
+            <strong>{{ enrolled_subjects }} / {{ target_enrollment }} enrolled</strong>
+
+            <div class="progress mt-2" style="height:25px;">
+
+                {% if recruitment_percent < 30 %} 
+                <div class="progress-bar bg-danger" 
+                {% elif recruitment_percent < 70 %} 
+                <div class="progress-bar bg-warning text-dark"
+                {% else %}
+                <div class="progress-bar bg-success" 
+                {% endif %} 
+                role="progressbar" style="width: {{ recruitment_percent }}%;">
+
+                    {{ recruitment_percent }}%
 
             </div>
 
         </div>
 
     </div>
+</div>
+<hr>
+
+
+<h4>Visit Status</h4>
+
+<div class="row g-3">
+
+    <div class="col-md-4">
+        <div class="card border-success">
+            <div class="card-body text-center">
+                <h3>{{ completed_visits }}</h3>
+                <p>Completed Visits</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-danger">
+            <div class="card-body text-center">
+                <h3>{{ overdue_visits }}</h3>
+                <p>Overdue Visits</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-dark">
+            <div class="card-body text-center">
+                <h3>{{ missed_visits }}</h3>
+                <p>Missed Visits</p>
+            </div>
+        </div>
+    </div>
 
 </div>
 
-<br>
 
-<div class="card">
+<hr>
 
-    <div class="card-header">
 
-        Recent Subjects
+<h4>Site Performance</h4>
 
-    </div>
+<table class="table table-bordered">
 
-    <div class="card-body">
+    <thead>
+        <tr>
+            <th>Site</th>
+            <th>Total Subjects</th>
+        </tr>
+    </thead>
 
-        <table class="table table-striped">
+    <tbody>
 
-            <thead>
+        {% for site in site_summary %}
 
-                <tr>
+        <tr>
+            <td>{{ site.name }}</td>
+            <td>{{ site.total_subjects }}</td>
+        </tr>
 
-                    <th>Subject ID</th>
-                    <th>Site</th>
-                    <th>Status</th>
+        {% empty %}
 
-                </tr>
+        <tr>
+            <td colspan="2">No data available</td>
+        </tr>
 
-            </thead>
+        {% endfor %}
 
-            <tbody>
+    </tbody>
 
-                {% for subject in subjects %}
+</table>
 
-                <tr>
+<hr>
+<h4>Latest Subjects</h4>
 
-                    <td>{{ subject.subject_id }}</td>
+<table class="table table-bordered">
 
-                    <td>{{ subject.site }}</td>
+    <thead>
+        <tr>
+            <th>Subject ID</th>
+            <th>Site</th>
+            <th>Status</th>
+        </tr>
+    </thead>
 
-                    <td>{{ subject.status }}</td>
+    <tbody>
 
-                </tr>
+        {% for subject in latest_subjects %}
 
-                {% empty %}
+        <tr>
+            <td>{{ subject.subject_id }}</td>
+            <td>{{ subject.site }}</td>
+            <td>{{ subject.status }}</td>
+        </tr>
 
-                <tr>
+        {% empty %}
 
-                    <td colspan="3">No subjects available</td>
+        <tr>
+            <td colspan="3">No subjects</td>
+        </tr>
 
-                </tr>
+        {% endfor %}
 
-                {% endfor %}
+    </tbody>
 
-            </tbody>
+</table>
 
-        </table>
-
-    </div>
-
+<hr>
 </div>
 
 {% endblock %}

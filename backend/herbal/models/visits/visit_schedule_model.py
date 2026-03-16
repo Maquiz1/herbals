@@ -46,6 +46,11 @@ class VisitSchedule(BaseModel):
         default="pending"
     )
 
+    missed_reason = models.TextField(
+        blank=True,
+        null=True
+    )
+    
     actual_visit_date = models.DateField(
         null=True,
         blank=True
@@ -74,3 +79,44 @@ class VisitSchedule(BaseModel):
 
     def __str__(self):
         return f"{self.enrollment.screening.subject.subject_id} - {self.visit_day}"
+
+
+
+
+# class VisitSchedule(BaseModel):
+
+#     enrollment = models.ForeignKey(
+#         Enrollment,
+#         on_delete=models.CASCADE,
+#         related_name="visits"
+#     )
+
+#     visit_day = models.CharField(
+#         max_length=10,
+#         choices=VISIT_DAY_CHOICES
+#     )
+
+#     scheduled_date = models.DateField()
+
+#     STATUS_CHOICES = [
+#         ("pending", "Pending"),
+#         ("completed", "Completed"),
+#         ("missed", "Missed"),
+#         ("na", "Not Applicable"),
+#     ]
+
+    # status = models.CharField(
+    #     max_length=20,
+    #     choices=STATUS_CHOICES,
+    #     default="pending"
+    # )
+
+    # missed_reason = models.TextField(
+    #     blank=True,
+    #     null=True
+    # )
+
+    # actual_visit_date = models.DateField(
+    #     null=True,
+    #     blank=True
+    # )

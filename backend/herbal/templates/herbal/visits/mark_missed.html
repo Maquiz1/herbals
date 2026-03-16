@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load querystring %}
+
+{% block content %}
+
+
+<h3>Mark Visit Missed</h3>
+
+<form method="post">
+{% csrf_token %}
+
+<label>Reason for missed visit</label>
+<textarea name="reason" class="form-control"></textarea>
+
+<br>
+
+<button class="btn btn-danger">Confirm Missed</button>
+
+</form>
+
+{% endblock %}
