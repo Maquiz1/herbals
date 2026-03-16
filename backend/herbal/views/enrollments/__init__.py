@@ -1,1 +1,2 @@
 from .enrollment_create_view import enrollment_create_view
+from .enrollment_update_view import enrollment_update_view

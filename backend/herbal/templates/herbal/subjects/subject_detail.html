@@ -63,9 +63,7 @@
         </div>
     </div>
 
-
     <hr>
-
 
     <!-- SCREENING -->
 
@@ -92,6 +90,9 @@
         </div>
     </div>
 
+    <a href="{% url 'herbal:screening-update' screening.pk %}" class="btn btn-secondary">
+        Edit Screening
+    </a>
     {% else %}
 
     <a href="{% url 'herbal:screening-create' subject.pk %}" class="btn btn-primary">
@@ -118,6 +119,9 @@
         </div>
     </div>
 
+    <a href="{% url 'herbal:enrollment-update' enrollment.pk %}" class="btn btn-secondary">
+        Edit Enrollment
+    </a>
     {% elif screening and screening.eligible and not enrollment %}
 
     <a href="{% url 'herbal:enrollment-create' subject.pk %}" class="btn btn-success">
@@ -130,9 +134,7 @@
 
     {% endif %}
 
-
     <hr>
-
 
     <!-- VISIT SCHEDULE -->
 

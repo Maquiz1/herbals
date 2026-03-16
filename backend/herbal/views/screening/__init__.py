@@ -1,1 +1,2 @@
 from .screening_create_view import screening_create_view
+from .screening_update_view import screening_update_view

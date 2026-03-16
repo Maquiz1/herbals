@@ -3,7 +3,7 @@
 from django.core.paginator import Paginator
 
 
-def paginate_queryset(request, queryset, per_page=2):
+def paginate_queryset(request, queryset, per_page=10):
 
     paginator = Paginator(queryset, per_page)
 

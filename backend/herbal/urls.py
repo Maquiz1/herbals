@@ -6,7 +6,9 @@ from .views.subjects.details.subject_detail_view import subject_detail_view
 from .views.subjects.updates.subject_update_view import subject_update_view
 from .views.visits.visit_dashboard_view import visit_dashboard_view
 from .views.screening.screening_create_view import screening_create_view
+from .views.screening.screening_update_view import screening_update_view
 from .views.enrollments.enrollment_create_view import enrollment_create_view
+from .views.enrollments.enrollment_update_view import enrollment_update_view
 from .views.crfs.crf1.crf1_create_view import crf1_create_view
 from .views.crfs.crf1.crf1_update_view import crf1_update_view
 from .views.crfs.crf2.crf2_create_view import crf2_create_view
@@ -32,8 +34,12 @@ urlpatterns = [
     path("subjects/<int:pk>/edit/", subject_update_view, name="subjects-update"),
     # SCREENING
     path("screening/<int:pk>/", screening_create_view, name="screening-create"),
+    path("screening/<int:pk>/update/", screening_update_view, name="screening-update"),
     # ENROLLMENT
     path("enrollment/<int:pk>/", enrollment_create_view, name="enrollment-create"),
+    path(
+        "enrollment/<int:pk>/update/", enrollment_update_view, name="enrollment-update"
+    ),
     # VISITS
     path("visits/dashboard/", visit_dashboard_view, name="visit-dashboard"),
     # CRFS
