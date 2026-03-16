@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 
 from herbal.models import VisitSchedule
 from herbal.forms.crfs.crf1_form import CRF1Form
+from herbal.services.visit_completion import update_visit_status
 
 @login_required
 def crf1_create_view(request, pk):
@@ -26,6 +27,7 @@ def crf1_create_view(request, pk):
             crf.visit = visit
 
             crf.save()
+            update_visit_status(visit)
 
             return redirect("herbal:subjects-detail", pk=visit.subject.pk)
 
