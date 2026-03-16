@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
-from herbal.models import VisitSchedule
 from herbal.models.crfs.crf6.crf6_model import CRF6
 from herbal.forms.crfs.crf6_form import CRF6Form
 
@@ -9,9 +8,11 @@ from herbal.forms.crfs.crf6_form import CRF6Form
 @login_required
 def crf6_update_view(request, pk):
 
-    visit = get_object_or_404(VisitSchedule, pk=pk)
+    crf = get_object_or_404(CRF6, pk=pk)
 
-    crf = get_object_or_404(CRF6, visit=visit)
+    enrollment = crf.enrollment
+
+    subject = enrollment.screening.subject
 
     if request.method == "POST":
 
@@ -23,7 +24,7 @@ def crf6_update_view(request, pk):
 
             return redirect(
                 "herbal:subjects-detail",
-                pk=visit.subject.pk
+                pk=subject.pk
             )
 
     else:
@@ -35,7 +36,9 @@ def crf6_update_view(request, pk):
         "herbal/crfs/crf6/crf6_form.html",
         {
             "form": form,
-            "visit": visit,
+            "crf": crf,
+            "enrollment": enrollment,
+            "subject": subject,
             "is_update": True,
         }
     )

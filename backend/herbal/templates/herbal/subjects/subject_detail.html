@@ -73,30 +73,30 @@
 
     {% if screening %}
 
-        <div class="card mb-3">
-            <div class="card-body">
+    <div class="card mb-3">
+        <div class="card-body">
 
-                <p><strong>Date:</strong> {{ screening.screening_date }}</p>
+            <p><strong>Date:</strong> {{ screening.screening_date }}</p>
 
-                <p>
-                    <strong>Eligibility:</strong>
+            <p>
+                <strong>Eligibility:</strong>
 
-                    {% if screening.eligible %}
-                        <span class="badge bg-success">Eligible</span>
-                    {% else %}
-                        <span class="badge bg-danger">Not Eligible</span>
-                    {% endif %}
+                {% if screening.eligible %}
+                <span class="badge bg-success">Eligible</span>
+                {% else %}
+                <span class="badge bg-danger">Not Eligible</span>
+                {% endif %}
 
-                </p>
+            </p>
 
-            </div>
         </div>
+    </div>
 
     {% else %}
 
-        <a href="{% url 'herbal:screening-create' subject.pk %}" class="btn btn-primary">
-            Add Screening
-        </a>
+    <a href="{% url 'herbal:screening-create' subject.pk %}" class="btn btn-primary">
+        Add Screening
+    </a>
 
     {% endif %}
 
@@ -110,23 +110,23 @@
 
     {% if enrollment %}
 
-        <div class="card mb-3">
-            <div class="card-body">
+    <div class="card mb-3">
+        <div class="card-body">
 
-                <p><strong>Enrollment Date:</strong> {{ enrollment.enrollment_date }}</p>
+            <p><strong>Enrollment Date:</strong> {{ enrollment.enrollment_date }}</p>
 
-            </div>
         </div>
+    </div>
 
     {% elif screening and screening.eligible and not enrollment %}
 
-        <a href="{% url 'herbal:enrollment-create' subject.pk %}" class="btn btn-success">
-            Enroll Subject
-        </a>
+    <a href="{% url 'herbal:enrollment-create' subject.pk %}" class="btn btn-success">
+        Enroll Subject
+    </a>
 
     {% else %}
 
-        <p class="text-muted">Subject is not eligible for enrollment.</p>
+    <p class="text-muted">Subject is not eligible for enrollment.</p>
 
     {% endif %}
 
@@ -140,206 +140,273 @@
 
     {% if visits %}
 
-        <!-- OTHER FORMS -->
+    <!-- OTHER FORMS -->
 
-        {% if enrollment %}
+    {% if enrollment %}
 
-        <h5>Other Forms</h5>
+    <h5>Other Forms</h5>
 
-        <a class="btn btn-warning"
-           href="{% url 'herbal:crf5-create' enrollment.pk %}">
-            Adverse Event (CRF5)
-        </a>
+    <hr>
 
-        <a class="btn btn-danger"
-           href="{% url 'herbal:crf6-create' enrollment.pk %}">
-            Termination (CRF6)
-        </a>
+    <h5>Adverse Events</h5>
 
-        <hr>
+    <a class="btn btn-warning mb-2" href="{% url 'herbal:crf5-create' enrollment.pk %}">
+        + Record Adverse Event
+    </a>
 
-        {% endif %}
+    {% if adverse_events %}
 
+    <table class="table table-bordered table-striped">
 
-        <!-- VISIT TABLE -->
+        <thead>
+            <tr>
+                <th>Event</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Severity</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
 
-        <table class="table table-bordered table-striped">
+        <tbody>
 
-            <thead>
+            {% for ae in adverse_events %}
 
-                <tr>
-                    <th>Visit</th>
-                    <th>Scheduled Date</th>
-                    <th>Status</th>
-                    <th>Actual Visit Date</th>
+            <tr>
 
-                    <th class="text-center">CRF1</th>
-                    <th class="text-center">CRF2</th>
-                    <th class="text-center">CRF3</th>
-                    <th class="text-center">CRF4</th>
-                    <th class="text-center">CRF7</th>
-                </tr>
+                <td>{{ ae.event_name }}</td>
 
-            </thead>
+                <td>{{ ae.start_date }}</td>
 
-            <tbody>
+                <td>{{ ae.end_date|default:"-" }}</td>
 
-            {% for visit in visits %}
+                <td>
 
-                <tr>
+                    {% if ae.severity == "Mild" %}
+                    <span class="badge bg-success">Mild</span>
 
-                    <td>{{ visit.get_visit_day_display }}</td>
+                    {% elif ae.severity == "Moderate" %}
+                    <span class="badge bg-warning text-dark">Moderate</span>
 
-                    <td>{{ visit.scheduled_date }}</td>
+                    {% else %}
+                    <span class="badge bg-danger">Severe</span>
 
-                    <td>
+                    {% endif %}
 
-                        {% if visit.status == "completed" %}
-                            <span class="badge bg-success">Completed</span>
+                </td>
 
-                        {% elif visit.is_overdue %}
-                            <span class="badge bg-danger">Overdue</span>
+                <td>
 
-                        {% else %}
-                            <span class="badge bg-warning text-dark">Pending</span>
-                        {% endif %}
+                    <a href="{% url 'herbal:crf5-update' ae.pk %}" class="btn btn-sm btn-secondary">
 
-                    </td>
+                        Edit
 
-                    <td>{{ visit.actual_visit_date|default:"-" }}</td>
+                    </a>
 
+                </td>
 
-                    <!-- CRF1 (DAY 0 ONLY) -->
-
-                    <td class="text-center">
-
-                        {% if visit.visit_day == "D0" %}
-
-                            {% if visit.crf1 %}
-
-                                <a href="{% url 'herbal:crf1-update' visit.pk %}"
-                                   class="btn btn-sm btn-secondary">
-                                   Edit
-                                </a>
-
-                            {% else %}
-
-                                <a href="{% url 'herbal:crf1-create' visit.pk %}"
-                                   class="btn btn-sm btn-warning">
-                                   Create
-                                </a>
-
-                            {% endif %}
-
-                        {% else %}
-                            N/A
-                        {% endif %}
-
-                    </td>
-
-
-                    <!-- CRF2 -->
-
-                    <td class="text-center">
-
-                        {% if visit.crf2 %}
-
-                            <a href="{% url 'herbal:crf2-update' visit.pk %}"
-                               class="btn btn-sm btn-secondary">
-                               Edit
-                            </a>
-
-                        {% else %}
-
-                            <a href="{% url 'herbal:crf2-create' visit.pk %}"
-                               class="btn btn-sm btn-warning">
-                               Create
-                            </a>
-
-                        {% endif %}
-
-                    </td>
-
-
-                    <!-- CRF3 -->
-
-                    <td class="text-center">
-
-                        {% if visit.crf3 %}
-
-                            <a href="{% url 'herbal:crf3-update' visit.pk %}"
-                               class="btn btn-sm btn-secondary">
-                               Edit
-                            </a>
-
-                        {% else %}
-
-                            <a href="{% url 'herbal:crf3-create' visit.pk %}"
-                               class="btn btn-sm btn-warning">
-                               Create
-                            </a>
-
-                        {% endif %}
-
-                    </td>
-
-
-                    <!-- CRF4 -->
-
-                    <td class="text-center">
-
-                        {% if visit.crf4 %}
-
-                            <a href="{% url 'herbal:crf4-update' visit.pk %}"
-                               class="btn btn-sm btn-secondary">
-                               Edit
-                            </a>
-
-                        {% else %}
-
-                            <a href="{% url 'herbal:crf4-create' visit.pk %}"
-                               class="btn btn-sm btn-warning">
-                               Create
-                            </a>
-
-                        {% endif %}
-
-                    </td>
-
-
-                    <!-- CRF7 -->
-
-                    <td class="text-center">
-
-                        {% if visit.crf7 %}
-
-                            <a href="{% url 'herbal:crf7-update' visit.pk %}"
-                               class="btn btn-sm btn-secondary">
-                               Edit
-                            </a>
-
-                        {% else %}
-
-                            <a href="{% url 'herbal:crf7-create' visit.pk %}"
-                               class="btn btn-sm btn-warning">
-                               Create
-                            </a>
-
-                        {% endif %}
-
-                    </td>
-
-                </tr>
+            </tr>
 
             {% endfor %}
 
-            </tbody>
+        </tbody>
 
-        </table>
+    </table>
 
     {% else %}
 
-        <p class="text-muted">No visits scheduled yet.</p>
+    <p class="text-muted">No adverse events recorded.</p>
+
+    {% endif %}
+
+    {% if enrollment.termination %}
+
+    <a class="btn btn-danger" href="{% url 'herbal:crf6-update' enrollment.termination.pk %}">
+        Update Termination
+    </a>
+
+    {% else %}
+
+    <a class="btn btn-outline-danger" href="{% url 'herbal:crf6-create' enrollment.pk %}">
+        Terminate Subject
+    </a>
+
+    {% endif %}
+
+    <hr>
+
+    {% endif %}
+
+
+    <!-- VISIT TABLE -->
+
+    <table class="table table-bordered table-striped">
+
+        <thead>
+
+            <tr>
+                <th>Visit</th>
+                <th>Scheduled Date</th>
+                <th>Status</th>
+                <th>Actual Visit Date</th>
+
+                <th class="text-center">CRF1</th>
+                <th class="text-center">CRF2</th>
+                <th class="text-center">CRF3</th>
+                <th class="text-center">CRF4</th>
+                <th class="text-center">CRF7</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for visit in visits %}
+
+            <tr>
+
+                <td>{{ visit.get_visit_day_display }}</td>
+
+                <td>{{ visit.scheduled_date }}</td>
+
+                <td>
+
+                    {% if visit.status == "completed" %}
+                    <span class="badge bg-success">Completed</span>
+
+                    {% elif visit.is_overdue %}
+                    <span class="badge bg-danger">Overdue</span>
+
+                    {% else %}
+                    <span class="badge bg-warning text-dark">Pending</span>
+                    {% endif %}
+
+                </td>
+
+                <td>{{ visit.actual_visit_date|default:"-" }}</td>
+
+
+                <!-- CRF1 (DAY 0 ONLY) -->
+
+                <td class="text-center">
+
+                    {% if visit.visit_day == "D0" %}
+
+                    {% if visit.crf1 %}
+
+                    <a href="{% url 'herbal:crf1-update' visit.pk %}" class="btn btn-sm btn-secondary">
+                        Edit
+                    </a>
+
+                    {% else %}
+
+                    <a href="{% url 'herbal:crf1-create' visit.pk %}" class="btn btn-sm btn-warning">
+                        Create
+                    </a>
+
+                    {% endif %}
+
+                    {% else %}
+                    N/A
+                    {% endif %}
+
+                </td>
+
+
+                <!-- CRF2 -->
+
+                <td class="text-center">
+
+                    {% if visit.crf2 %}
+
+                    <a href="{% url 'herbal:crf2-update' visit.pk %}" class="btn btn-sm btn-secondary">
+                        Edit
+                    </a>
+
+                    {% else %}
+
+                    <a href="{% url 'herbal:crf2-create' visit.pk %}" class="btn btn-sm btn-warning">
+                        Create
+                    </a>
+
+                    {% endif %}
+
+                </td>
+
+
+                <!-- CRF3 -->
+
+                <td class="text-center">
+
+                    {% if visit.crf3 %}
+
+                    <a href="{% url 'herbal:crf3-update' visit.pk %}" class="btn btn-sm btn-secondary">
+                        Edit
+                    </a>
+
+                    {% else %}
+
+                    <a href="{% url 'herbal:crf3-create' visit.pk %}" class="btn btn-sm btn-warning">
+                        Create
+                    </a>
+
+                    {% endif %}
+
+                </td>
+
+
+                <!-- CRF4 -->
+
+                <td class="text-center">
+
+                    {% if visit.crf4 %}
+
+                    <a href="{% url 'herbal:crf4-update' visit.pk %}" class="btn btn-sm btn-secondary">
+                        Edit
+                    </a>
+
+                    {% else %}
+
+                    <a href="{% url 'herbal:crf4-create' visit.pk %}" class="btn btn-sm btn-warning">
+                        Create
+                    </a>
+
+                    {% endif %}
+
+                </td>
+
+
+                <!-- CRF7 -->
+
+                <td class="text-center">
+
+                    {% if visit.crf7 %}
+
+                    <a href="{% url 'herbal:crf7-update' visit.pk %}" class="btn btn-sm btn-secondary">
+                        Edit
+                    </a>
+
+                    {% else %}
+
+                    <a href="{% url 'herbal:crf7-create' visit.pk %}" class="btn btn-sm btn-warning">
+                        Create
+                    </a>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <p class="text-muted">No visits scheduled yet.</p>
 
     {% endif %}
 

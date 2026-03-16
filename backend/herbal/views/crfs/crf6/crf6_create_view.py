@@ -1,16 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
-from herbal.models import VisitSchedule
+from herbal.models import Enrollment
 from herbal.forms.crfs.crf6_form import CRF6Form
+
 
 @login_required
 def crf6_create_view(request, pk):
 
-    visit = get_object_or_404(VisitSchedule, pk=pk)
+    enrollment = get_object_or_404(Enrollment, pk=pk)
 
-    if hasattr(visit, "crf6"):
-        return redirect("herbal:subjects-detail", pk=visit.subject.pk)
+    subject = enrollment.screening.subject
+
+    # prevent duplicate termination
+    if hasattr(enrollment, "termination"):
+        return redirect("herbal:subjects-detail", pk=subject.pk)
 
     if request.method == "POST":
 
@@ -20,11 +24,15 @@ def crf6_create_view(request, pk):
 
             crf = form.save(commit=False)
 
-            crf.visit = visit
+            crf.enrollment = enrollment
 
             crf.save()
 
-            return redirect("herbal:subjects-detail", pk=visit.subject.pk)
+            # update enrollment status
+            enrollment.status = "terminated"
+            enrollment.save()
+
+            return redirect("herbal:subjects-detail", pk=subject.pk)
 
     else:
 
@@ -35,6 +43,7 @@ def crf6_create_view(request, pk):
         "herbal/crfs/crf6/crf6_form.html",
         {
             "form": form,
-            "visit": visit
+            "enrollment": enrollment,
+            "subject": subject,
         }
     )
