@@ -7,14 +7,16 @@
     <h3>
 
         {% if is_update %}
-        Edit CRF5
+            Edit Adverse Event (CRF5)
         {% else %}
-        Create CRF5
+            Record Adverse Event (CRF5)
         {% endif %}
 
-        — {{ visit.get_visit_day_display }}
+        — Subject {{ enrollment.screening.subject.subject_id }}
 
     </h3>
+
+    <hr>
 
     <form method="post">
 
@@ -22,11 +24,12 @@
 
         {{ form.as_p }}
 
-        <button class="btn btn-success">
+        <button type="submit" class="btn btn-success">
             Save
         </button>
 
-        <a href="{% url 'herbal:subjects-detail' enrollment.subject.pk %}" class="btn btn-secondary">
+        <a href="{% url 'herbal:subjects-detail' enrollment.screening.subject.pk %}"
+           class="btn btn-secondary">
             Cancel
         </a>
 

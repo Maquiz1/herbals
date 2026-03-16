@@ -10,6 +10,8 @@ def crf5_create_view(request, pk):
 
     enrollment = get_object_or_404(Enrollment, pk=pk)
 
+    subject = enrollment.screening.subject
+
     if request.method == "POST":
 
         form = CRF5Form(request.POST)
@@ -24,7 +26,7 @@ def crf5_create_view(request, pk):
 
             return redirect(
                 "herbal:subjects-detail",
-                pk=enrollment.subject.pk
+                pk=subject.pk
             )
 
     else:
@@ -36,6 +38,7 @@ def crf5_create_view(request, pk):
         "herbal/crfs/crf5/crf5_form.html",
         {
             "form": form,
-            "enrollment": enrollment
+            "enrollment": enrollment,
+            "subject": subject,
         }
     )

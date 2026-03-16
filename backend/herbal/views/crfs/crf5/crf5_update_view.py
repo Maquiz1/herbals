@@ -12,6 +12,8 @@ def crf5_update_view(request, pk):
 
     enrollment = crf.enrollment
 
+    subject = enrollment.screening.subject
+
     if request.method == "POST":
 
         form = CRF5Form(request.POST, instance=crf)
@@ -22,7 +24,7 @@ def crf5_update_view(request, pk):
 
             return redirect(
                 "herbal:subjects-detail",
-                pk=enrollment.subject.pk
+                pk=subject.pk
             )
 
     else:
@@ -36,6 +38,7 @@ def crf5_update_view(request, pk):
             "form": form,
             "crf": crf,
             "enrollment": enrollment,
+            "subject": subject,
             "is_update": True,
         }
     )
