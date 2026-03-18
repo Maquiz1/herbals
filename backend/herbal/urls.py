@@ -6,6 +6,7 @@ from .views.subjects.details.subject_detail_view import subject_detail_view
 from .views.subjects.updates.subject_update_view import subject_update_view
 from .views.visits.visit_dashboard_view import visit_dashboard_view
 from .views.visits.visit_mark_missed_view import visit_mark_missed
+from .views.visits.visit_mark_pending import visit_mark_pending
 from .views.screening.screening_create_view import screening_create_view
 from .views.screening.screening_update_view import screening_update_view
 from .views.enrollments.enrollment_create_view import enrollment_create_view
@@ -49,6 +50,7 @@ urlpatterns = [
     # VISITS
     path("visits/dashboard/", visit_dashboard_view, name="visit-dashboard"),
     path("visits/<int:pk>/missed/", visit_mark_missed, name="visit-mark-missed"),
+    path("visits/<int:pk>/pending/", visit_mark_pending, name="visit-mark-pending"),
     # CRFS
     # CRF1
     path("crf1/<int:pk>/", crf1_create_view, name="crf1-create"),

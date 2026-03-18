@@ -18,7 +18,18 @@ VISIT_DAY_CHOICES = [
 ]
 
 
+MISSED_REASON_CHOICES = [
+    ("patient_unavailable", "Patient Unavailable"),
+    ("patient_refused", "Patient Refused"),
+    ("transport_issue", "Transport Issue"),
+    ("site_error", "Site Error"),
+    ("medical_reason", "Medical Reason"),
+    ("changed_location", "Changed Location"),
+    ("other", "Other"),
+]
+
 class VisitSchedule(BaseModel):
+
 
     enrollment = models.ForeignKey(
         Enrollment,
@@ -46,7 +57,14 @@ class VisitSchedule(BaseModel):
         default="pending"
     )
 
-    missed_reason = models.TextField(
+    missed_reason = models.CharField(
+        max_length=50,
+        choices=MISSED_REASON_CHOICES,
+        blank=True,
+        null=True
+    )
+
+    missed_comment = models.TextField(
         blank=True,
         null=True
     )
@@ -66,6 +84,7 @@ class VisitSchedule(BaseModel):
             )
         ]
 
+
     def is_overdue(self):
 
         return (
@@ -76,6 +95,10 @@ class VisitSchedule(BaseModel):
     @property
     def subject(self):
         return self.enrollment.screening.subject
+
+    @property
+    def is_na(self):
+        return self.status in ["missed", "na"]
 
     def __str__(self):
         return f"{self.enrollment.screening.subject.subject_id} - {self.visit_day}"

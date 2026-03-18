@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-
+from django.utils import timezone
 from herbal.models import Enrollment, VisitSchedule
 from herbal.forms.crfs.crf6_form import CRF6Form
 
@@ -31,9 +31,17 @@ def crf6_create_view(request, pk):
             enrollment.status = "terminated"
             enrollment.save()
 
-            # set future visits to N/A
+            # Reset visits before new termination date
             VisitSchedule.objects.filter(
                 enrollment=enrollment,
+                scheduled_date__lte=crf.termination_date,
+                status="na"
+            ).update(status="pending")
+
+            # Set future visits to NA
+            VisitSchedule.objects.filter(
+                enrollment=enrollment,
+                scheduled_date__gt=crf.termination_date,
                 status="pending"
             ).update(status="na")
 

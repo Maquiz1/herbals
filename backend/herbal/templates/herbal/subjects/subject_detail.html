@@ -19,6 +19,9 @@
     <!-- SUBJECT INFORMATION -->
 
     <div class="card">
+        {% if is_ltfu %}
+        <span class="badge bg-dark">LTFU</span>
+        {% endif %}
         <div class="card-body">
 
             <table class="table table-bordered">
@@ -329,7 +332,6 @@
     <tbody>
 
         {% for visit in visits %}
-
         <tr>
 
             <td>{{ visit.get_visit_day_display }}</td>
@@ -342,8 +344,14 @@
                 <span class="badge bg-success">Completed</span>
 
                 {% elif visit.status == "missed" %}
-                <span class="badge bg-dark">Missed</span>
-
+                <span class="badge bg-danger">Missed</span>
+                <a href="{% url 'herbal:visit-mark-pending' visit.pk %}">
+                    Undo?
+                </a>
+                {% if visit.missed_reason %}
+                    <br>
+                    <small>{{ visit.get_missed_reason_display }}</small>
+                {% endif %}
                 {% elif visit.status == "na" %}
                 <span class="badge bg-secondary">N/A</span>
 
@@ -386,24 +394,19 @@
 
             <td class="text-center">
 
-                {% if visit.visit_day == "D0" %}
+                {% if visit.is_na %}
+                <span class="badge bg-secondary">N/A</span>
+
+                {% elif visit.visit_day == "D0" %}
 
                 {% if visit.crf1 %}
-
-                <a href="{% url 'herbal:crf1-update' visit.pk %}" class="btn btn-sm btn-secondary">
-                    Edit
-                </a>
-
+                <a href="{% url 'herbal:crf1-update' visit.pk %}" class="btn btn-sm btn-info">Edit</a>
                 {% else %}
-
-                <a href="{% url 'herbal:crf1-create' visit.pk %}" class="btn btn-sm btn-warning">
-                    Create
-                </a>
-
+                <a href="{% url 'herbal:crf1-create' visit.pk %}" class="btn btn-sm btn-warning">Create</a>
                 {% endif %}
 
                 {% else %}
-                N/A
+                <span class="badge bg-secondary">N/A</span>
                 {% endif %}
 
             </td>
@@ -413,18 +416,18 @@
 
             <td class="text-center">
 
-                {% if visit.crf2 %}
+                {% if visit.is_na %}
+                <span class="badge bg-secondary">N/A</span>
 
-                <a href="{% url 'herbal:crf2-update' visit.pk %}" class="btn btn-sm btn-secondary">
+                {% elif visit.crf2 %}
+                <a href="{% url 'herbal:crf2-update' visit.pk %}" class="btn btn-sm btn-info">
                     Edit
                 </a>
 
                 {% else %}
-
                 <a href="{% url 'herbal:crf2-create' visit.pk %}" class="btn btn-sm btn-warning">
                     Create
                 </a>
-
                 {% endif %}
 
             </td>
@@ -433,10 +436,12 @@
             <!-- CRF3 -->
 
             <td class="text-center">
+                {% if visit.is_na %}
+                <span class="badge bg-secondary">N/A</span>
 
-                {% if visit.crf3 %}
+                {% elif visit.crf3 %}
 
-                <a href="{% url 'herbal:crf3-update' visit.pk %}" class="btn btn-sm btn-secondary">
+                <a href="{% url 'herbal:crf3-update' visit.pk %}" class="btn btn-sm btn-info">
                     Edit
                 </a>
 
@@ -454,10 +459,11 @@
             <!-- CRF4 -->
 
             <td class="text-center">
+                {% if visit.is_na %}
+                <span class="badge bg-secondary">N/A</span>
+                {% elif visit.crf4 %}
 
-                {% if visit.crf4 %}
-
-                <a href="{% url 'herbal:crf4-update' visit.pk %}" class="btn btn-sm btn-secondary">
+                <a href="{% url 'herbal:crf4-update' visit.pk %}" class="btn btn-sm btn-info">
                     Edit
                 </a>
 
@@ -475,10 +481,11 @@
             <!-- CRF7 -->
 
             <td class="text-center">
+                {% if visit.is_na %}
+                <span class="badge bg-secondary">N/A</span>
+                {% elif visit.crf7 %}
 
-                {% if visit.crf7 %}
-
-                <a href="{% url 'herbal:crf7-update' visit.pk %}" class="btn btn-sm btn-secondary">
+                <a href="{% url 'herbal:crf7-update' visit.pk %}" class="btn btn-sm btn-info">
                     Edit
                 </a>
 
@@ -495,7 +502,6 @@
         </tr>
 
         {% endfor %}
-
     </tbody>
 
 </table>

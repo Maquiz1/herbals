@@ -8,17 +8,24 @@ def visit_mark_missed(request, pk):
 
     visit = get_object_or_404(VisitSchedule, pk=pk)
 
+    # ❌ DO NOT allow NA visits to be changed
+    if visit.status == "na":
+        return redirect("herbal:subjects-detail", pk=visit.subject.pk)
+
     if request.method == "POST":
 
-        reason = request.POST.get("reason")
+        # ✅ Only allow marking pending → missed
+        if visit.status == "pending":
 
-        visit.status = "missed"
-        visit.missed_reason = reason
-        visit.save()
+            reason = request.POST.get("reason")
+            comment = request.POST.get("comment")
 
-        subject = visit.enrollment.screening.subject
+            visit.status = "missed"
+            visit.missed_reason = reason
+            visit.missed_comment = comment
+            visit.save()
 
-        return redirect("herbal:subjects-detail", pk=subject.pk)
+        return redirect("herbal:subjects-detail", pk=visit.subject.pk)
 
     return render(
         request,

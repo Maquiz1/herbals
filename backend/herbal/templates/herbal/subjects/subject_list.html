@@ -61,7 +61,7 @@
             <div class="card text-center bg-dark text-white">
                 <div class="card-body">
                     <h4>{{ ltf_count }}</h4>
-                    <p>Lost to Follow-up</p>
+                    <p>LTFU</p>
                 </div>
             </div>
         </div>
@@ -137,8 +137,7 @@
                         <td>{{ subject.created_at|date:"Y-m-d H:i" }}</td>
                         <td>
 
-                            {% if subject.screening and subject.screening.enrollment and
-                            subject.screening.enrollment.termination %}
+                            {% if subject.screening and subject.screening.enrollment and  subject.screening.enrollment.termination %}
                             <span class="badge bg-danger">Terminated</span>
 
                             {% elif subject.progress_percent == 100 %}
