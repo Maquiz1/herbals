@@ -3,30 +3,72 @@ from django.db import models
 from datetime import date
 
 from sites.models import Site
+from choices.models.sex_model import Sex
 from core.models import BaseModel
 from core.managers.site_manager import SiteRestrictedManager
 
 
 class Subject(BaseModel):
-
+    
     subject_id = models.CharField(max_length=50, unique=True, blank=True)
+    site = models.ForeignKey(Site, on_delete=models.PROTECT)
+
+    reg_date = models.DateField()
+    dob = models.DateField(null=True,blank=True)
+    age = models.PositiveIntegerField(null=True,blank=True)
 
     first_name = models.CharField(max_length=100)
+    middle_name = models.CharField(max_length=100, blank=True, null=True)
     last_name = models.CharField(max_length=100)
-
-    sex = models.CharField(
-        max_length=10, choices=[("Male", "Male"), ("Female", "Female")]
+    
+    sex = models.ForeignKey(Sex, on_delete=models.PROTECT)
+    
+    hid = models.CharField(max_length=100)
+    idn = models.CharField(max_length=100, blank=True, null=True)
+    id_type = models.CharField(
+        max_length=50,
+        choices=[
+            ("NIDA", "NIDA"),
+            ("VOTER", "Voter ID"),
+            ("PASSPORT", "Passport"),
+            ("LICENSE", "DRIVING LICENSE"),
+            ("OTHER", "Other"),
+        ],
+        blank=True,
+        null=True
     )
 
-    date_of_birth = models.DateField()
+    marital_status = models.CharField(
+        max_length=20,
+        choices=[
+            ("single", "Single"),
+            ("married", "Married"),
+            ("divorced", "Divorced"),
+            ("separated", "Separated"),
+            ("widowed", "Widowed/Widower"),
+            ("cohabit", "Cohabit"),
+        ],
+        blank=True,
+        null=True
+    )
 
-    phone = models.CharField(max_length=20, blank=True, null=True)
+    education_level = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True
+    )
+    occupation = models.CharField(max_length=150, blank=True, null=True)
+    
+    phone_number = models.CharField(max_length=20)
+    other_phone = models.CharField(max_length=20, blank=True, null=True)
 
-    village = models.CharField(max_length=100, blank=True)
+    # Location fields (you may later convert to FK if using location models)
+    region = models.CharField(max_length=100, blank=True, null=True)
+    district = models.CharField(max_length=100, blank=True, null=True)
+    ward = models.CharField(max_length=100, blank=True, null=True)
+    street = models.CharField(max_length=100, blank=True, null=True)
 
-    registration_date = models.DateField(auto_now_add=True)
-
-    site = models.ForeignKey(Site, on_delete=models.PROTECT)
+    remarks = models.TextField(blank=True, null=True)
 
     objects = SiteRestrictedManager()
 

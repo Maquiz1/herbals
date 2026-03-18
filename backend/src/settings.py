@@ -58,6 +58,8 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'utils.apps.UtilsConfig',
     'constants.apps.ConstantsConfig',
+    'locations.apps.LocationsConfig',
+    'choices.apps.ChoicesConfig',
 ]
 
 AUTH_USER_MODEL = "accounts.User"

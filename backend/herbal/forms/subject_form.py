@@ -13,7 +13,7 @@ class SubjectForm(forms.ModelForm):
             "first_name",
             "last_name",
             "sex",
-            "date_of_birth",
+            "dob",
         ]
 
         widgets = {
@@ -21,7 +21,7 @@ class SubjectForm(forms.ModelForm):
             # "site": forms.Select(attrs={"class": "form-control"}),
             "first_name": forms.TextInput(attrs={"class": "form-control"}),
             "last_name": forms.TextInput(attrs={"class": "form-control"}),
-            "date_of_birth": forms.DateInput(
+            "dob": forms.DateInput(
                 attrs={"type": "date", "class": "form-control"}
             ),
             "sex": forms.Select(attrs={"class": "form-control"}),
