@@ -16,7 +16,7 @@ def crf5_update_view(request, pk):
 
     if request.method == "POST":
 
-        form = CRF5Form(request.POST, instance=crf)
+        form = CRF5Form(request.POST, instance=crf,enrollment=enrollment)
 
         if form.is_valid():
 
@@ -29,7 +29,7 @@ def crf5_update_view(request, pk):
 
     else:
 
-        form = CRF5Form(instance=crf)
+        form = CRF5Form(instance=crf,enrollment=enrollment)
 
     return render(
         request,

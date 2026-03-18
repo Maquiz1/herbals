@@ -11,6 +11,10 @@ from .views.screening.screening_create_view import screening_create_view
 from .views.screening.screening_update_view import screening_update_view
 from .views.enrollments.enrollment_create_view import enrollment_create_view
 from .views.enrollments.enrollment_update_view import enrollment_update_view
+from .views.visits.unscheduled_create_view import unscheduled_create_view
+from .views.visits.unscheduled_update_view import unscheduled_update_view
+from .views.visits.visit_start_view import visit_start_view
+from .views.visits.visit_update_view import visit_update_view
 from .views.crfs.crf1.crf1_create_view import crf1_create_view
 from .views.crfs.crf1.crf1_update_view import crf1_update_view
 from .views.crfs.crf2.crf2_create_view import crf2_create_view
@@ -51,6 +55,10 @@ urlpatterns = [
     path("visits/dashboard/", visit_dashboard_view, name="visit-dashboard"),
     path("visits/<int:pk>/missed/", visit_mark_missed, name="visit-mark-missed"),
     path("visits/<int:pk>/pending/", visit_mark_pending, name="visit-mark-pending"),
+    path("unscheduled/create/<int:pk>/", unscheduled_create_view, name="unscheduled-create"),
+    path("unscheduled/update/<int:pk>/", unscheduled_update_view, name="unscheduled-update"),
+    path("visits/<int:pk>/start/", visit_update_view, name="visit-start"),
+    path("visits/<int:pk>/update/", visit_update_view, name="visit-update"),
     # CRFS
     # CRF1
     path("crf1/<int:pk>/", crf1_create_view, name="crf1-create"),

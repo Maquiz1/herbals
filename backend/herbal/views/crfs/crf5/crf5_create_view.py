@@ -14,8 +14,7 @@ def crf5_create_view(request, pk):
 
     if request.method == "POST":
 
-        form = CRF5Form(request.POST)
-
+        form = CRF5Form(request.POST, enrollment=enrollment)
         if form.is_valid():
 
             crf = form.save(commit=False)
@@ -31,8 +30,8 @@ def crf5_create_view(request, pk):
 
     else:
 
-        form = CRF5Form()
-
+        form = CRF5Form(enrollment=enrollment)
+        
     return render(
         request,
         "herbal/crfs/crf5/crf5_form.html",

@@ -68,178 +68,312 @@
 
     <hr>
 
-    <!-- SCREENING -->
+    <!-- SCREENING | ENROLLMENT | TERMINATION -->
+    <div class="row mb-3">
 
-    <h4>Screening</h4>
-
-    {% if screening %}
-
-    <div class="card mb-3">
-        <div class="card-body">
-
-            <p><strong>Date:</strong> {{ screening.screening_date }}</p>
-
-            <p>
-                <strong>Eligibility:</strong>
-
-                {% if screening.eligible %}
-                <span class="badge bg-success">Eligible</span>
-                {% else %}
-                <span class="badge bg-danger">Not Eligible</span>
+        <!-- SCREENING -->
+        <div class="col-md-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0">Screening</h5>
+                {% if screening %}
+                <a href="{% url 'herbal:screening-update' screening.pk %}" class="btn btn-sm btn-outline-secondary">
+                    Edit
+                </a>
                 {% endif %}
+            </div>
 
-            </p>
-
+            {% if screening %}
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <p><strong>Date:</strong> {{ screening.screening_date }}</p>
+                    <p>
+                        <strong>Status:</strong>
+                        {% if screening.eligible %}
+                        <span class="badge bg-success">Eligible</span>
+                        {% else %}
+                        <span class="badge bg-danger">Not Eligible</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            {% else %}
+            <a href="{% url 'herbal:screening-create' subject.pk %}" class="btn btn-primary">
+                Add Screening
+            </a>
+            {% endif %}
         </div>
-    </div>
-
-    <a href="{% url 'herbal:screening-update' screening.pk %}" class="btn btn-secondary">
-        Edit Screening
-    </a>
-    {% else %}
-
-    <a href="{% url 'herbal:screening-create' subject.pk %}" class="btn btn-primary">
-        Add Screening
-    </a>
-
-    {% endif %}
 
 
-    <hr>
+        <!-- ENROLLMENT -->
+        <div class="col-md-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0">Enrollment</h5>
+                {% if enrollment %}
+                <a href="{% url 'herbal:enrollment-update' enrollment.pk %}" class="btn btn-sm btn-outline-secondary">
+                    Edit
+                </a>
+                {% endif %}
+            </div>
 
+            {% if enrollment %}
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <p><strong>Date:</strong> {{ enrollment.enrollment_date }}</p>
+                </div>
+            </div>
 
-    <!-- ENROLLMENT -->
+            {% elif screening and screening.eligible %}
+            <a href="{% url 'herbal:enrollment-create' subject.pk %}" class="btn btn-success">
+                Enroll Subject
+            </a>
 
-    <h4>Enrollment</h4>
-
-    {% if enrollment %}
-
-    <div class="card mb-3">
-        <div class="card-body">
-
-            <p><strong>Enrollment Date:</strong> {{ enrollment.enrollment_date }}</p>
-
+            {% else %}
+            <p class="text-muted">Not eligible</p>
+            {% endif %}
         </div>
+
+
+        <!-- TERMINATION -->
+        <div class="col-md-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0">Termination</h5>
+            </div>
+
+            {% if enrollment %}
+
+            {% if enrollment.termination %}
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-danger"><strong>Terminated</strong></p>
+                    <a href="{% url 'herbal:crf6-update' enrollment.termination.pk %}" class="btn btn-sm btn-danger">
+                        Update
+                    </a>
+                </div>
+            </div>
+
+            {% else %}
+            <a href="{% url 'herbal:crf6-create' enrollment.pk %}" class="btn btn-outline-danger">
+                Terminate Subject
+            </a>
+            {% endif %}
+
+            {% else %}
+            <p class="text-muted">Not enrolled</p>
+            {% endif %}
+        </div>
+
     </div>
-
-    <a href="{% url 'herbal:enrollment-update' enrollment.pk %}" class="btn btn-secondary">
-        Edit Enrollment
-    </a>
-    {% elif screening and screening.eligible and not enrollment %}
-
-    <a href="{% url 'herbal:enrollment-create' subject.pk %}" class="btn btn-success">
-        Enroll Subject
-    </a>
-
-    {% else %}
-
-    <p class="text-muted">Subject is not eligible for enrollment.</p>
-
-    {% endif %}
-
+    <br>
     <hr>
-
-    <!-- VISIT SCHEDULE -->
-
-    <h4>Visit Schedule</h4>
 
     {% if visits %}
 
-    <!-- OTHER FORMS -->
-
     {% if enrollment %}
+    <div class="card mb-3">
 
-    <h5>Other Forms</h5>
+        <div class="card-body">
 
-    <hr>
+            <!-- TITLE -->
+            <h5 class="mb-3">Other Forms</h5>
 
-    <h5>Adverse Events</h5>
+            <!-- NAV TABS -->
+            <ul class="nav nav-tabs mb-3" id="otherFormsTabs" role="tablist">
 
-    <a class="btn btn-warning mb-2" href="{% url 'herbal:crf5-create' enrollment.pk %}">
-        + Record Adverse Event
-    </a>
+                <!-- AE TAB -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="ae-tab" data-bs-toggle="tab" data-bs-target="#ae" type="button">
 
-    {% if adverse_events %}
+                        Adverse Events
+                        <span class="badge bg-secondary ms-1">
+                            {{ adverse_events|length }}
+                        </span>
 
-    <table class="table table-bordered table-striped">
+                    </button>
+                </li>
 
-        <thead>
-            <tr>
-                <th>Event</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Severity</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
+                <!-- UNSCHEDULED TAB -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="unscheduled-tab" data-bs-toggle="tab" data-bs-target="#unscheduled"
+                        type="button">
 
-        <tbody>
+                        Unscheduled Visits
+                        <span class="badge bg-secondary ms-1">
+                            {{ unscheduled_visits|length }}
+                        </span>
 
-            {% for ae in adverse_events %}
+                    </button>
+                </li>
 
-            <tr>
+            </ul>
 
-                <td>{{ ae.event_name }}</td>
+            <!-- TAB CONTENT -->
+            <div class="tab-content">
 
-                <td>{{ ae.start_date }}</td>
+                <!-- ===================== -->
+                <!-- ADVERSE EVENTS TAB -->
+                <!-- ===================== -->
+                <div class="tab-pane fade show active" id="ae">
 
-                <td>{{ ae.end_date|default:"-" }}</td>
+                    <!-- HEADER -->
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">Adverse Events</h6>
 
-                <td>
+                        <a class="btn btn-warning btn-sm" href="{% url 'herbal:crf5-create' enrollment.pk %}">
+                            + Add AE
+                        </a>
+                    </div>
 
-                    {% if ae.severity == "Mild" %}
-                    <span class="badge bg-success">Mild</span>
+                    {% if adverse_events %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
 
-                    {% elif ae.severity == "Moderate" %}
-                    <span class="badge bg-warning text-dark">Moderate</span>
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Event</th>
+                                    <th>After Visit</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Severity</th>
+                                    <th style="width:120px;">Actions</th>
+                                </tr>
+                            </thead>
 
+                            <tbody>
+                                {% for ae in adverse_events %}
+                                <tr>
+                                    <td>{{ ae.event_description|truncatechars:40 }}</td>
+
+                                    <td>
+                                        {% if ae.after_visit %}
+                                        {{ ae.after_visit.get_visit_day_display }}
+                                        {% else %}-{% endif %}
+                                    </td>
+
+                                    <td>{{ ae.start_date }}</td>
+                                    <td>{{ ae.end_date|default:"-" }}</td>
+
+                                    <td>
+                                        {% if ae.severity == "Mild" %}
+                                        <span class="badge bg-success">Mild</span>
+                                        {% elif ae.severity == "Moderate" %}
+                                        <span class="badge bg-warning text-dark">Moderate</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Severe</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        <a href="{% url 'herbal:crf5-update' ae.pk %}"
+                                            class="btn btn-sm btn-outline-secondary w-100">
+                                            Edit
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
+                    </div>
                     {% else %}
-                    <span class="badge bg-danger">Severe</span>
-
+                    <div class="text-center py-4">
+                        <p class="text-muted mb-2">No adverse events recorded.</p>
+                        <a class="btn btn-warning btn-sm" href="{% url 'herbal:crf5-create' enrollment.pk %}">
+                            + Add First AE
+                        </a>
+                    </div>
                     {% endif %}
 
-                </td>
+                </div>
 
-                <td>
 
-                    <a href="{% url 'herbal:crf5-update' ae.pk %}" class="btn btn-sm btn-secondary">
+                <!-- ===================== -->
+                <!-- UNSCHEDULED TAB -->
+                <!-- ===================== -->
+                <div class="tab-pane fade" id="unscheduled">
 
-                        Edit
+                    <!-- HEADER -->
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">Unscheduled Visits</h6>
 
-                    </a>
+                        <a class="btn btn-info btn-sm text-dark"
+                            href="{% url 'herbal:unscheduled-create' enrollment.pk %}">
+                            + Add Visit
+                        </a>
+                    </div>
 
-                </td>
+                    {% if unscheduled_visits %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
 
-            </tr>
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Event</th>
+                                    <th>After Visit</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Reason</th>
+                                    <th style="width:120px;">Actions</th>
+                                </tr>
+                            </thead>
 
-            {% endfor %}
+                            <tbody>
+                                {% for uv in unscheduled_visits %}
+                                <tr>
 
-        </tbody>
+                                    <td>{{ uv.event_description|truncatechars:40 }}</td>
 
-    </table>
+                                    <td>
+                                        {% if uv.after_visit %}
+                                        {{ uv.after_visit.get_visit_day_display }}
+                                        {% else %}-{% endif %}
+                                    </td>
 
-    {% else %}
+                                    <td>{{ uv.start_date }}</td>
+                                    <td>{{ uv.end_date|default:"-" }}</td>
 
-    <p class="text-muted">No adverse events recorded.</p>
+                                    <td>
+                                        {% if uv.reason == "ae" %}
+                                        <span class="badge bg-danger">Adverse Event</span>
+                                        {% elif uv.reason == "unscheduled_followup" %}
+                                        <span class="badge bg-warning text-dark">Follow-up</span>
+                                        {% elif uv.reason == "protocol_deviation" %}
+                                        <span class="badge bg-secondary">Protocol Deviation</span>
+                                        {% elif uv.reason == "missed_visit_followup" %}
+                                        <span class="badge bg-info text-dark">Missed Visit</span>
+                                        {% else %}
+                                        <span class="badge bg-dark">Other</span>
+                                        {% endif %}
+                                    </td>
 
-    {% endif %}
+                                    <td>
+                                        <a href="{% url 'herbal:unscheduled-update' uv.pk %}"
+                                            class="btn btn-sm btn-outline-secondary w-100">
+                                            Edit
+                                        </a>
+                                    </td>
 
-    {% if enrollment.termination %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
 
-    <a class="btn btn-danger" href="{% url 'herbal:crf6-update' enrollment.termination.pk %}">
-        Update Termination
-    </a>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <p class="text-muted mb-2">No unscheduled visits recorded.</p>
+                        <a class="btn btn-info btn-sm text-dark"
+                            href="{% url 'herbal:unscheduled-create' enrollment.pk %}">
+                            + Add First Visit
+                        </a>
+                    </div>
+                    {% endif %}
 
-    {% else %}
+                </div>
 
-    <a class="btn btn-outline-danger" href="{% url 'herbal:crf6-create' enrollment.pk %}">
-        Terminate Subject
-    </a>
+            </div>
 
-    {% endif %}
-
-    <hr>
-
+        </div>
+    </div>
     {% endif %}
 
 
@@ -264,15 +398,15 @@
 <hr>
 
 <h5>Visit Timeline</h5>
+<div class="row mb-3">
+    <div class="d-flex flex-wrap gap-2 mb-3">
 
-<div class="d-flex flex-wrap gap-2 mb-3">
+        {% for visit in visits %}
 
-    {% for visit in visits %}
-
-    <div class="text-center">
-        <a href="#visit{{ visit.id }}">
-            <div title="{{ visit.get_visit_day_display }} - {{ visit.status }}"
-                class="rounded-circle d-flex align-items-center justify-content-center" style="
+        <div class="text-center">
+            <a href="#visit{{ visit.id }}">
+                <div title="{{ visit.get_visit_day_display }} - {{ visit.status }}"
+                    class="rounded-circle d-flex align-items-center justify-content-center" style="
                     width:60px;
                     height:60px;
                     font-weight:bold;
@@ -281,7 +415,7 @@
                     background:#28a745;color:white;
 
                     {% elif visit.status == 'missed' %}
-                    background:#343a40;color:white;
+                    background:#dc3545;color:white;
 
                     {% elif visit.status == 'na' %}
                     background:#6c757d;color:white;
@@ -290,24 +424,28 @@
                     background:#dc3545;color:white;
 
                     {% else %}
-                    background:#ffc107;color:black;
+                    background:#FFC107;color:black;
                     {% endif %}
                     ">
 
-                {{ visit.visit_day }}
+                    <!-- {% if visit.after_visit_day %}
+                    U-{{ visit.after_visit_day }}
+                    {% else %} -->
+                    {{ visit.visit_day }}
+                    <!-- {% endif %} -->
+                </div>
 
-            </div>
+                <small>{{ visit.scheduled_date }}</small>
+            </a>
+        </div>
 
-            <small>{{ visit.scheduled_date }}</small>
-        </a>
+        {% endfor %}
+
     </div>
-
-    {% endfor %}
-
 </div>
 
 <!-- VISIT TABLE -->
-
+<!-- VISIT SCHEDULE -->
 
 <table class="table table-bordered table-striped">
 
@@ -319,6 +457,7 @@
             <th>Scheduled Date</th>
             <th>Status</th>
             <th>Actual Visit Date</th>
+            <!-- <th>Visit Type</th> -->
             <th>Queries</th>
             <th class="text-center">CRF1</th>
             <th class="text-center">CRF2</th>
@@ -333,9 +472,9 @@
 
         {% for visit in visits %}
         <tr>
-
-            <td>{{ visit.get_visit_day_display }}</td>
-
+            <td>
+                {{ visit.get_visit_day_display }}
+            </td>
             <td>{{ visit.scheduled_date }}</td>
 
             <td>
@@ -349,8 +488,8 @@
                     Undo?
                 </a>
                 {% if visit.missed_reason %}
-                    <br>
-                    <small>{{ visit.get_missed_reason_display }}</small>
+                <br>
+                <small>{{ visit.get_missed_reason_display }}</small>
                 {% endif %}
                 {% elif visit.status == "na" %}
                 <span class="badge bg-secondary">N/A</span>
@@ -370,9 +509,17 @@
 
                 {% endif %}
             </td>
-
-            <td>{{ visit.actual_visit_date|default:"-" }}</td>
-
+            <td>
+                {% if not visit.actual_visit_date %}
+                <a href="{% url 'herbal:visit-start' visit.pk %}" class="btn btn-sm btn-warning">
+                    Start Visit
+                </a>
+                {% else %}
+                <a href="{% url 'herbal:visit-update' visit.pk %}" class="btn btn-sm btn-outline-secondary">
+                    {{ visit.actual_visit_date }}
+                </a>
+                {% endif %}
+            </td>
             <td>
 
                 <a href="{% url 'herbal:query-create' visit.pk %}" class="btn btn-sm btn-outline-danger">
@@ -394,6 +541,9 @@
 
             <td class="text-center">
 
+                {% if not visit.actual_visit_date %}
+                <span class="badge bg-secondary">Start first</span>
+                {% else %}
                 {% if visit.is_na %}
                 <span class="badge bg-secondary">N/A</span>
 
@@ -408,7 +558,7 @@
                 {% else %}
                 <span class="badge bg-secondary">N/A</span>
                 {% endif %}
-
+                {% endif %}
             </td>
 
 
@@ -416,6 +566,9 @@
 
             <td class="text-center">
 
+                {% if not visit.actual_visit_date %}
+                <span class="badge bg-secondary">Start first</span>
+                {% else %}
                 {% if visit.is_na %}
                 <span class="badge bg-secondary">N/A</span>
 
@@ -429,6 +582,7 @@
                     Create
                 </a>
                 {% endif %}
+                {% endif %}
 
             </td>
 
@@ -436,6 +590,10 @@
             <!-- CRF3 -->
 
             <td class="text-center">
+
+                {% if not visit.actual_visit_date %}
+                <span class="badge bg-secondary">Start first</span>
+                {% else %}
                 {% if visit.is_na %}
                 <span class="badge bg-secondary">N/A</span>
 
@@ -452,6 +610,7 @@
                 </a>
 
                 {% endif %}
+                {% endif %}
 
             </td>
 
@@ -459,6 +618,10 @@
             <!-- CRF4 -->
 
             <td class="text-center">
+
+                {% if not visit.actual_visit_date %}
+                <span class="badge bg-secondary">Start first</span>
+                {% else %}
                 {% if visit.is_na %}
                 <span class="badge bg-secondary">N/A</span>
                 {% elif visit.crf4 %}
@@ -474,6 +637,7 @@
                 </a>
 
                 {% endif %}
+                {% endif %}
 
             </td>
 
@@ -481,6 +645,10 @@
             <!-- CRF7 -->
 
             <td class="text-center">
+
+                {% if not visit.actual_visit_date %}
+                <span class="badge bg-secondary">Start first</span>
+                {% else %}
                 {% if visit.is_na %}
                 <span class="badge bg-secondary">N/A</span>
                 {% elif visit.crf7 %}
@@ -495,6 +663,7 @@
                     Create
                 </a>
 
+                {% endif %}
                 {% endif %}
 
             </td>

@@ -20,7 +20,7 @@ def generate_visit_schedule(enrollment):
         )
 
         # If visit already exists and not completed, update schedule
-        if not created and visit.status != "completed":
+        if not created:
 
             if visit.scheduled_date != scheduled_date:
 

@@ -5,6 +5,7 @@ from ...visits.visit_schedule_model import VisitSchedule
 from ...enrollments.enrollment_model import Enrollment
 from core.models import BaseModel
 
+
 class CRF5(BaseModel):
 
     enrollment = models.ForeignKey(
@@ -15,6 +16,15 @@ class CRF5(BaseModel):
 
     event_date = models.DateField()
 
+    # 🔥 THIS IS WHERE IT GOES
+    after_visit = models.ForeignKey(
+        VisitSchedule,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="adverse_after"
+    )
+    
     event_description = models.TextField()
 
     severity = models.CharField(

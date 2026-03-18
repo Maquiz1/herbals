@@ -48,6 +48,7 @@ class VisitSchedule(BaseModel):
         ("pending", "Pending"),
         ("completed", "Completed"),
         ("missed", "Missed"),
+        ("incomplete", "Incomplete"),
         ("na", "Not Applicable"),
     ]
 
@@ -100,46 +101,36 @@ class VisitSchedule(BaseModel):
     def is_na(self):
         return self.status in ["missed", "na"]
 
+    def update_status(self):
+
+        # Collect CRFs dynamically (safe)
+        crfs = [
+            getattr(self, "crf1", None),
+            getattr(self, "crf2", None),
+            getattr(self, "crf3", None),
+            getattr(self, "crf4", None),
+            getattr(self, "crf7", None),
+        ]
+
+        filled = [c for c in crfs if c]
+
+        # ---------------- LOGIC ----------------
+
+        # Not started
+        if not self.actual_visit_date:
+            self.status = "pending"
+
+        # Started but not complete
+        elif filled and len(filled) < len(crfs):
+            self.status = "incomplete"
+
+        # All CRFs done
+        elif len(filled) == len(crfs):
+            self.status = "completed"
+
+        self.save()
+        
     def __str__(self):
         return f"{self.enrollment.screening.subject.subject_id} - {self.visit_day}"
 
 
-
-
-# class VisitSchedule(BaseModel):
-
-#     enrollment = models.ForeignKey(
-#         Enrollment,
-#         on_delete=models.CASCADE,
-#         related_name="visits"
-#     )
-
-#     visit_day = models.CharField(
-#         max_length=10,
-#         choices=VISIT_DAY_CHOICES
-#     )
-
-#     scheduled_date = models.DateField()
-
-#     STATUS_CHOICES = [
-#         ("pending", "Pending"),
-#         ("completed", "Completed"),
-#         ("missed", "Missed"),
-#         ("na", "Not Applicable"),
-#     ]
-
-    # status = models.CharField(
-    #     max_length=20,
-    #     choices=STATUS_CHOICES,
-    #     default="pending"
-    # )
-
-    # missed_reason = models.TextField(
-    #     blank=True,
-    #     null=True
-    # )
-
-    # actual_visit_date = models.DateField(
-    #     null=True,
-    #     blank=True
-    # )

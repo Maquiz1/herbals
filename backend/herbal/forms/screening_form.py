@@ -30,7 +30,6 @@ class ScreeningForm(forms.ModelForm):
             "exclusion_criteria_present": forms.CheckboxInput(
                 attrs={"class": "form-check-input"}
             ),
-            # "eligible": forms.Select(attrs={"class": "form-control"}),
             "eligible": forms.CheckboxInput(attrs={"class": "form-check-input"}),
             "comments": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
         }

@@ -10,32 +10,23 @@ from herbal.services.access_control import get_accessible_subjects
 def screening_create_view(request, pk):
 
     subjects = get_accessible_subjects(request.user)
-
     subject = get_object_or_404(subjects, pk=pk)
 
-    # Prevent duplicate screening
-    if hasattr(subject, "screening"):
+    # ✅ SAFE check for existing screening
+    if Screening.objects.filter(subject=subject).exists():
         return redirect("herbal:subjects-detail", pk=subject.pk)
 
     if request.method == "POST":
-
         form = ScreeningForm(request.POST)
 
         if form.is_valid():
-
             screening = form.save(commit=False)
-
             screening.subject = subject
-
             screening.save()
 
-            return redirect(
-                "herbal:subjects-detail",
-                pk=subject.pk
-            )
+            return redirect("herbal:subjects-detail", pk=subject.pk)
 
     else:
-
         form = ScreeningForm()
 
     context = {
