@@ -4,6 +4,12 @@ from datetime import date
 
 from sites.models import Site
 from choices.models.sex_model import Sex
+from choices.models.id_type_model import IDType
+from choices.models.education_level_model import EducationLevel
+from choices.models.marital_status_model import MaritalStatus
+from choices.models.occupation_model import Occupation
+from locations.models import Region, District, Ward
+
 from core.models import BaseModel
 from core.managers.site_manager import SiteRestrictedManager
 
@@ -25,47 +31,43 @@ class Subject(BaseModel):
     
     hid = models.CharField(max_length=100)
     idn = models.CharField(max_length=100, blank=True, null=True)
-    id_type = models.CharField(
-        max_length=50,
-        choices=[
-            ("NIDA", "NIDA"),
-            ("VOTER", "Voter ID"),
-            ("PASSPORT", "Passport"),
-            ("LICENSE", "DRIVING LICENSE"),
-            ("OTHER", "Other"),
-        ],
-        blank=True,
-        null=True
+    
+    id_type = models.ForeignKey(
+        IDType,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
     )
 
-    marital_status = models.CharField(
-        max_length=20,
-        choices=[
-            ("single", "Single"),
-            ("married", "Married"),
-            ("divorced", "Divorced"),
-            ("separated", "Separated"),
-            ("widowed", "Widowed/Widower"),
-            ("cohabit", "Cohabit"),
-        ],
-        blank=True,
-        null=True
+    marital_status = models.ForeignKey(
+        MaritalStatus,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
     )
 
-    education_level = models.CharField(
-        max_length=50,
-        blank=True,
-        null=True
+    education_level = models.ForeignKey(
+        EducationLevel,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
     )
-    occupation = models.CharField(max_length=150, blank=True, null=True)
+
+    occupation = models.ForeignKey(
+        Occupation,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
     
     phone_number = models.CharField(max_length=20)
     other_phone = models.CharField(max_length=20, blank=True, null=True)
 
     # Location fields (you may later convert to FK if using location models)
-    region = models.CharField(max_length=100, blank=True, null=True)
-    district = models.CharField(max_length=100, blank=True, null=True)
-    ward = models.CharField(max_length=100, blank=True, null=True)
+    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
+    district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
+    ward = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True, blank=True)
+    
     street = models.CharField(max_length=100, blank=True, null=True)
 
     remarks = models.TextField(blank=True, null=True)
