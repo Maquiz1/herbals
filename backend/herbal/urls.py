@@ -4,6 +4,8 @@ from .views.subjects.lists.subject_list_view import subject_list_view
 from .views.subjects.creates.subject_create_view import subject_create_view
 from .views.subjects.details.subject_detail_view import subject_detail_view
 from .views.subjects.updates.subject_update_view import subject_update_view
+from .views.subjects.form_view.subject_form_view import subject_form_view
+
 from .views.visits.visit_dashboard_view import visit_dashboard_view
 from .views.visits.visit_mark_missed_view import visit_mark_missed
 from .views.visits.visit_mark_pending import visit_mark_pending
@@ -40,9 +42,13 @@ app_name = "herbal"
 urlpatterns = [
     # SUBJECTS
     path("subjects/", subject_list_view, name="subjects-list"),
-    path("subjects/create/", subject_create_view, name="subject-create"),
+    # path("subjects/create/", subject_create_view, name="subject-create"),
     path("subjects/<int:pk>/", subject_detail_view, name="subjects-detail"),
-    path("subjects/<int:pk>/edit/", subject_update_view, name="subjects-update"),
+    # path("subjects/<int:pk>/edit/", subject_update_view, name="subjects-update"),
+    
+    path("subjects/create/", subject_form_view, name="subject-create"),
+    path("subjects/<int:pk>/edit/", subject_form_view, name="subject-update"),
+    
     # SCREENING
     path("screening/<int:pk>/", screening_create_view, name="screening-create"),
     path("screening/<int:pk>/update/", screening_update_view, name="screening-update"),

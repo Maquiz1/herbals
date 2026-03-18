@@ -25,4 +25,7 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
     
     path("herbal/", include("herbal.urls")),
+    
+    
+    path("locations/", include("locations.urls"))
 ]

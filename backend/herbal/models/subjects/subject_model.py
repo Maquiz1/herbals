@@ -77,7 +77,7 @@ class Subject(BaseModel):
     # ----------------------------
     # AGE
     # ----------------------------
-    def age(self):
+    def calculated_age(self):
         today = date.today()
         return (
             today.year

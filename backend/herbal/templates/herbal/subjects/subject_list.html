@@ -134,7 +134,7 @@
 
                         <td>{{ subject.site }}</td>
 
-                        <td>{{ subject.created_at|date:"Y-m-d H:i" }}</td>
+                        <td>{{ subject.reg_date }}</td>
                         <td>
 
                             {% if subject.screening and subject.screening.enrollment and  subject.screening.enrollment.termination %}
@@ -176,7 +176,7 @@
                                 View
                             </a>
 
-                            <a class="btn btn-sm btn-warning" href="{% url 'herbal:subjects-update' subject.pk %}">
+                            <a class="btn btn-sm btn-warning" href="{% url 'herbal:subject-update' subject.pk %}">
                                 Edit
                             </a>
 
