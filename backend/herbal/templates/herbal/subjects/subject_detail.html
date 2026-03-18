@@ -248,13 +248,8 @@
 
         <div class="progress mt-2" style="height:20px;">
 
-            {% if progress_percent < 30 %} 
-                <div class="progress-bar bg-danger"
-            {% elif progress_percent < 70 %} 
-                <div class="progress-bar bg-warning text-dark"
-            {% else %}
-                <div class="progress-bar bg-success"
-            {% endif %}
+            {% if progress_percent < 30 %} <div class="progress-bar bg-danger" {% elif progress_percent < 70 %} <div
+                class="progress-bar bg-warning text-dark" {% else %} <div class="progress-bar bg-success" {% endif %}
                 role="progressbar" style="width: {{ progress_percent }}%;">
                 {{ progress_percent }}%
         </div>
@@ -372,20 +367,19 @@
 
             <td>
 
-            <a href="{% url 'herbal:query-create' visit.pk %}" 
-            class="btn btn-sm btn-outline-danger">
+                <a href="{% url 'herbal:query-create' visit.pk %}" class="btn btn-sm btn-outline-danger">
 
-            Raise Query
+                    Raise Query
 
-            </a>
+                </a>
 
-            {% if visit.queries.count %}
+                {% if visit.queries.count %}
 
-            <span class="badge bg-danger">
-            {{ visit.queries.count }}
-            </span>
+                <span class="badge bg-danger">
+                    {{ visit.queries.count }}
+                </span>
 
-            {% endif %}
+                {% endif %}
 
             </td>
             <!-- CRF1 (DAY 0 ONLY) -->
@@ -520,61 +514,59 @@
 
 <table class="table table-bordered">
 
-<thead>
+    <thead>
 
-<tr>
-<th>Visit</th>
-<th>Field</th>
-<th>Query</th>
-<th>Status</th>
-<th>Action</th>
-</tr>
+        <tr>
+            <th>Visit</th>
+            <th>Field</th>
+            <th>Query</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
 
-</thead>
+    </thead>
 
-<tbody>
+    <tbody>
 
-{% for query in queries %}
+        {% for query in queries %}
 
-<tr>
+        <tr>
 
-<td>{{ query.visit.get_visit_day_display }}</td>
+            <td>{{ query.visit.get_visit_day_display }}</td>
 
-<td>{{ query.field_name }}</td>
+            <td>{{ query.field_name }}</td>
 
-<td>{{ query.query_text }}</td>
+            <td>{{ query.query_text }}</td>
 
-<td>{{ query.status }}</td>
+            <td>{{ query.status }}</td>
 
-<td>
+            <td>
 
-{% if query.status == "open" %}
+                {% if query.status == "open" %}
 
-<a href="{% url 'herbal:query-response' query.pk %}" 
-class="btn btn-sm btn-warning">
+                <a href="{% url 'herbal:query-response' query.pk %}" class="btn btn-sm btn-warning">
 
-Respond
+                    Respond
 
-</a>
+                </a>
 
-{% elif query.status == "answered" %}
+                {% elif query.status == "answered" %}
 
-<a href="{% url 'herbal:query-close' query.pk %}" 
-class="btn btn-sm btn-success">
+                <a href="{% url 'herbal:query-close' query.pk %}" class="btn btn-sm btn-success">
 
-Close
+                    Close
 
-</a>
+                </a>
 
-{% endif %}
+                {% endif %}
 
-</td>
+            </td>
 
-</tr>
+        </tr>
 
-{% endfor %}
+        {% endfor %}
 
-</tbody>
+    </tbody>
 
 </table>
 <hr>

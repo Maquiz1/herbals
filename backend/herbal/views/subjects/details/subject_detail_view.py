@@ -15,7 +15,8 @@ def subject_detail_view(request, pk):
     screening = Screening.objects.filter(subject=subject).first()
 
     enrollment = None
-    visits = None
+    # visits = None
+    visits = VisitSchedule.objects.none()
 
     if screening:
         enrollment = getattr(screening, "enrollment", None)
@@ -24,8 +25,9 @@ def subject_detail_view(request, pk):
         visits = VisitSchedule.objects.filter(
             enrollment=enrollment
         ).order_by("scheduled_date")
-
-    adverse_events = None
+   
+    # adverse_events = None
+    adverse_events = CRF5.objects.none()
 
     if enrollment:
         adverse_events = CRF5.objects.filter(

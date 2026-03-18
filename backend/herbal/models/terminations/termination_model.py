@@ -1,7 +1,7 @@
 # nimregenin/models/end_of_study.py
 
 from django.db import models
-from .enrollment import Enrollment
+from ..enrollments.enrollment_model import Enrollment
 
 
 class EndOfStudy(models.Model):
@@ -17,7 +17,7 @@ class EndOfStudy(models.Model):
     REASON_CHOICES = [
         ("completed", "Completed Study"),
         ("terminated", "Early Termination"),
-        ("lost", "Lost to Follow Up"),
+        ("ltf", "Lost to Follow Up"),
         ("transfer", "Transferred Out"),
     ]
 

@@ -10,7 +10,7 @@ def visit_dashboard_view(request):
 
     visits = VisitSchedule.objects.select_related(
         "enrollment",
-        "enrollment__subject"
+        # "screening__enrollment__subject"
     )
 
     due_today = visits.filter(

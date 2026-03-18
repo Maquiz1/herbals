@@ -157,4 +157,4 @@ LOGOUT_REDIRECT_URL = "accounts:login"
 
 
 # Study recruitment target
-STUDY_TARGET_ENROLLMENT = 200
+STUDY_TARGET_ENROLLMENT = 50

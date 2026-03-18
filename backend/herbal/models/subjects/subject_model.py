@@ -1,6 +1,4 @@
 # herbal/models/subjects/subject_model.py
-# herbal/models/subjects/subject_model.py
-
 from django.db import models
 from datetime import date
 
@@ -30,13 +28,13 @@ class Subject(BaseModel):
 
     site = models.ForeignKey(Site, on_delete=models.PROTECT)
 
-    # site-aware manager
     objects = SiteRestrictedManager()
 
+    # ----------------------------
+    # AGE
+    # ----------------------------
     def age(self):
-
         today = date.today()
-
         return (
             today.year
             - self.date_of_birth.year
@@ -46,31 +44,50 @@ class Subject(BaseModel):
             )
         )
 
-
+    # ----------------------------
+    # STATUS (FIXED)
+    # ----------------------------
     @property
     def status(self):
 
-        if hasattr(self, "enrollment") and self.enrollment:
-            return "enrolled"
+        screening = getattr(self, "screening", None)
 
-        if hasattr(self, "screening") and self.screening:
+        if screening:
+            if getattr(screening, "enrollment", None):
+                return "enrolled"
             return "screened"
 
         return "registered"
 
+    # ----------------------------
+    # PROGRESS (IMPROVED)
+    # ----------------------------
     @property
     def progress(self):
 
         status_map = {
             "registered": 20,
-            "screened": 40,
-            "enrolled": 60,
-            "followup": 80,
+            "screened": 50,
+            "enrolled": 80,
             "completed": 100,
         }
 
         return status_map.get(self.status, 0)
 
-    def __str__(self):
+    # ----------------------------
+    # OPTIONAL HELPERS (VERY USEFUL)
+    # ----------------------------
+    @property
+    def is_registered(self):
+        return self.status == "registered"
 
+    @property
+    def is_screened(self):
+        return self.status == "screened"
+
+    @property
+    def is_enrolled(self):
+        return self.status == "enrolled"
+
+    def __str__(self):
         return f"{self.subject_id} - {self.first_name} {self.last_name}"

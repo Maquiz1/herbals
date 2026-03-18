@@ -18,7 +18,7 @@ class CRF6(BaseModel):
         max_length=50,
         choices=[
             ("completed","Completed Study"),
-            ("lost_follow_up","Lost To Follow Up"),
+            ("ltf","Lost To Follow Up"),
             ("withdrawn","Participant Withdrew"),
             ("transfer_out","Transferred Out"),
             ("medical_reason","Medical Reason"),
