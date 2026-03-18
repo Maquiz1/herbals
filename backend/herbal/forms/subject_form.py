@@ -8,8 +8,8 @@ class SubjectForm(forms.ModelForm):
         model = Subject
 
         fields = [
-            "subject_id",
-            "site",
+            # "subject_id",
+            # "site",
             "first_name",
             "last_name",
             "sex",
@@ -17,8 +17,8 @@ class SubjectForm(forms.ModelForm):
         ]
 
         widgets = {
-            "subject_id": forms.TextInput(attrs={"class": "form-control"}),
-            "site": forms.Select(attrs={"class": "form-control"}),
+            # "subject_id": forms.TextInput(attrs={"class": "form-control"}),
+            # "site": forms.Select(attrs={"class": "form-control"}),
             "first_name": forms.TextInput(attrs={"class": "form-control"}),
             "last_name": forms.TextInput(attrs={"class": "form-control"}),
             "date_of_birth": forms.DateInput(

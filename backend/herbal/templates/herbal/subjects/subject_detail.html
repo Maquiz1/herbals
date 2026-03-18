@@ -494,6 +494,9 @@
                 {% elif visit.status == "na" %}
                 <span class="badge bg-secondary">N/A</span>
 
+                {% elif visit.status == "incomplete" %}
+                <span class="badge bg-info">In Progress</span>
+
                 {% elif visit.is_overdue %}
                 <span class="badge bg-danger">Overdue</span>
 
@@ -509,7 +512,9 @@
 
                 {% endif %}
             </td>
-            <td>
+            <td>{% if visit.status == "na" %}
+                <span class="badge bg-secondary">N/A</span>
+                {% else %}
                 {% if not visit.actual_visit_date %}
                 <a href="{% url 'herbal:visit-start' visit.pk %}" class="btn btn-sm btn-warning">
                     Start Visit
@@ -518,6 +523,7 @@
                 <a href="{% url 'herbal:visit-update' visit.pk %}" class="btn btn-sm btn-outline-secondary">
                     {{ visit.actual_visit_date }}
                 </a>
+                {% endif %}
                 {% endif %}
             </td>
             <td>

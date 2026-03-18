@@ -8,40 +8,36 @@
 
     <div class="row g-3">
 
-        <!-- TOTAL SUBJECTS -->
         <div class="col-md-3">
-            <div class="card text-white bg-primary">
-                <div class="card-body text-center">
+            <div class="card text-white bg-primary text-center">
+                <div class="card-body">
                     <h2>{{ total_subjects }}</h2>
                     <p>Total Subjects</p>
                 </div>
             </div>
         </div>
 
-        <!-- SCREENED -->
         <div class="col-md-3">
-            <div class="card text-white bg-info">
-                <div class="card-body text-center">
+            <div class="card text-white bg-info text-center">
+                <div class="card-body">
                     <h2>{{ screened_subjects }}</h2>
                     <p>Screened</p>
                 </div>
             </div>
         </div>
 
-        <!-- ENROLLED -->
         <div class="col-md-3">
-            <div class="card text-white bg-success">
-                <div class="card-body text-center">
+            <div class="card text-white bg-success text-center">
+                <div class="card-body">
                     <h2>{{ enrolled_subjects }}</h2>
                     <p>Enrolled</p>
                 </div>
             </div>
         </div>
 
-        <!-- ADVERSE EVENTS -->
         <div class="col-md-3">
-            <div class="card text-white bg-warning">
-                <div class="card-body text-center">
+            <div class="card text-white bg-warning text-center">
+                <div class="card-body">
                     <h2>{{ adverse_events }}</h2>
                     <p>Adverse Events</p>
                 </div>
@@ -51,6 +47,7 @@
     </div>
 
     <hr>
+
     <h4>Recruitment Progress</h4>
 
     <div class="card mb-4">
@@ -60,131 +57,128 @@
 
             <div class="progress mt-2" style="height:25px;">
 
-                {% if recruitment_percent < 30 %} 
-                <div class="progress-bar bg-danger" 
-                {% elif recruitment_percent < 70 %} 
-                <div class="progress-bar bg-warning text-dark"
-                {% else %}
-                <div class="progress-bar bg-success" 
-                {% endif %} 
-                role="progressbar" style="width: {{ recruitment_percent }}%;">
-
+                <div class="progress-bar 
+                    {% if recruitment_percent < 30 %}
+                        bg-danger
+                    {% elif recruitment_percent < 70 %}
+                        bg-warning text-dark
+                    {% else %}
+                        bg-success
+                    {% endif %}"
+                    style="width: {{ recruitment_percent }}%;">
                     {{ recruitment_percent }}%
+                </div>
 
             </div>
 
         </div>
-
     </div>
-</div>
-<hr>
 
+    <hr>
 
-<h4>Visit Status</h4>
+    <h4>Visit Status</h4>
 
-<div class="row g-3">
+    <div class="row g-3">
 
-    <div class="col-md-4">
-        <div class="card border-success">
-            <div class="card-body text-center">
-                <h3>{{ completed_visits }}</h3>
-                <p>Completed Visits</p>
+        <div class="col-md-3">
+            <div class="card border-info text-center">
+                <div class="card-body">
+                    <h3>{{ scheduled_visits }}</h3>
+                    <p>Scheduled</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-4">
-        <div class="card border-danger">
-            <div class="card-body text-center">
-                <h3>{{ overdue_visits }}</h3>
-                <p>Overdue Visits</p>
+        <div class="col-md-3">
+            <div class="card border-success text-center">
+                <div class="card-body">
+                    <h3>{{ completed_visits }}</h3>
+                    <p>Completed</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-4">
-        <div class="card border-dark">
-            <div class="card-body text-center">
-                <h3>{{ missed_visits }}</h3>
-                <p>Missed Visits</p>
+        <div class="col-md-3">
+            <div class="card border-danger text-center">
+                <div class="card-body">
+                    <h3>{{ overdue_visits }}</h3>
+                    <p>Overdue</p>
+                </div>
             </div>
         </div>
+
+        <div class="col-md-3">
+            <div class="card border-dark text-center">
+                <div class="card-body">
+                    <h3>{{ missed_visits }}</h3>
+                    <p>Missed</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-</div>
+    <hr>
 
+    <h4>Site Performance</h4>
 
-<hr>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Site</th>
+                <th>Total Subjects</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for site in site_summary %}
+            <tr>
+                <td>{{ site.site__name }}</td>
+                <td>{{ site.total }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">No data available</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
+    <hr>
 
-<h4>Site Performance</h4>
+    <h4>Latest Subjects</h4>
 
-<table class="table table-bordered">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Subject ID</th>
+                <th>Site</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subject in latest_subjects %}
+            <tr>
+                <td>{{ subject.subject_id }}</td>
+                <td>{{ subject.site }}</td>
+                <td>
+                    <span class="badge 
+                        {% if subject.status == 'enrolled' %} bg-success
+                        {% elif subject.status == 'screened' %} bg-info
+                        {% elif subject.status == 'terminated' %} bg-danger
+                        {% else %} bg-secondary
+                        {% endif %}">
+                        {{ subject.status }}
+                    </span>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No subjects</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-    <thead>
-        <tr>
-            <th>Site</th>
-            <th>Total Subjects</th>
-        </tr>
-    </thead>
-
-    <tbody>
-
-        {% for site in site_summary %}
-
-        <tr>
-            <td>{{ site.name }}</td>
-            <td>{{ site.total_subjects }}</td>
-        </tr>
-
-        {% empty %}
-
-        <tr>
-            <td colspan="2">No data available</td>
-        </tr>
-
-        {% endfor %}
-
-    </tbody>
-
-</table>
-
-<hr>
-<h4>Latest Subjects</h4>
-
-<table class="table table-bordered">
-
-    <thead>
-        <tr>
-            <th>Subject ID</th>
-            <th>Site</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-
-    <tbody>
-
-        {% for subject in latest_subjects %}
-
-        <tr>
-            <td>{{ subject.subject_id }}</td>
-            <td>{{ subject.site }}</td>
-            <td>{{ subject.status }}</td>
-        </tr>
-
-        {% empty %}
-
-        <tr>
-            <td colspan="3">No subjects</td>
-        </tr>
-
-        {% endfor %}
-
-    </tbody>
-
-</table>
-
-<hr>
 </div>
 
 {% endblock %}

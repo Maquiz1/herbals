@@ -20,9 +20,6 @@ def visit_update_view(request, pk):
 
             visit.save()
 
-            # ✅ ALWAYS call this (no condition needed)
-            visit.update_status()
-
             return redirect(
                 "herbal:subjects-detail",
                 pk=visit.subject.pk

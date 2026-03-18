@@ -1,9 +1,8 @@
-# dashboard/views/dashboard_view.py
-
 from django.conf import settings
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from django.db.models import Count
 
 from herbal.models import Subject, Screening, Enrollment, VisitSchedule
 from herbal.models.crfs.crf5.crf5_model import CRF5
@@ -18,33 +17,28 @@ def dashboard_view(request):
 
     subjects = Subject.objects.all()
 
-    # Role based filtering
+    # 🔒 Role-based filtering
     if role in ["data_clerk", "coordinator"]:
         subjects = subjects.filter(site=profile.site)
 
     elif role in ["monitor", "reviewer", "pi"]:
         subjects = subjects.filter(site__in=profile.assigned_sites.all())
 
-    # Screening
+    # Related datasets
     screenings = Screening.objects.filter(subject__in=subjects)
-
-    # Enrollment
-    enrollments = Enrollment.objects.filter(
-        screening__subject__in=subjects
-    )
-
-    # Visits
+    enrollments = Enrollment.objects.filter(screening__subject__in=subjects)
     visits = VisitSchedule.objects.filter(
         enrollment__screening__subject__in=subjects
     )
 
     today = timezone.now().date()
 
-    # KPI counts
+    # 📊 KPI counts
     total_subjects = subjects.count()
     screened_subjects = screenings.count()
     enrolled_subjects = enrollments.count()
 
+    scheduled_visits = visits.count()
     completed_visits = visits.filter(status="completed").count()
     missed_visits = visits.filter(status="missed").count()
 
@@ -57,28 +51,45 @@ def dashboard_view(request):
         enrollment__screening__subject__in=subjects
     ).count()
 
-    # Recruitment progress
+    # 📈 Recruitment progress
     target_enrollment = settings.STUDY_TARGET_ENROLLMENT
     recruitment_percent = 0
 
     if target_enrollment > 0:
         recruitment_percent = int((enrolled_subjects / target_enrollment) * 100)
 
+    # 🏥 Site performance (based on registered subjects)
+    site_summary = subjects.values("site__name").annotate(
+        total=Count("id")
+    ).order_by("site__name")
+
+    # 🆕 Latest subjects (status comes from model property)
+    latest_subjects = subjects.select_related("site").order_by("-created_at")[:10]
+
     context = {
         "role": role,
 
+        # KPIs
         "total_subjects": total_subjects,
         "screened_subjects": screened_subjects,
         "enrolled_subjects": enrolled_subjects,
 
+        # Visits
+        "scheduled_visits": scheduled_visits,
         "completed_visits": completed_visits,
         "missed_visits": missed_visits,
         "overdue_visits": overdue_visits,
 
+        # Safety
         "adverse_events": adverse_events,
 
+        # Recruitment
         "target_enrollment": target_enrollment,
         "recruitment_percent": recruitment_percent,
+
+        # Tables
+        "site_summary": site_summary,
+        "latest_subjects": latest_subjects,
     }
 
     return render(request, "dashboard/dashboard.html", context)

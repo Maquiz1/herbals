@@ -158,3 +158,9 @@ LOGOUT_REDIRECT_URL = "accounts:login"
 
 # Study recruitment target
 STUDY_TARGET_ENROLLMENT = 50
+
+
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]

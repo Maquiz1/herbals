@@ -101,35 +101,6 @@ class VisitSchedule(BaseModel):
     def is_na(self):
         return self.status in ["missed", "na"]
 
-    def update_status(self):
-
-        # Collect CRFs dynamically (safe)
-        crfs = [
-            getattr(self, "crf1", None),
-            getattr(self, "crf2", None),
-            getattr(self, "crf3", None),
-            getattr(self, "crf4", None),
-            getattr(self, "crf7", None),
-        ]
-
-        filled = [c for c in crfs if c]
-
-        # ---------------- LOGIC ----------------
-
-        # Not started
-        if not self.actual_visit_date:
-            self.status = "pending"
-
-        # Started but not complete
-        elif filled and len(filled) < len(crfs):
-            self.status = "incomplete"
-
-        # All CRFs done
-        elif len(filled) == len(crfs):
-            self.status = "completed"
-
-        self.save()
-        
     def __str__(self):
         return f"{self.enrollment.screening.subject.subject_id} - {self.visit_day}"
 
