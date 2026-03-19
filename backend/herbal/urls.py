@@ -14,7 +14,9 @@ from .views.screening.screening_form_view import screening_form_view
 from .views.screening.screening_update_view import screening_update_view
 
 from .views.enrollments.enrollment_create_view import enrollment_create_view
-from .views.enrollments.enrollment_update_view import enrollment_update_view
+from .views.enrollments.enrollment_form_view import enrollment_form_view
+
+
 from .views.visits.unscheduled_create_view import unscheduled_create_view
 from .views.visits.unscheduled_update_view import unscheduled_update_view
 from .views.visits.visit_start_view import visit_start_view
@@ -56,9 +58,9 @@ urlpatterns = [
     # path("screening/<int:pk>/update/", screening_form_view, name="screening-update"),
     path("screening/<int:pk>/", screening_form_view, name="screening-form"),
     # ENROLLMENT
-    path("enrollment/<int:pk>/", enrollment_create_view, name="enrollment-create"),
+    path("enrollment/<int:pk>/", enrollment_form_view, name="enrollment-create"),
     path(
-        "enrollment/<int:pk>/update/", enrollment_update_view, name="enrollment-update"
+        "enrollment/<int:pk>/update/", enrollment_form_view, name="enrollment-update"
     ),
     # VISITS
     path("visits/dashboard/", visit_dashboard_view, name="visit-dashboard"),

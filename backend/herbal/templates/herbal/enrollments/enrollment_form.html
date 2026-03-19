@@ -1,41 +1,111 @@
 {% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
 
 {% block content %}
 
 <div class="container">
 
-    <h3>Enroll Subject - {{ subject.subject_id }}</h3>
+    <p><strong>Subject ID:</strong> {{ subject.subject_id }}</p>
+    <p><strong>Site:</strong> {{ request.user.staff_profile.site }}</p>
+
+    <h3>
+        {% if is_update %}
+            Update Enrollment
+        {% else %}
+            Create Enrollment
+        {% endif %}
+    </h3>
 
     <div class="card">
-
         <div class="card-body">
 
-            <form method="post">
-
+            <form method="post" novalidate>
                 {% csrf_token %}
 
-                <div class="mb-3">
-                    <label>Enrollment Date</label>
-                    {{ form.enrollment_date }}
+                <!-- GLOBAL ERRORS -->
+                {% for field in form %}
+                    {% if field.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ field.label }}:</strong> {{ field.errors|striptags }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- ===================== -->
+                <!-- BASIC INFO -->
+                <!-- ===================== -->
+                <h5>Enrollment Info</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        {{ form.enrollment_date.label_tag }}
+                        {{ form.enrollment_date }}
+                    </div>
+
+                    <div class="col-md-4">
+                        {{ form.pt_category.label_tag }}
+                        {{ form.pt_category }}
+                    </div>
+
+                    <div class="col-md-4">
+                        {{ form.pt_type.label_tag }}
+                        {{ form.pt_type }}
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label>Consent Signed</label>
-                    {{ form.consent_signed }}
+                <hr>
+
+                <!-- ===================== -->
+                <!-- TREATMENT -->
+                <!-- ===================== -->
+                <h5>Treatment</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        {{ form.treatment_type.label_tag }}
+                        {{ form.treatment_type }}
+                    </div>
+
+                    <div class="col-md-4" id="previous-date-wrapper">
+                        {{ form.previous_date.label_tag }}
+                        {{ form.previous_date }}
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label>Enrolled By</label>
-                    {{ form.enrolled_by }}
+                <hr>
+
+                <!-- ===================== -->
+                <!-- CYCLES -->
+                <!-- ===================== -->
+                <h5>Cycles</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        {{ form.total_cycle.label_tag }}
+                        {{ form.total_cycle }}
+                    </div>
+
+                    <div class="col-md-4">
+                        {{ form.cycle_number.label_tag }}
+                        {{ form.cycle_number }}
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label>Status</label>
-                    {{ form.status }}
+                <hr>
+
+                <!-- ===================== -->
+                <!-- STATUS -->
+                <!-- ===================== -->
+                <h5>Status</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        {{ form.status.label_tag }}
+                        {{ form.status }}
+                    </div>
                 </div>
+
+                <br>
 
                 <button class="btn btn-success">
-                    Save Enrollment
+                    {% if is_update %} Update {% else %} Save {% endif %} Enrollment
                 </button>
 
                 <a href="{% url 'herbal:subjects-detail' subject.pk %}" class="btn btn-secondary">
@@ -45,9 +115,14 @@
             </form>
 
         </div>
-
     </div>
 
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/enrollments/sex.js' %}"></script>
+<script src="{% static 'js/enrollments/consent.js' %}"></script>
+<script src="{% static 'js/enrollments/nimregenin.js' %}"></script>
 {% endblock %}
