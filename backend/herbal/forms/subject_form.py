@@ -1,7 +1,31 @@
 from django import forms
 from herbal.models import Subject
 from locations.models import Region, District, Ward
+import re
 
+
+def normalize_tz_phone(phone):
+    """Normalize Tanzanian phone number to 255XXXXXXXXX format"""
+    if not phone:
+        return phone
+
+    # Remove spaces, dashes, etc.
+    phone = re.sub(r"\D", "", phone)
+
+    # Normalize
+    if phone.startswith("0"):
+        phone = "255" + phone[1:]
+    elif phone.startswith("255"):
+        pass
+    elif phone.startswith("+" ):
+        phone = phone[1:]
+    
+    return phone
+
+
+def is_valid_tz_phone(phone):
+    """Validate normalized TZ number"""
+    return re.fullmatch(r"255\d{9}", phone)
 
 class SubjectForm(forms.ModelForm):
 
@@ -57,7 +81,7 @@ class SubjectForm(forms.ModelForm):
 
         # ✅ Define required fields
         required_fields = [
-            "reg_date", "dob", "sex", "first_name",  "last_name","marital_status",
+            "reg_date", "sex", "first_name",  "last_name","marital_status",
             "phone_number", "region", "district","ward","occupation","education_level"
         ]
         
@@ -152,3 +176,45 @@ class SubjectForm(forms.ModelForm):
                 raise forms.ValidationError("Age cannot be greater than 120.")
 
         return age
+    
+    def clean_phone_number(self):
+        phone = self.cleaned_data.get("phone_number")
+
+        if phone:
+            phone = normalize_tz_phone(phone)
+
+            if not is_valid_tz_phone(phone):
+                raise forms.ValidationError(
+                    "Enter a valid phone number (e.g. 0712345678, +255712345678)."
+                )
+
+            # ✅ uniqueness check
+            qs = Subject.objects.filter(phone_number=phone)
+            if self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+
+            if qs.exists():
+                raise forms.ValidationError("This phone number is already registered.")
+
+        return phone
+
+    def clean_other_phone(self):
+        phone = self.cleaned_data.get("other_phone")
+
+        if phone:
+            phone = normalize_tz_phone(phone)
+
+            if not is_valid_tz_phone(phone):
+                raise forms.ValidationError(
+                    "Enter a valid phone number (e.g. 0712345678, +255712345678)."
+                )
+                
+            # ✅ uniqueness check
+            qs = Subject.objects.filter(other_phone=phone)
+            if self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+
+            if qs.exists():
+                raise forms.ValidationError("This other phone number is already registered.")
+
+        return phone
