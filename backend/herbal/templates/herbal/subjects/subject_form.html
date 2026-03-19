@@ -20,60 +20,79 @@
             <form method="post">
                 {% csrf_token %}
 
-                <div class="mb-3">
-                    <label>Date</label>
-                    {{ form.reg_date }}
-                </div>
                 <!-- BASIC INFO -->
-                <div class="mb-3">
-                    <label>First Name</label>
-                    {{ form.first_name }}
+                <h5>Basic Information</h5>
+
+                <div class="row">
+                    <div class="col-md-3">{{ form.reg_date.label_tag }} {{ form.reg_date }}</div>
+                    <div class="col-md-3">{{ form.dob.label_tag }} {{ form.dob }}</div>
+                    <div class="col-md-3">{{ form.age.label_tag }} {{ form.age }}</div>
+                    <div class="col-md-3">{{ form.sex.label_tag }} {{ form.sex }}</div>
                 </div>
 
-                <div class="mb-3">
-                    <label>Last Name</label>
-                    {{ form.last_name }}
+                <div class="row mt-2">
+                    <div class="col-md-4">{{ form.first_name.label_tag }} {{ form.first_name }}</div>
+                    <div class="col-md-4">{{ form.middle_name.label_tag }} {{ form.middle_name }}</div>
+                    <div class="col-md-4">{{ form.last_name.label_tag }} {{ form.last_name }}</div>
                 </div>
 
-                <div class="mb-3">
-                    <label>Sex</label>
-                    {{ form.sex }}
+                <hr>
+
+                <!-- IDENTIFICATION -->
+                <h5>Identification</h5>
+
+                <div class="row">
+                    <div class="col-md-4">{{ form.id_type.label_tag }} {{ form.id_type }}</div>
+                    <div class="col-md-4">{{ form.idn.label_tag }} {{ form.idn }}</div>
+                    <div class="col-md-4">{{ form.hid.label_tag }} {{ form.hid }}</div>
                 </div>
 
-                <div class="mb-3">
-                    <label>Date of Birth</label>
-                    {{ form.dob }}
+                <hr>
+
+                <!-- SOCIAL -->
+                <h5>Social Information</h5>
+
+                <div class="row">
+                    <div class="col-md-4">{{ form.marital_status.label_tag }} {{ form.marital_status }}</div>
+                    <div class="col-md-4">{{ form.education_level.label_tag }} {{ form.education_level }}</div>
+                    <div class="col-md-4">{{ form.occupation.label_tag }} {{ form.occupation }}</div>
                 </div>
+
+                <hr>
+
+                <!-- CONTACT -->
+                <h5>Contact</h5>
+
+                <div class="row">
+                    <div class="col-md-6">{{ form.phone_number.label_tag }} {{ form.phone_number }}</div>
+                    <div class="col-md-6">{{ form.other_phone.label_tag }} {{ form.other_phone }}</div>
+                </div>
+
+                <hr>
 
                 <!-- LOCATION -->
-                <hr>
                 <h5>Location</h5>
 
-                <div class="mb-3">
-                    <label>Region</label>
-                    {{ form.region }}
+                <div class="row">
+                    <div class="col-md-4">{{ form.region.label_tag }} {{ form.region }}</div>
+                    <div class="col-md-4">{{ form.district.label_tag }} {{ form.district }}</div>
+                    <div class="col-md-4">{{ form.ward.label_tag }} {{ form.ward }}</div>
                 </div>
 
-                <div class="mb-3">
-                    <label>District</label>
-                    {{ form.district }}
+                <div class="mt-2">
+                    {{ form.street.label_tag }} {{ form.street }}
                 </div>
 
-                <div class="mb-3">
-                    <label>Ward</label>
-                    {{ form.ward }}
-                </div>
+                <hr>
 
-                <button class="btn btn-primary">
-                    {% if is_update %}
-                    Update Subject
-                    {% else %}
-                    Save Subject
-                    {% endif %}
-                </button>
-                <a href="{% url 'herbal:subjects-list' %}" class="btn btn-secondary">
-                    Cancel
-                </a>
+                <!-- REMARKS -->
+                <h5>Remarks</h5>
+                {{ form.remarks }}
+
+                <br><br>
+
+                <button class="btn btn-primary">Save Subject</button>
+                <a href="{% url 'herbal:subjects-list' %}" class="btn btn-secondary">Cancel</a>
             </form>
 
         </div>
