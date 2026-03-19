@@ -3,14 +3,14 @@ from locations.models import Region,District,Ward
 
 @admin.register(Region)
 class RegionAdmin(admin.ModelAdmin):
-    list_display = ['id', 'code', 'name']
+    list_display = ['id', 'value','code', 'name','label']
     ordering = ['id']
     search_fields = ['code', 'name']
     
     
 @admin.register(District)
 class DistrictAdmin(admin.ModelAdmin):
-    list_display = ['id', 'code', 'name']
+    list_display = ['id', 'value','code', 'name','label']
     ordering = ['id']
     search_fields = ['code', 'name']
     
@@ -18,6 +18,6 @@ class DistrictAdmin(admin.ModelAdmin):
     
 @admin.register(Ward)
 class WardAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name']
+    list_display = ['id', 'value','code', 'name','label']
     ordering = ['id']
     search_fields = ['name']

@@ -4,7 +4,9 @@ from django.db import models
 class Region(models.Model):
     name = models.CharField(max_length=100, db_index=True)
     code = models.CharField(max_length=20, blank=True, null=True, db_index=True)
-
+    value = models.IntegerField(blank=True, null=True)
+    label = models.CharField(max_length=255, blank=True, null=True)
+    
     class Meta:
         # verbose_name = "Marital Status"
         # verbose_name_plural = "Marital Statuses"
@@ -20,7 +22,9 @@ class District(models.Model):
     region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="districts", db_index=True)
     name = models.CharField(max_length=100, db_index=True)
     code = models.CharField(max_length=20, blank=True, null=True, db_index=True)
-
+    value = models.IntegerField(blank=True, null=True)
+    label = models.CharField(max_length=255, blank=True, null=True)
+    
     class Meta:
         # verbose_name = "Marital Status"
         # verbose_name_plural = "Marital Statuses"
@@ -38,7 +42,9 @@ class Ward(models.Model):
     district = models.ForeignKey(District, on_delete=models.CASCADE, related_name="wards", db_index=True)
     name = models.CharField(max_length=100, db_index=True)
     code = models.CharField(max_length=20, blank=True, null=True, db_index=True)
-
+    value = models.IntegerField(blank=True, null=True)
+    label = models.CharField(max_length=255, blank=True, null=True)
+    
     class Meta:
         # verbose_name = "Marital Status"
         # verbose_name_plural = "Marital Statuses"
@@ -60,6 +66,9 @@ class Street(models.Model):
         db_index=True
     )
     name = models.CharField(max_length=150, db_index=True)
+    code = models.CharField(max_length=20, blank=True, null=True, db_index=True)
+    value = models.IntegerField(blank=True, null=True)
+    label = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         # verbose_name = "Marital Status"

@@ -86,6 +86,7 @@
             <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <p><strong>Date:</strong> {{ screening.screening_date }}</p>
+                    <hr>
                     <p>
                         <strong>Status:</strong>
                         {% if screening.eligible %}
@@ -119,6 +120,23 @@
             <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <p><strong>Date:</strong> {{ enrollment.enrollment_date }}</p>
+                    <hr>
+                    <p>
+                        <strong>Category:</strong>
+                        {% if enrollment.pt_category %}
+                        <span class="badge bg-success">{{ enrollment.pt_category }}</span>
+                        {% else %}
+                        <span class="badge bg-danger">Unknown</span>
+                        {% endif %}
+                    </p>
+                    <p>
+                        <strong>Type:</strong>
+                        {% if enrollment.pt_type %}
+                        <span class="badge bg-success">{{ enrollment.pt_type }}</span>
+                        {% else %}
+                        <span class="badge bg-warning">Unknown</span>
+                        {% endif %}
+                    </p>
                 </div>
             </div>
 
@@ -148,6 +166,16 @@
                     <a href="{% url 'herbal:crf6-update' enrollment.termination.pk %}" class="btn btn-sm btn-danger">
                         Update
                     </a>
+                    <hr>
+                    <br>
+                    <p>
+                        <strong>Reason:</strong>
+                        {% if enrollment.termination.reason %}
+                        <span class="badge bg-success">{{ enrollment.termination.get_reason_display }}</span>
+                        {% else %}
+                        <span class="badge bg-warning">Unknown</span>
+                        {% endif %}
+                    </p>
                 </div>
             </div>
 
