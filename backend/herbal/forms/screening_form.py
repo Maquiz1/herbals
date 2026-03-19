@@ -1,8 +1,8 @@
 # herbal/forms/screening_form.py
 
 from django import forms
-from herbal.models import Screening, YesNoChoices
-
+from herbal.models import Screening, YesNoChoices,YesNoUnk,YesNoUnknownChoices
+from django.core.exceptions import ValidationError
 
 class ScreeningForm(forms.ModelForm):
 
@@ -30,6 +30,8 @@ class ScreeningForm(forms.ModelForm):
             "cervical_cancer",
             "prostate_cancer",
 
+            "cancer_types",
+            
             # Exclusion
             "pregnant",
             "breast_feeding",
@@ -61,7 +63,9 @@ class ScreeningForm(forms.ModelForm):
             "brain_cancer": forms.Select(attrs={"class": "form-select"}),
             "cervical_cancer": forms.Select(attrs={"class": "form-select"}),
             "prostate_cancer": forms.Select(attrs={"class": "form-select"}),
-
+            
+            "cancer_types": forms.CheckboxSelectMultiple(attrs={"class": "form-check-input"}), 
+                             
             "pregnant": forms.Select(attrs={"class": "form-select"}),
             "breast_feeding": forms.Select(attrs={"class": "form-select"}),
             "ckd": forms.Select(attrs={"class": "form-select"}),
@@ -123,6 +127,9 @@ class ScreeningForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
 
+        # =========================
+        # GET VALUES
+        # =========================
         consent = cleaned_data.get("consent")
         consent_date = cleaned_data.get("consent_date")
         consent_reasons = cleaned_data.get("consent_reasons")
@@ -130,6 +137,16 @@ class ScreeningForm(forms.ModelForm):
         nimr = cleaned_data.get("consent_nimregenin")
         nimr_date = cleaned_data.get("nimregenin_date")
         nimr_reasons = cleaned_data.get("nimregenin_reasons")
+
+        breast = cleaned_data.get("breast_cancer")
+        brain = cleaned_data.get("brain_cancer")
+        cervical = cleaned_data.get("cervical_cancer")
+        prostate = cleaned_data.get("prostate_cancer")
+
+        cancers = cleaned_data.get("cancer_types")
+
+        subject = getattr(self.instance, "subject", None)
+        sex_id = subject.sex_id if subject else None
 
         # =========================
         # ✅ CONSENT VALIDATION
@@ -143,30 +160,94 @@ class ScreeningForm(forms.ModelForm):
         # =========================
         # ✅ NIMREGENIN VALIDATION
         # =========================
-        if nimr == YesNoChoices.YES and not nimr_date:
-            self.add_error(
-                "nimregenin_date",
-                "Date is required if consent to use NIMREGENIN is Yes."
-            )
+        if nimr:
+            nimr_id = nimr.id  # ✅ FK access
 
-        if nimr == YesNoChoices.NO and not nimr_reasons:
-            self.add_error(
-                "nimregenin_reasons",
-                "Reason is required if NIMREGENIN consent is No."
-            )
+            if nimr_id == YesNoUnknownChoices.YES:
+                if not nimr_date:
+                    self.add_error(
+                        "nimregenin_date",
+                        "Date is required if consent to use NIMREGENIN is Yes."
+                    )
+
+            elif nimr_id == YesNoUnknownChoices.NO:
+                if not nimr_reasons:
+                    self.add_error(
+                        "nimregenin_reasons",
+                        "Reason is required if NIMREGENIN consent is No."
+                    )
 
         # =========================
-        # ✅ SEX-AWARE CLEANING
+        # ✅ PREPARE CANCER TYPES
         # =========================
-        subject = getattr(self.instance, "subject", None)
-        sex = subject.sex_id if subject else None
+        if not cancers:
+            selected_codes = set()
+        else:
+            selected_codes = set(cancers.values_list("code", flat=True))
 
-        if sex == 1:  # 👨 Male
+        # =========================
+        # ✅ SEX-BASED VALIDATION
+        # =========================
+        if sex_id == 1 and "CC" in selected_codes:
+            self.add_error("cancer_types", "Male cannot have Cervical Cancer")
+
+        if sex_id == 2 and "PC" in selected_codes:
+            self.add_error("cancer_types", "Female cannot have Prostate Cancer")
+
+        # =========================
+        # ✅ STRICT MATCH VALIDATION
+        # =========================
+        if breast == YesNoChoices.YES and "BC" not in selected_codes:
+            self.add_error("cancer_types", "Select Breast Cancer (BC)")
+
+        if brain == YesNoChoices.YES and "BR" not in selected_codes:
+            self.add_error("cancer_types", "Select Brain Cancer (BR)")
+
+        if cervical == YesNoChoices.YES and "CC" not in selected_codes:
+            self.add_error("cancer_types", "Select Cervical Cancer (CC)")
+
+        if prostate == YesNoChoices.YES and "PC" not in selected_codes:
+            self.add_error("cancer_types", "Select Prostate Cancer (PC)")
+
+        # =========================
+        # ❌ MUST NOT BE SELECTED
+        # =========================
+        if breast != YesNoChoices.YES and "BC" in selected_codes:
+            self.add_error("cancer_types", "Uncheck Breast Cancer")
+
+        if brain != YesNoChoices.YES and "BR" in selected_codes:
+            self.add_error("cancer_types", "Uncheck Brain Cancer")
+
+        if cervical != YesNoChoices.YES and "CC" in selected_codes:
+            self.add_error("cancer_types", "Uncheck Cervical Cancer")
+
+        if prostate != YesNoChoices.YES and "PC" in selected_codes:
+            self.add_error("cancer_types", "Uncheck Prostate Cancer")
+
+        # =========================
+        # ❌ ALL NO → MUST BE EMPTY
+        # =========================
+        if (
+            breast != YesNoChoices.YES and
+            brain != YesNoChoices.YES and
+            cervical != YesNoChoices.YES and
+            prostate != YesNoChoices.YES
+        ):
+            if selected_codes:
+                self.add_error(
+                    "cancer_types",
+                    "No cancers should be selected if all answers are No"
+                )
+
+        # =========================
+        # ✅ SEX-AWARE CLEANING (LAST)
+        # =========================
+        if sex_id == 1:  # Male
             cleaned_data["cervical_cancer"] = None
             cleaned_data["pregnant"] = None
             cleaned_data["breast_feeding"] = None
 
-        elif sex == 2:  # 👩 Female
+        elif sex_id == 2:  # Female
             cleaned_data["prostate_cancer"] = None
 
         return cleaned_data

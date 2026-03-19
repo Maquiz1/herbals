@@ -8,7 +8,7 @@
 
     <p><strong>Subject ID:</strong> {{ subject.subject_id }}</p>
     <p><strong>Site:</strong> {{ request.user.staff_profile.site }}</p>
-    <p><strong>Sex:</strong>  {{ subject.sex.name }}</p>
+    <p><strong>Sex:</strong> {{ subject.sex.name }}</p>
 
     <h3>
         {% if is_update %}
@@ -57,7 +57,7 @@
                         {{ form.consent.label_tag }}
                         {{ form.consent }}
                     </div>
-                    <div class="col-md-3"  id="consent-date-wrapper">
+                    <div class="col-md-3" id="consent-date-wrapper">
                         {{ form.consent_date.label_tag }}
                         {{ form.consent_date }}
                     </div>
@@ -100,7 +100,7 @@
                 </div>
 
                 <div class="row mt-2">
-                    <div class="col-md-3"  id="breast-wrapper">
+                    <div class="col-md-3" id="breast-wrapper">
                         {{ form.breast_cancer.label_tag }}
                         {{ form.breast_cancer }}
                     </div>
@@ -108,13 +108,31 @@
                         {{ form.brain_cancer.label_tag }}
                         {{ form.brain_cancer }}
                     </div>
-                    <div class="col-md-3"  id="cervical-wrapper">
+                    <div class="col-md-3" id="cervical-wrapper">
                         {{ form.cervical_cancer.label_tag }}
                         {{ form.cervical_cancer }}
                     </div>
-                    <div class="col-md-3"  id="prostate-wrapper">
+                    <div class="col-md-3" id="prostate-wrapper">
                         {{ form.prostate_cancer.label_tag }}
                         {{ form.prostate_cancer }}
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">{{ form.cancer_types.label }}</label>
+
+                        {% for checkbox in form.cancer_types %}
+                        <div class="form-check">
+                            {{ checkbox.tag }}
+                            <label class="form-check-label">
+                                {{ checkbox.choice_label }}
+                            </label>
+                        </div>
+                        {% endfor %}
+
+                        {% if form.cancer_types.errors %}
+                        <div class="text-danger">
+                            {{ form.cancer_types.errors }}
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -126,7 +144,7 @@
                 <h5>Exclusion Criteria</h5>
 
                 <div class="row">
-                    <div class="col-md-3"  id="pregnant-wrapper">
+                    <div class="col-md-3" id="pregnant-wrapper">
                         {{ form.pregnant.label_tag }}
                         {{ form.pregnant }}
                     </div>

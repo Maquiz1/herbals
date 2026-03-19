@@ -23,6 +23,8 @@ def screening_form_view(request, pk):
             screening_obj.subject = subject
             screening_obj.save()
 
+            form.save_m2m()  # ✅ THIS LINE FIXES EVERYTHING
+
             return redirect("herbal:subjects-detail", pk=subject.pk)
 
     else:

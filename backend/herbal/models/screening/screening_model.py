@@ -4,7 +4,8 @@ from django.db import models
 from ..subjects.subject_model import Subject
 from core.models import BaseModel
 from choices.models import YesNo,YesNoNa,YesNoUnk
-
+from herbal.models.cancers.cancer_type_model import CancerType
+from django.core.exceptions import ValidationError
 
 class YesNoChoices(models.IntegerChoices):
     YES = 1, "Yes"
@@ -57,6 +58,12 @@ class Screening(BaseModel):
         choices=YesNoChoices.choices, null=True, blank=True
     )
 
+    cancer_types = models.ManyToManyField(
+        CancerType,
+        blank=True,
+        related_name="screening_cancer"
+    )
+    
     # Exclusion Criteria
     pregnant = models.IntegerField(
         choices=YesNoChoices.choices, null=True, blank=True
@@ -159,5 +166,22 @@ class Screening(BaseModel):
 
         super().save(*args, **kwargs)
 
+    def clean(self):
+        super().clean()
+
+        if not self.subject or not self.subject.sex:
+            return
+
+        sex_id = self.subject.sex.id
+
+        # ⚠️ This only works AFTER save (M2M exists)
+        cancers = self.cancer_types.all()
+
+        if sex_id == 1 and cancers.filter(code="CC").exists():
+            raise ValidationError("Male cannot have Cervical Cancer")
+
+        if sex_id == 2 and cancers.filter(code="PC").exists():
+            raise ValidationError("Female cannot have Prostate Cancer")
+            
     def __str__(self):
         return f"Screening - {self.subject}"
