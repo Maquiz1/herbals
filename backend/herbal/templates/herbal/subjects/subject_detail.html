@@ -76,7 +76,7 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <h5 class="mb-0">Screening</h5>
                 {% if screening %}
-                <a href="{% url 'herbal:screening-update' screening.pk %}" class="btn btn-sm btn-outline-secondary">
+                <a href="{% url 'herbal:screening-form' subject.pk %}" class="btn btn-sm btn-outline-secondary">
                     Edit
                 </a>
                 {% endif %}
@@ -97,7 +97,7 @@
                 </div>
             </div>
             {% else %}
-            <a href="{% url 'herbal:screening-create' subject.pk %}" class="btn btn-primary">
+            <a href="{% url 'herbal:screening-form' subject.pk %}" class="btn btn-primary">
                 Add Screening
             </a>
             {% endif %}

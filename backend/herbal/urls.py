@@ -52,9 +52,9 @@ urlpatterns = [
     path("subjects/<int:pk>/edit/", subject_form_view, name="subject-update"),
     
     # SCREENING
-    path("screening/<int:pk>/", screening_form_view, name="screening-create"),
-    path("screening/<int:pk>/update/", screening_form_view, name="screening-update"),
-    
+    # path("screening/<int:pk>/", screening_form_view, name="screening-create"),
+    # path("screening/<int:pk>/update/", screening_form_view, name="screening-update"),
+    path("screening/<int:pk>/", screening_form_view, name="screening-form"),
     # ENROLLMENT
     path("enrollment/<int:pk>/", enrollment_create_view, name="enrollment-create"),
     path(

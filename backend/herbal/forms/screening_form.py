@@ -1,7 +1,7 @@
 # herbal/forms/screening_form.py
 
 from django import forms
-from herbal.models import Screening
+from herbal.models import Screening, YesNoChoices
 
 
 class ScreeningForm(forms.ModelForm):
@@ -14,11 +14,13 @@ class ScreeningForm(forms.ModelForm):
             "screening_date",
 
             # Consent
-            "consented",
+            "consent",
             "consent_date",
-            "consented_nimregenin",
+            "consent_reasons",
+
+            "consent_nimregenin",
             "nimregenin_date",
-            "reasons",
+            "nimregenin_reasons",
 
             # Inclusion
             "age_18",
@@ -38,15 +40,21 @@ class ScreeningForm(forms.ModelForm):
             "remarks",
         ]
 
+        labels={
+            "age_18":"Aged eighteen years and above",
+            "biopsy":"Confirmed cancer with biopsy?",
+            "consent":"Did the participant consent to be part of the study?",
+            "consent_nimregenin":"Did the participant consent to use NIMREGENIN preparation?",
+        }
         widgets = {
             # Date fields
             "screening_date": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
             "consent_date": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
             "nimregenin_date": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
 
-            # Select fields (Yes/No)
-            "consented": forms.Select(attrs={"class": "form-select"}),
-            "consented_nimregenin": forms.Select(attrs={"class": "form-select"}),
+            # Select fields
+            "consent": forms.Select(attrs={"class": "form-select"}),
+            "consent_nimregenin": forms.Select(attrs={"class": "form-select"}),
             "age_18": forms.Select(attrs={"class": "form-select"}),
             "biopsy": forms.Select(attrs={"class": "form-select"}),
             "breast_cancer": forms.Select(attrs={"class": "form-select"}),
@@ -60,28 +68,105 @@ class ScreeningForm(forms.ModelForm):
             "liver_disease": forms.Select(attrs={"class": "form-select"}),
 
             # Text areas
-            "reasons": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "consent_reasons": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "nimregenin_reasons": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
             "remarks": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
         }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        subject = getattr(self.instance, "subject", None)
+        sex = subject.sex_id if subject else None
+
+        # =========================
+        # ✅ BASE REQUIRED FIELDS (COMMON)
+        # =========================
+        required_fields = [
+            "screening_date",
+            "consent",
+            "consent_nimregenin",
+            "age_18",
+            "biopsy",
+            "breast_cancer",
+            "brain_cancer",
+            "ckd",
+            "liver_disease",
+        ]
+
+        for field in required_fields:
+            self.fields[field].required = True
+
+        # =========================
+        # 👨 MALE RULES
+        # =========================
+        if sex == 1:
+            self.fields["prostate_cancer"].required = True
+
+            self.fields["cervical_cancer"].required = False
+            self.fields["pregnant"].required = False
+            self.fields["breast_feeding"].required = False
+
+        # =========================
+        # 👩 FEMALE RULES
+        # =========================
+        elif sex == 2:
+            self.fields["cervical_cancer"].required = True
+            self.fields["pregnant"].required = True
+            self.fields["breast_feeding"].required = True
+
+            self.fields["prostate_cancer"].required = False
 
     # =========================
-    # ✅ VALIDATIONS
+    # ✅ CLEAN LOGIC
     # =========================
     def clean(self):
         cleaned_data = super().clean()
 
-        consented = cleaned_data.get("consented")
+        consent = cleaned_data.get("consent")
         consent_date = cleaned_data.get("consent_date")
+        consent_reasons = cleaned_data.get("consent_reasons")
 
-        nimr = cleaned_data.get("consented_nimregenin")
+        nimr = cleaned_data.get("consent_nimregenin")
         nimr_date = cleaned_data.get("nimregenin_date")
+        nimr_reasons = cleaned_data.get("nimregenin_reasons")
 
-        # ✅ Consent date required if consented
-        if consented == 1 and not consent_date:
+        # =========================
+        # ✅ CONSENT VALIDATION
+        # =========================
+        if consent == YesNoChoices.YES and not consent_date:
             self.add_error("consent_date", "Consent date is required if consent is Yes.")
 
-        # ✅ Nimr consent date required
-        if nimr == 1 and not nimr_date:
-            self.add_error("nimregenin_date", "Date is required if consented to Use NIMREGENIN is Yes.")
+        if consent == YesNoChoices.NO and not consent_reasons:
+            self.add_error("consent_reasons", "Reason is required if consent is No.")
+
+        # =========================
+        # ✅ NIMREGENIN VALIDATION
+        # =========================
+        if nimr == YesNoChoices.YES and not nimr_date:
+            self.add_error(
+                "nimregenin_date",
+                "Date is required if consent to use NIMREGENIN is Yes."
+            )
+
+        if nimr == YesNoChoices.NO and not nimr_reasons:
+            self.add_error(
+                "nimregenin_reasons",
+                "Reason is required if NIMREGENIN consent is No."
+            )
+
+        # =========================
+        # ✅ SEX-AWARE CLEANING
+        # =========================
+        subject = getattr(self.instance, "subject", None)
+        sex = subject.sex_id if subject else None
+
+        if sex == 1:  # 👨 Male
+            cleaned_data["cervical_cancer"] = None
+            cleaned_data["pregnant"] = None
+            cleaned_data["breast_feeding"] = None
+
+        elif sex == 2:  # 👩 Female
+            cleaned_data["prostate_cancer"] = None
 
         return cleaned_data
