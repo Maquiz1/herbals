@@ -124,7 +124,7 @@
                     <p>
                         <strong>Category:</strong>
                         {% if enrollment.pt_category %}
-                        <span class="badge bg-success">{{ enrollment.pt_category }}</span>
+                        <span class="badge bg-success">{{ enrollment.get_pt_category_display }}</span>
                         {% else %}
                         <span class="badge bg-danger">Unknown</span>
                         {% endif %}
@@ -132,7 +132,7 @@
                     <p>
                         <strong>Type:</strong>
                         {% if enrollment.pt_type %}
-                        <span class="badge bg-success">{{ enrollment.pt_type }}</span>
+                        <span class="badge bg-success">{{ enrollment.get_pt_type_display }}</span>
                         {% else %}
                         <span class="badge bg-warning">Unknown</span>
                         {% endif %}
