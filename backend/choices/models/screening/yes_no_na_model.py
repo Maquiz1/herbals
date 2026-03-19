@@ -13,5 +13,6 @@ class YesNoNa(models.Model):
         verbose_name_plural="YesNoNA"
         
     def __str__(self):
-        return f"{self.id} - {self.value} - {self.code} - {self.name}"
+        # return f"{self.id} - {self.value} - {self.code} - {self.name}"
+        return f"{self.name}"
 
