@@ -3,11 +3,11 @@ from django.db import models
 from datetime import date
 
 from sites.models import Site
-from choices.models.sex_model import Sex
-from choices.models.id_type_model import IDType
-from choices.models.education_level_model import EducationLevel
-from choices.models.marital_status_model import MaritalStatus
-from choices.models.occupation_model import Occupation
+from choices.models import Sex
+from choices.models import IDType
+from choices.models import EducationLevel
+from choices.models import MaritalStatus
+from choices.models import Occupation
 from locations.models import Region, District, Ward
 
 from core.models import BaseModel

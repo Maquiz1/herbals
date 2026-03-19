@@ -1,7 +1,7 @@
 # choices/admin/education_level_admin.py
 
 from django.contrib import admin
-from choices.models.education_level_model import EducationLevel
+from choices.models import EducationLevel
 
 
 @admin.register(EducationLevel)

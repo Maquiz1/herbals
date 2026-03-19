@@ -1,7 +1,7 @@
 # choices/admin/occupation_admin.py
 
 from django.contrib import admin
-from choices.models.occupation_model import Occupation
+from choices.models import Occupation
 
 
 @admin.register(Occupation)

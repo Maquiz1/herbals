@@ -1,7 +1,7 @@
 # choices/admin/marital_status_admin.py
 
 from django.contrib import admin
-from choices.models.marital_status_model import MaritalStatus
+from choices.models import MaritalStatus
 
 
 @admin.register(MaritalStatus)

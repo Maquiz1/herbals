@@ -1,8 +1,7 @@
 # choices/admin/id_type_admin.py
 
 from django.contrib import admin
-from choices.models.id_type_model import IDType
-
+from choices.models import IDType
 
 @admin.register(IDType)
 class IDTypeAdmin(admin.ModelAdmin):

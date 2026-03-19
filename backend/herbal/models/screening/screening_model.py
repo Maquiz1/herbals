@@ -3,6 +3,7 @@
 from django.db import models
 from ..subjects.subject_model import Subject
 from core.models import BaseModel
+from choices.models import YesNo,YesNoNa,YesNoUnk
 
 
 class YesNoChoices(models.IntegerChoices):
@@ -35,7 +36,7 @@ class Screening(BaseModel):
     consent = models.IntegerField(choices=YesNoChoices.choices)
     consent_date = models.DateField(null=True, blank=True)
 
-    consent_nimregenin = models.IntegerField(choices=YesNoNAChoices.choices)
+    consent_nimregenin = models.ForeignKey(YesNoUnk,on_delete=models.SET_NULL, null=True, blank=True)
     nimregenin_date = models.DateField(null=True, blank=True)
 
     consent_reasons = models.TextField(blank=True, null=True)
