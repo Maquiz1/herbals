@@ -512,7 +512,8 @@
 
                 {% endif %}
             </td>
-            <td>{% if visit.status == "na" %}
+            <td>
+                {% if visit.status == "missed" or visit.status == "na" %}
                 <span class="badge bg-secondary">N/A</span>
                 {% else %}
                 {% if not visit.actual_visit_date %}
