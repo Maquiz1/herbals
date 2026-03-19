@@ -13,5 +13,6 @@ class YesNoUnk(models.Model):
         verbose_name_plural="YesNoUnk"
         
     def __str__(self):
-        return f"{self.id} - {self.value} - {self.code} - {self.name}"
+        # return f"{self.id} - {self.value} - {self.code} - {self.name}"
+        return f"{self.name}"
 
