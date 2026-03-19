@@ -87,10 +87,8 @@ class Enrollment(BaseModel):
         ("transfer", "Transferred Out"),
     ]
 
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES,
-        default="active"
+    remarks = models.TextField(
+        blank=tuple,null=True
     )
 
     # =========================

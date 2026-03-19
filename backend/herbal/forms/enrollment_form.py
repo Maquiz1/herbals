@@ -17,7 +17,7 @@ class EnrollmentForm(forms.ModelForm):
             "previous_date",
             "total_cycle",
             "cycle_number",
-            "status",
+            "remarks",
         ]
 
         widgets = {
@@ -49,9 +49,7 @@ class EnrollmentForm(forms.ModelForm):
                 attrs={"class": "form-control", "min": 1}
             ),
 
-            "status": forms.Select(
-                attrs={"class": "form-select"}
-            ),
+            "remarks": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
         }
 
     # =========================

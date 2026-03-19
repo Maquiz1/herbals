@@ -8,6 +8,7 @@
 
     <p><strong>Subject ID:</strong> {{ subject.subject_id }}</p>
     <p><strong>Site:</strong> {{ request.user.staff_profile.site }}</p>
+    <p><strong>Sex:</strong> {{ subject.sex.name }}</p>
 
     <h3>
         {% if is_update %}
@@ -92,13 +93,12 @@
                 <hr>
 
                 <!-- ===================== -->
-                <!-- STATUS -->
+                <!-- Remarks -->
                 <!-- ===================== -->
-                <h5>Status</h5>
                 <div class="row">
-                    <div class="col-md-4">
-                        {{ form.status.label_tag }}
-                        {{ form.status }}
+                    <div class="col-md-12">
+                        {{ form.remarks.label_tag }}
+                        {{ form.remarks }}
                     </div>
                 </div>
 
