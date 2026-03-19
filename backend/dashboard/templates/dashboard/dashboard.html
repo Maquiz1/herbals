@@ -152,6 +152,7 @@
             <tr>
                 <th>Subject ID</th>
                 <th>Site</th>
+                <th>Date</th>
                 <th>Status</th>
             </tr>
         </thead>
@@ -160,6 +161,7 @@
             <tr>
                 <td>{{ subject.subject_id }}</td>
                 <td>{{ subject.site }}</td>
+                <td>{{ subject.created_at }}</td>
                 <td>
                     <span class="badge 
                         {% if subject.status == 'enrolled' %} bg-success
