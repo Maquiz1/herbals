@@ -16,7 +16,8 @@ class Region(models.Model):
         ]
         
     def __str__(self):
-        return f"{self.code} - {self.name}"
+        # return f"{self.code} - {self.name}"
+        return f"{self.name}"
 
 class District(models.Model):
     region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="districts", db_index=True)
@@ -35,7 +36,8 @@ class District(models.Model):
         ]
         
     def __str__(self):
-        return f"{self.code} - {self.name}"
+        # return f"{self.code} - {self.name}"
+        return f"{self.name}"
 
 
 class Ward(models.Model):
@@ -55,8 +57,9 @@ class Ward(models.Model):
         ]
                 
     def __str__(self):
-        return f"{self.code} - {self.name}"
-    
+        # return f"{self.code} - {self.name}"
+        return f"{self.name}"
+
 
 class Street(models.Model):
     ward = models.ForeignKey(
@@ -81,4 +84,5 @@ class Street(models.Model):
         ]
         
     def __str__(self):
-        return f"{self.id} - {self.name}"
+        # return f"{self.id} - {self.name}"
+        return f"{self.name}"
