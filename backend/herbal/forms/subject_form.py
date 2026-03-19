@@ -38,3 +38,21 @@ class SubjectForm(forms.ModelForm):
         self.fields["region"].queryset = Region.objects.none()
         self.fields["district"].queryset = District.objects.none()
         self.fields["ward"].queryset = Ward.objects.none()
+        
+        # 🔥 FIX: when form is submitted
+        if self.data:
+            region_id = self.data.get("region")
+            district_id = self.data.get("district")
+
+            if region_id:
+                self.fields["region"].queryset = Region.objects.filter(id=region_id)
+                self.fields["district"].queryset = District.objects.filter(region_id=region_id)
+
+            if district_id:
+                self.fields["ward"].queryset = Ward.objects.filter(district_id=district_id)
+
+        # 🔥 FIX: when editing existing object
+        elif self.instance.pk:
+            self.fields["region"].queryset = Region.objects.filter(id=self.instance.region_id)
+            self.fields["district"].queryset = District.objects.filter(region=self.instance.region)
+            self.fields["ward"].queryset = Ward.objects.filter(district=self.instance.district)
