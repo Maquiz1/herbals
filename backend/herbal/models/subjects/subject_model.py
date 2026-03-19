@@ -32,13 +32,15 @@ class Subject(BaseModel):
     hid = models.CharField(max_length=100,blank=True, null=True)
     idn = models.CharField(max_length=100, blank=True, null=True)
     
-    id_type = models.ForeignKey(
+    identification_type = models.ForeignKey(
         IDType,
         on_delete=models.SET_NULL,
         null=True,
         blank=True
     )
 
+    other_id = models.CharField(max_length=150, blank=True, null=True)
+   
     marital_status = models.ForeignKey(
         MaritalStatus,
         on_delete=models.SET_NULL,

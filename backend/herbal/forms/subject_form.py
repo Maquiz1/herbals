@@ -16,6 +16,7 @@ class SubjectForm(forms.ModelForm):
             "sex":"Sex",
             "hid":"Hospital ID",
             "idn":"ID Number",
+            "other_id":"Other Identification",
         }
         widgets = {
             "reg_date": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
@@ -27,7 +28,8 @@ class SubjectForm(forms.ModelForm):
             "last_name": forms.TextInput(attrs={"class": "form-control"}),
 
             "sex": forms.Select(attrs={"class": "form-control"}),
-            "id_type": forms.Select(attrs={"class": "form-control"}),
+            "identification_type": forms.Select(attrs={"class": "form-control"}),
+            "other_id": forms.TextInput(attrs={"class": "form-control"}),
             "marital_status": forms.Select(attrs={"class": "form-control"}),
             "education_level": forms.Select(attrs={"class": "form-control"}),
             "occupation": forms.Select(attrs={"class": "form-control"}),
@@ -53,6 +55,12 @@ class SubjectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        for name, field in self.fields.items():
+            if isinstance(field.widget, forms.Select):
+                field.widget.attrs["class"] = "form-select"
+            else:
+                field.widget.attrs["class"] = "form-control"
+                
         # AJAX-controlled fields
         self.fields["region"].queryset = Region.objects.none()
         self.fields["district"].queryset = District.objects.none()
@@ -83,8 +91,14 @@ class SubjectForm(forms.ModelForm):
         cleaned_data = super().clean()
         occupation = cleaned_data.get("occupation")
         other = cleaned_data.get("other_occupation")
+        
+        identification_type = cleaned_data.get("identification_type")
+        other_id = cleaned_data.get("other_id")
 
-        if occupation and str(occupation.value) == "96" and not other:
+        if occupation and str(occupation.value) == "3" and not other:
             self.add_error("other_occupation", "Please specify occupation")
+            
+        if identification_type and str(identification_type.value) == "3" and not other_id:
+            self.add_error("other_id", "Please specify other id")
 
         return cleaned_data

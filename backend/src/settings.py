@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    "widget_tweaks",
+    
     # CUSTOME APPS
     'dashboard.apps.DashboardConfig',
     'herbal.apps.HerbalConfig',

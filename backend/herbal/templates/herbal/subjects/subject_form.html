@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load widget_tweaks %}
 
 {% block content %}
 
@@ -17,24 +18,92 @@
     </h3>
     <div class="card">
         <div class="card-body">
-
+            {% if form.non_field_errors %}
+            <div class="alert alert-warning">
+                {% for error in form.non_field_errors %}
+                <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
             <form method="post">
                 {% csrf_token %}
-
+                {% if form.non_field_errors %}
+                <div class="alert alert-warning">
+                    {% for error in form.non_field_errors %}
+                    <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
                 <!-- BASIC INFO -->
                 <h5>Basic Information</h5>
 
                 <div class="row">
-                    <div class="col-md-3">{{ form.reg_date.label_tag }} {{ form.reg_date }}</div>
-                    <div class="col-md-3">{{ form.dob.label_tag }} {{ form.dob }}</div>
-                    <div class="col-md-3">{{ form.age.label_tag }} {{ form.age }}</div>
-                    <div class="col-md-3">{{ form.sex.label_tag }} {{ form.sex }}</div>
+                    <div class="col-md-3">
+                        {{ form.reg_date.label_tag }}
+                        {{ form.reg_date }}
+                        {% if form.reg_date.errors %}
+                        <div class="text-danger small">
+                            {{ form.reg_date.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.dob.label_tag }}
+                        {{ form.dob }}
+                        {% if form.dob.errors %}
+                        <div class="text-danger small">
+                            {{ form.dob.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.age.label_tag }}
+                        {{ form.age }}
+                        {% if form.age.errors %}
+                        <div class="text-danger small">
+                            {{ form.age.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.sex.label_tag }}
+                        {{ form.sex }}
+                        {% if form.sex.errors %}
+                        <div class="text-danger small">
+                            {{ form.sex.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
 
                 <div class="row mt-2">
-                    <div class="col-md-4">{{ form.first_name.label_tag }} {{ form.first_name }}</div>
-                    <div class="col-md-4">{{ form.middle_name.label_tag }} {{ form.middle_name }}</div>
-                    <div class="col-md-4">{{ form.last_name.label_tag }} {{ form.last_name }}</div>
+                    <div class="col-md-4">
+                        {{ form.first_name.label_tag }}
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                        <div class="text-danger small">
+                            {{ form.first_name.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.middle_name.label_tag }}
+                        {{ form.middle_name }}
+                        {% if form.middle_name.errors %}
+                        <div class="text-danger small">
+                            {{ form.middle_name.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.last_name.label_tag }}
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                        <div class="text-danger small">
+                            {{ form.last_name.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
 
                 <hr>
@@ -43,13 +112,42 @@
                 <h5>Identification</h5>
 
                 <div class="row">
-                    <div class="col-md-4">{{ form.id_type.label_tag }} {{ form.id_type }}</div>
-                    <div class="col-md-4 mt-2" id="other-id-wrapper" style="display:none;">
+                    <div class="col-md-3">
+                        {{ form.identification_type.label_tag }}
+                        {{ form.identification_type }}
+                        {% if form.identification_type.errors %}
+                        <div class="text-danger small">
+                            {{ form.identification_type.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3" id="other-id-wrapper" style="display:none;">
                         {{ form.other_id.label_tag }}
                         {{ form.other_id }}
+                        {% if form.other_id.errors %}
+                        <div class="text-danger small">
+                            {{ form.other_id.errors }}
+                        </div>
+                        {% endif %}
                     </div>
-                    <div class="col-md-4">{{ form.idn.label_tag }} {{ form.idn }}</div>
-                    <div class="col-md-4">{{ form.hid.label_tag }} {{ form.hid }}</div>
+                    <div class="col-md-3">
+                        {{ form.idn.label_tag }}
+                        {{ form.idn }}
+                        {% if form.idn.errors %}
+                        <div class="text-danger small">
+                            {{ form.idn.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.hid.label_tag }}
+                        {{ form.hid }}
+                        {% if form.hid.errors %}
+                        <div class="text-danger small">
+                            {{ form.hid.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
 
                 <hr>
@@ -58,22 +156,68 @@
                 <h5>Social Information</h5>
 
                 <div class="row">
-                    <div class="col-md-4">{{ form.marital_status.label_tag }} {{ form.marital_status }}</div>
-                    <div class="col-md-4">{{ form.education_level.label_tag }} {{ form.education_level }}</div>
-                    <div class="col-md-4">{{ form.occupation.label_tag }} {{ form.occupation }}</div>
+                    <div class="col-md-3">
+                        {{ form.marital_status.label_tag }}
+                        {{ form.marital_status }}
+                        {% if form.marital_status.errors %}
+                        <div class="text-danger small">
+                            {{ form.marital_status.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.education_level.label_tag }}
+                        {{ form.education_level }}
+                        {% if form.education_level.errors %}
+                        <div class="text-danger small">
+                            {{ form.education_level.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.occupation.label_tag }}
+                        {{ form.occupation }}
+                        {% if form.occupation.errors %}
+                        <div class="text-danger small">
+                            {{ form.occupation.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3" id="other-occupation-wrapper" style="display:none;">
+                        {{ form.other_occupation.label_tag }}
+                        {{ form.other_occupation }}
+                        {% if form.other_occupation.errors %}
+                        <div class="text-danger small">
+                            {{ form.other_occupation.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
-                <div class="col-md-4 mt-2" id="other-occupation-wrapper" style="display:none;">
-                    {{ form.other_occupation.label_tag }}
-                    {{ form.other_occupation }}
-                </div>
+
                 <hr>
 
                 <!-- CONTACT -->
                 <h5>Contact</h5>
 
                 <div class="row">
-                    <div class="col-md-6">{{ form.phone_number.label_tag }} {{ form.phone_number }}</div>
-                    <div class="col-md-6">{{ form.other_phone.label_tag }} {{ form.other_phone }}</div>
+                    <div class="col-md-6">
+                        {{ form.phone_number.label_tag }}
+                        {{ form.phone_number }}
+                        {% if form.phone_number.errors %}
+                        <div class="text-danger small">
+                            {{ form.phone_number.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.other_phone.label_tag }}
+                        {{ form.other_phone }}
+                        {% if form.other_phone.errors %}
+                        <div class="text-danger small">
+                            {{ form.other_phone.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
 
                 <hr>
@@ -82,20 +226,55 @@
                 <h5>Location</h5>
 
                 <div class="row">
-                    <div class="col-md-4">{{ form.region.label_tag }} {{ form.region }}</div>
-                    <div class="col-md-4">{{ form.district.label_tag }} {{ form.district }}</div>
-                    <div class="col-md-4">{{ form.ward.label_tag }} {{ form.ward }}</div>
+                    <div class="col-md-4">
+                        {{ form.region.label_tag }}
+                        {{ form.region }}
+                        {% if form.region.errors %}
+                        <div class="text-danger small">
+                            {{ form.region.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.district.label_tag }}
+                        {{ form.district }}
+                        {% if form.district.errors %}
+                        <div class="text-danger small">
+                            {{ form.district.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.ward.label_tag }}
+                        {{ form.ward }}
+                        {% if form.ward.errors %}
+                        <div class="text-danger small">
+                            {{ form.ward.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
 
                 <div class="mt-2">
-                    {{ form.street.label_tag }} {{ form.street }}
+                    {{ form.street.label_tag }}
+                    {{ form.street }}
+                    {% if form.street.errors %}
+                    <div class="text-danger small">
+                        {{ form.street.errors }}
+                    </div>
+                    {% endif %}
                 </div>
 
                 <hr>
 
                 <!-- REMARKS -->
-                <h5>Remarks</h5>
+                <h5>{{ form.remarks.label_tag }}</h5>
                 {{ form.remarks }}
+                {% if form.remarks.errors %}
+                <div class="text-danger small">
+                    {{ form.remarks.errors }}
+                </div>
+                {% endif %}
 
                 <br><br>
 

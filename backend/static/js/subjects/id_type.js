@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Result fields
-    const IdType = document.getElementById("id_id_type");
+    const IdType = document.getElementById("id_identification_type");
 
     // Field to show/hide
     const otherIdTypeWrapper = document.getElementById("other-id-wrapper");
@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const value = String(IdType?.value || "");
 
-        if (value === "96") {
+        if (value === "3") {
             otherIdTypeWrapper.style.display = "block";
         } else {
             otherIdTypeWrapper.style.display = "none";
