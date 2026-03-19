@@ -162,7 +162,7 @@
             {% if enrollment.termination %}
             <div class="card shadow-sm h-100">
                 <div class="card-body">
-                    <p class="text-danger"><strong>Terminated</strong></p>
+                    <p class="text-danger"><strong>Terminated</strong>:-{{ enrollment.termination.termination_date }}</p>
                     <a href="{% url 'herbal:crf6-update' enrollment.termination.pk %}" class="btn btn-sm btn-danger">
                         Update
                     </a>
