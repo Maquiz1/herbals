@@ -9,8 +9,10 @@ from .views.subjects.form_view.subject_form_view import subject_form_view
 from .views.visits.visit_dashboard_view import visit_dashboard_view
 from .views.visits.visit_mark_missed_view import visit_mark_missed
 from .views.visits.visit_mark_pending import visit_mark_pending
-from .views.screening.screening_create_view import screening_create_view
+
+from .views.screening.screening_form_view import screening_form_view
 from .views.screening.screening_update_view import screening_update_view
+
 from .views.enrollments.enrollment_create_view import enrollment_create_view
 from .views.enrollments.enrollment_update_view import enrollment_update_view
 from .views.visits.unscheduled_create_view import unscheduled_create_view
@@ -50,8 +52,9 @@ urlpatterns = [
     path("subjects/<int:pk>/edit/", subject_form_view, name="subject-update"),
     
     # SCREENING
-    path("screening/<int:pk>/", screening_create_view, name="screening-create"),
-    path("screening/<int:pk>/update/", screening_update_view, name="screening-update"),
+    path("screening/<int:pk>/", screening_form_view, name="screening-create"),
+    path("screening/<int:pk>/update/", screening_form_view, name="screening-update"),
+    
     # ENROLLMENT
     path("enrollment/<int:pk>/", enrollment_create_view, name="enrollment-create"),
     path(

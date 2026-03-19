@@ -7,40 +7,81 @@ from herbal.models import Screening
 class ScreeningForm(forms.ModelForm):
 
     class Meta:
-
         model = Screening
 
         fields = [
+            # Core
             "screening_date",
-            "age_eligible",
-            "inclusion_criteria_met",
-            "exclusion_criteria_present",
-            "eligible",
-            "comments",
+
+            # Consent
+            "consented",
+            "consent_date",
+            "consented_nimregenin",
+            "nimregenin_date",
+            "reasons",
+
+            # Inclusion
+            "age_18",
+            "biopsy",
+            "breast_cancer",
+            "brain_cancer",
+            "cervical_cancer",
+            "prostate_cancer",
+
+            # Exclusion
+            "pregnant",
+            "breast_feeding",
+            "ckd",
+            "liver_disease",
+
+            # Notes
+            "remarks",
         ]
 
         widgets = {
-            "screening_date": forms.DateInput(
-                attrs={"type": "date", "class": "form-control"}
-            ),
-            "age_eligible": forms.CheckboxInput(attrs={"class": "form-check-input"}),
-            "inclusion_criteria_met": forms.CheckboxInput(
-                attrs={"class": "form-check-input"}
-            ),
-            "exclusion_criteria_present": forms.CheckboxInput(
-                attrs={"class": "form-check-input"}
-            ),
-            "eligible": forms.CheckboxInput(attrs={"class": "form-check-input"}),
-            "comments": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            # Date fields
+            "screening_date": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+            "consent_date": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+            "nimregenin_date": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+
+            # Select fields (Yes/No)
+            "consented": forms.Select(attrs={"class": "form-select"}),
+            "consented_nimregenin": forms.Select(attrs={"class": "form-select"}),
+            "age_18": forms.Select(attrs={"class": "form-select"}),
+            "biopsy": forms.Select(attrs={"class": "form-select"}),
+            "breast_cancer": forms.Select(attrs={"class": "form-select"}),
+            "brain_cancer": forms.Select(attrs={"class": "form-select"}),
+            "cervical_cancer": forms.Select(attrs={"class": "form-select"}),
+            "prostate_cancer": forms.Select(attrs={"class": "form-select"}),
+
+            "pregnant": forms.Select(attrs={"class": "form-select"}),
+            "breast_feeding": forms.Select(attrs={"class": "form-select"}),
+            "ckd": forms.Select(attrs={"class": "form-select"}),
+            "liver_disease": forms.Select(attrs={"class": "form-select"}),
+
+            # Text areas
+            "reasons": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "remarks": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
         }
-        
-        def clean_age_eligible(self):
 
-            age_eligible = self.cleaned_data["age_eligible"]
+    # =========================
+    # ✅ VALIDATIONS
+    # =========================
+    def clean(self):
+        cleaned_data = super().clean()
 
-            if not age_eligible:
-                raise forms.ValidationError(
-                    "Subject must be ≥18 years to proceed."
-                )
+        consented = cleaned_data.get("consented")
+        consent_date = cleaned_data.get("consent_date")
 
-            return age_eligible
+        nimr = cleaned_data.get("consented_nimregenin")
+        nimr_date = cleaned_data.get("nimregenin_date")
+
+        # ✅ Consent date required if consented
+        if consented == 1 and not consent_date:
+            self.add_error("consent_date", "Consent date is required if consent is Yes.")
+
+        # ✅ Nimr consent date required
+        if nimr == 1 and not nimr_date:
+            self.add_error("nimregenin_date", "Date is required if consented to Use NIMREGENIN is Yes.")
+
+        return cleaned_data
