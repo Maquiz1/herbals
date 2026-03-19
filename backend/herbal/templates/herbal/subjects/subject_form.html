@@ -20,7 +20,7 @@
             <form method="post">
                 {% csrf_token %}
 
-                 <div class="mb-3">
+                <div class="mb-3">
                     <label>Date</label>
                     {{ form.reg_date }}
                 </div>
@@ -80,40 +80,61 @@
     </div>
 </div>
 
-<!-- AJAX -->
+{% endblock %}
+
+{% block scripts %}
 <script>
-    document.getElementById("region").addEventListener("change", function () {
-        let regionId = this.value;
+    $(document).ready(function () {
 
-        fetch(`/locations/districts/?region_id=${regionId}`)
-            .then(response => response.json())
-            .then(data => {
-                let district = document.getElementById("district");
-                district.innerHTML = '<option value="">Select District</option>';
+        $('#region').select2({
+            width: '100%',
+            placeholder: "Search Region",
+            minimumInputLength: 0,
+            ajax: {
+                url: "/locations/regions/",
+                dataType: 'json',
+                delay: 250,
+                data: params => ({ q: params.term || '' }),
+                processResults: data => ({ results: data })
+            }
+        });
 
-                data.forEach(item => {
-                    district.innerHTML += `<option value="${item.id}">${item.name}</option>`;
-                });
+        $('#district').select2({
+            width: '100%',
+            placeholder: "Search District",
+            minimumInputLength: 0,
+            ajax: {
+                url: "/locations/districts/",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term,
+                        region: $('#region').val()
+                    };
+                },
+                processResults: data => ({ results: data })
+            }
+        });
 
-                // reset ward
-                document.getElementById("ward").innerHTML = '<option value="">Select Ward</option>';
-            });
-    });
+        $('#ward').select2({
+            width: '100%',
+            placeholder: "Search Ward",
+            minimumInputLength: 0,
+            ajax: {
+                url: "/locations/wards/",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term,
+                        district: $('#district').val()
+                    };
+                },
+                processResults: data => ({ results: data })
+            }
+        });
 
-    document.getElementById("district").addEventListener("change", function () {
-        let districtId = this.value;
-
-        fetch(`/locations/wards/?district_id=${districtId}`)
-            .then(response => response.json())
-            .then(data => {
-                let ward = document.getElementById("ward");
-                ward.innerHTML = '<option value="">Select Ward</option>';
-
-                data.forEach(item => {
-                    ward.innerHTML += `<option value="${item.id}">${item.name}</option>`;
-                });
-            });
     });
 </script>
-
 {% endblock %}

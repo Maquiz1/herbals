@@ -1,5 +1,6 @@
 from django import forms
 from herbal.models import Subject
+from locations.models import Region,District,Ward
 
 class SubjectForm(forms.ModelForm):
 
@@ -29,3 +30,11 @@ class SubjectForm(forms.ModelForm):
             "district": forms.Select(attrs={"class": "form-control", "id": "district"}),
             "ward": forms.Select(attrs={"class": "form-control", "id": "ward"}),
         }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # 👇 IMPORTANT: prevent loading all data
+        self.fields["region"].queryset = Region.objects.none()
+        self.fields["district"].queryset = District.objects.none()
+        self.fields["ward"].queryset = Ward.objects.none()
