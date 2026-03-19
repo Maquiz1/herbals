@@ -18,22 +18,17 @@
     </h3>
     <div class="card">
         <div class="card-body">
-            {% if form.non_field_errors %}
-            <div class="alert alert-warning">
-                {% for error in form.non_field_errors %}
-                <div>{{ error }}</div>
-                {% endfor %}
-            </div>
-            {% endif %}
-            <form method="post">
+            <form method="post" novalidate>
                 {% csrf_token %}
-                {% if form.non_field_errors %}
-                <div class="alert alert-warning">
-                    {% for error in form.non_field_errors %}
-                    <div>{{ error }}</div>
-                    {% endfor %}
+
+                {% for field in form %}
+                {% if field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ field.label }}:</strong> {{ field.errors|striptags }}
                 </div>
                 {% endif %}
+                {% endfor %}
+
                 <!-- BASIC INFO -->
                 <h5>Basic Information</h5>
 

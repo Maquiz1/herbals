@@ -55,12 +55,20 @@ class SubjectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        for name, field in self.fields.items():
-            if isinstance(field.widget, forms.Select):
-                field.widget.attrs["class"] = "form-select"
-            else:
-                field.widget.attrs["class"] = "form-control"
-                
+        # ✅ Define required fields
+        required_fields = [
+            "reg_date", "dob", "sex", "first_name",  "last_name","marital_status",
+            "phone_number", "region", "district","ward","occupation","education_level"
+        ]
+        
+        # optional_fields = ["dob","middle_name", "other_phone","ward", "remarks"]
+
+        for field in required_fields:
+            self.fields[field].required = True
+            
+        # for field in optional_fields:
+        #     self.fields[field].required = False
+    
         # AJAX-controlled fields
         self.fields["region"].queryset = Region.objects.none()
         self.fields["district"].queryset = District.objects.none()
@@ -89,16 +97,58 @@ class SubjectForm(forms.ModelForm):
                 
     def clean(self):
         cleaned_data = super().clean()
+
+        # AGE VALIDATIONS 
+        dob = cleaned_data.get("dob")
+        reg_date = cleaned_data.get("reg_date")
+        age = cleaned_data.get("age")
+
         occupation = cleaned_data.get("occupation")
         other = cleaned_data.get("other_occupation")
-        
+
         identification_type = cleaned_data.get("identification_type")
         other_id = cleaned_data.get("other_id")
 
-        if occupation and str(occupation.value) == "3" and not other:
+        # ✅ Require at least one
+        if not dob and not age:
+            self.add_error("dob", "Provide either Date of Birth or Age.")
+            self.add_error("age", "Provide either Date of Birth or Age.")
+        
+        # ✅ Calculate age using REG DATE
+        if dob and reg_date:
+            calculated_age = reg_date.year - dob.year - (
+                (reg_date.month, reg_date.day) < (dob.month, dob.day)
+            )
+
+            # Validate age range
+            if calculated_age < 18:
+                self.add_error("dob", "Subject must be at least 18 years old at registration.")
+
+            if calculated_age > 120:
+                self.add_error("dob", "Age cannot exceed 120 years at registration.")
+
+            # Optional: enforce consistency with entered age
+            if age is not None and abs(age - calculated_age) > 1:
+                self.add_error("age", f"Age should be approximately {calculated_age} based on DOB and registration date.")
+                
+
+        # OCCOPATION
+        if occupation and occupation.id == 3 and not other:
             self.add_error("other_occupation", "Please specify occupation")
-            
-        if identification_type and str(identification_type.value) == "3" and not other_id:
-            self.add_error("other_id", "Please specify other id")
+
+        # IDENTIFICATIONS
+        if identification_type and identification_type.id == 3 and not other_id:
+            self.add_error("other_id", "Please specify other identification")
 
         return cleaned_data
+    
+    def clean_age(self):
+        age = self.cleaned_data.get("age")
+
+        if age is not None:
+            if age < 18:
+                raise forms.ValidationError("Subject must be at least 18 years old.")
+            if age > 120:
+                raise forms.ValidationError("Age cannot be greater than 120.")
+
+        return age
