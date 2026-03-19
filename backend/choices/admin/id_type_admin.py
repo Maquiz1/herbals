@@ -6,6 +6,6 @@ from choices.models.id_type_model import IDType
 
 @admin.register(IDType)
 class IDTypeAdmin(admin.ModelAdmin):
-    list_display = ['id', 'code', 'name']
+    list_display = ['id','value', 'code', 'name']
     ordering = ['id']
     search_fields = ['code', 'name']

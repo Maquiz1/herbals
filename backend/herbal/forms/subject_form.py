@@ -12,7 +12,7 @@ class SubjectForm(forms.ModelForm):
 
         labels={
             "reg_date":"Registration Date",
-            "dob":"Date",
+            "dob":"Date of Birth",
             "sex":"Sex",
             "hid":"Hospital ID",
             "idn":"ID Number",
@@ -31,7 +31,10 @@ class SubjectForm(forms.ModelForm):
             "marital_status": forms.Select(attrs={"class": "form-control"}),
             "education_level": forms.Select(attrs={"class": "form-control"}),
             "occupation": forms.Select(attrs={"class": "form-control"}),
-
+            "other_occupation": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Specify occupation"
+            }),
             "hid": forms.TextInput(attrs={"class": "form-control"}),
             "idn": forms.TextInput(attrs={"class": "form-control"}),
 
@@ -75,3 +78,13 @@ class SubjectForm(forms.ModelForm):
 
             if self.instance.district:
                 self.fields["ward"].queryset = Ward.objects.filter(district=self.instance.district)
+                
+    def clean(self):
+        cleaned_data = super().clean()
+        occupation = cleaned_data.get("occupation")
+        other = cleaned_data.get("other_occupation")
+
+        if occupation and str(occupation.value) == "96" and not other:
+            self.add_error("other_occupation", "Please specify occupation")
+
+        return cleaned_data

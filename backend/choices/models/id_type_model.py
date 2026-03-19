@@ -4,8 +4,8 @@ from django.db import models
 
 
 class IDType(models.Model):
-    
-    code = models.CharField(max_length=20, unique=True)
+    value = models.CharField(max_length=20, blank=True, null=True)
+    code = models.CharField(max_length=20, blank=True, null=True)
     name = models.CharField(max_length=100)
 
     class Meta:

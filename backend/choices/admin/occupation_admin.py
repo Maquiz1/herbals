@@ -6,6 +6,6 @@ from choices.models.occupation_model import Occupation
 
 @admin.register(Occupation)
 class OccupationAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name']
+    list_display = ['id','value', 'name']
     ordering = ['id']
     search_fields = ['name']

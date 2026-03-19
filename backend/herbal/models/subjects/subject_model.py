@@ -59,6 +59,7 @@ class Subject(BaseModel):
         null=True,
         blank=True
     )
+    other_occupation = models.CharField(max_length=150, blank=True, null=True)
     
     phone_number = models.CharField(max_length=20)
     other_phone = models.CharField(max_length=20, blank=True, null=True)

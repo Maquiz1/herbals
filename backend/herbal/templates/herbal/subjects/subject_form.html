@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 
@@ -43,6 +44,10 @@
 
                 <div class="row">
                     <div class="col-md-4">{{ form.id_type.label_tag }} {{ form.id_type }}</div>
+                    <div class="col-md-4 mt-2" id="other-id-wrapper" style="display:none;">
+                        {{ form.other_id.label_tag }}
+                        {{ form.other_id }}
+                    </div>
                     <div class="col-md-4">{{ form.idn.label_tag }} {{ form.idn }}</div>
                     <div class="col-md-4">{{ form.hid.label_tag }} {{ form.hid }}</div>
                 </div>
@@ -57,7 +62,10 @@
                     <div class="col-md-4">{{ form.education_level.label_tag }} {{ form.education_level }}</div>
                     <div class="col-md-4">{{ form.occupation.label_tag }} {{ form.occupation }}</div>
                 </div>
-
+                <div class="col-md-4 mt-2" id="other-occupation-wrapper" style="display:none;">
+                    {{ form.other_occupation.label_tag }}
+                    {{ form.other_occupation }}
+                </div>
                 <hr>
 
                 <!-- CONTACT -->
@@ -156,4 +164,9 @@
 
     });
 </script>
+
+
+<script src="{% static 'js/subjects/occupation.js' %}"></script>
+<script src="{% static 'js/subjects/id_type.js' %}"></script>
+
 {% endblock %}
