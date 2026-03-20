@@ -2,3 +2,5 @@
 
 from .crf1_model import *
 from .crf1_other_medical_model import *
+from .crf1_nimregenin_model import *
+from .crf1_other_herbal_model import *

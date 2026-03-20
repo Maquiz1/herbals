@@ -6,7 +6,8 @@ from herbal.forms.crfs.crf1_form import CRF1Form
 from herbal.services.visit_completion import update_visit_status
 from django.db import IntegrityError
 from herbal.forms.crfs.crf1_other_medications_form import CRF1OtherMedicalFormSet
-
+from herbal.forms.crfs.crf1_nimregenin_form import CRF1NimregeninFormSet
+from herbal.forms.crfs.crf1_other_herbal_form import CRF1OtherHerbalFormSet
 
 @login_required
 def crf1_form_view(request, pk):
@@ -27,15 +28,33 @@ def crf1_form_view(request, pk):
             instance=crf_instance,
             prefix="othermedicals"
         )
+        nim_formset = CRF1NimregeninFormSet(
+            request.POST,
+            instance=crf_instance,
+            prefix="nimregenins"
+        )
 
-        if form.is_valid() and formset.is_valid():
+        herbal_formset = CRF1OtherHerbalFormSet(
+            request.POST,
+            instance=crf_instance,
+            prefix="otherherbals"
+        )
+        
+        if form.is_valid() and formset.is_valid() and nim_formset.is_valid() and herbal_formset.is_valid():
             crf = form.save(commit=False)
             crf.visit = visit
-            formset.instance = crf
 
             try:
                 crf.save()
+
+                formset.instance = crf
+                nim_formset.instance = crf
+                herbal_formset.instance = crf
+
                 formset.save()
+                nim_formset.save()
+                herbal_formset.save()
+
                 update_visit_status(visit)
 
                 return redirect("herbal:subjects-detail", pk=visit.subject.pk)
@@ -49,6 +68,14 @@ def crf1_form_view(request, pk):
             instance=crf_instance,
             prefix="othermedicals"   # ✅ ADD THIS
         )
+        nim_formset = CRF1NimregeninFormSet(
+            instance=crf_instance,
+            prefix="nimregenins"
+        )
+        herbal_formset = CRF1OtherHerbalFormSet(
+            instance=crf_instance,
+            prefix="otherherbals"
+        )
 
     return render(
         request,
@@ -56,6 +83,8 @@ def crf1_form_view(request, pk):
         {
             "form": form,
             "formset": formset,
+            "nim_formset": nim_formset,
+            "herbal_formset": herbal_formset,
             "visit": visit,
             "is_update": crf_instance is not None
         }

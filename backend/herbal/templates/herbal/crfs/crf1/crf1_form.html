@@ -128,9 +128,11 @@
                                 {{ form.heart|add_class:"form-select" }}
                             </div>
                             <div class="col-md-4 heart-med">
+                                {{ form.heart_medicatn.label_tag }}
                                 {{ form.heart_medicatn|add_class:"form-select" }}
                             </div>
                             <div class="col-md-4 heart-name">
+                                {{ form.heart_medicatn_name.label_tag }}
                                 {{ form.heart_medicatn_name|add_class:"form-control" }}
                             </div>
                         </div>
@@ -143,9 +145,11 @@
                                 {{ form.asthma|add_class:"form-select" }}
                             </div>
                             <div class="col-md-4 asthma-med">
+                                {{ form.asthma_medicatn.label_tag }}
                                 {{ form.asthma_medicatn|add_class:"form-select" }}
                             </div>
                             <div class="col-md-4 asthma-name">
+                                {{ form.asthma_medicatn_name.label_tag }}
                                 {{ form.asthma_medicatn_name|add_class:"form-control" }}
                             </div>
                         </div>
@@ -158,9 +162,11 @@
                                 {{ form.hiv_aids|add_class:"form-select" }}
                             </div>
                             <div class="col-md-4 hiv-med">
+                                {{ form.hiv_aids_medicatn.label_tag }}
                                 {{ form.hiv_aids_medicatn|add_class:"form-select" }}
                             </div>
                             <div class="col-md-4 hiv-name">
+                                {{ form.hiv_aids_medicatn_name.label_tag }}
                                 {{ form.hiv_aids_medicatn_name|add_class:"form-control" }}
                             </div>
                         </div>
@@ -212,35 +218,181 @@
                                         <th>Medication</th>
                                         <th>Medication Name</th>
                                         <th>Remarks</th>
-                                        <th>Delete</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
 
                                 <tbody id="formset-body">
                                     {% for f in formset %}
-                                    <tr>
+                                    <tr class="formset-row">
                                         <td>{{ f.other_specify }}</td>
                                         <td>{{ f.other_medical_medicatn }}</td>
                                         <td>{{ f.other_medicatn_name }}</td>
-                                        <td>{{ f.medication_remarks }}</td>
-                                        <td>{{ f.DELETE }}</td>
+                                        <td>{{ f.remarks }}</td>
+                                        <td>
+                                            {{ f.DELETE|add_class:"d-none" }}
+                                            <button type="button" class="btn btn-sm btn-danger remove-row">
+                                                ✕
+                                            </button>
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                             <script type="text/template" id="empty-form-template">
-                            <tr>
+                            <tr class="formset-row">
                                 <td>{{ formset.empty_form.other_specify }}</td>
                                 <td>{{ formset.empty_form.other_medical_medicatn }}</td>
                                 <td>{{ formset.empty_form.other_medicatn_name }}</td>
-                                <td>{{ formset.empty_form.medication_remarks }}</td>
-                                <td>{{ formset.empty_form.DELETE }}</td>
+                                <td>{{ formset.empty_form.remarks }}</td>
+                                <td>
+                                    {{ formset.empty_form.DELETE|add_class:"d-none" }}
+                                    <button type="button" class="btn btn-sm btn-danger remove-row">
+                                        ✕
+                                    </button>
+                                </td>
                             </tr>
                             </script>
                             <button type="button" class="btn btn-sm btn-primary" id="add-row">
                                 + Add Row
                             </button>
 
+                        </div>
+                    </div>
+                    <div id="nimregenin-table" class="card mb-4 border-0 shadow-sm">
+                        <hr>
+                        <div class="card-header bg-light">
+                            <strong>💊 Nimregenin Treatment</strong>
+                        </div>
+
+                        <div class="card-body">
+
+                            {{ nim_formset.management_form }}
+
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Preparation</th>
+                                        <th>Start</th>
+                                        <th>Ongoing</th>
+                                        <th>End</th>
+                                        <th>Dose</th>
+                                        <th>Frequency</th>
+                                        <th>Remarks</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="nimregenin-body">
+                                    {% for f in nim_formset %}
+                                    <tr class="nim-row">
+                                        <td>{{ f.nimregenin_preparation }}</td>
+                                        <td>{{ f.nimregenin_start }}</td>
+                                        <td>{{ f.nimregenin_ongoing }}</td>
+                                        <td>{{ f.nimregenin_end }}</td>
+                                        <td>{{ f.nimregenin_dose }}</td>
+                                        <td>{{ f.nimregenin_frequency }}</td>
+                                        <td>{{ f.nimregenin_remarks }}</td>
+                                        <td>
+                                            {{ f.DELETE|add_class:"d-none" }}
+                                            <button type="button" class="btn btn-sm btn-danger remove-nim">
+                                                ✕
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+
+                            <script type="text/template" id="nim-empty-form">
+                        <tr class="nim-row">
+                            <td>{{ nim_formset.empty_form.nimregenin_preparation }}</td>
+                            <td>{{ nim_formset.empty_form.nimregenin_start }}</td>
+                            <td>{{ nim_formset.empty_form.nimregenin_ongoing }}</td>
+                            <td>{{ nim_formset.empty_form.nimregenin_end }}</td>
+                            <td>{{ nim_formset.empty_form.nimregenin_dose }}</td>
+                            <td>{{ nim_formset.empty_form.nimregenin_frequency }}</td>
+                            <td>{{ nim_formset.empty_form.nimregenin_remarks }}</td>
+                            <td>
+                                {{ nim_formset.empty_form.DELETE|add_class:"d-none" }}
+                                <button type="button" class="btn btn-sm btn-danger remove-nim">
+                                    ✕
+                                </button>
+                            </td>
+                        </tr>
+                        </script>
+
+                            <button type="button" class="btn btn-primary btn-sm" id="add-nim">
+                                + Add Nimregenin
+                            </button>
+
+                        </div>
+                        <hr>
+                        <div id="herbal-table" class="card mb-4 border-0 shadow-sm">
+
+                            <div class="card-header bg-light">
+                                <strong>🌿 Other Herbal Treatment</strong>
+                            </div>
+
+                            <div class="card-body">
+
+                                {{ herbal_formset.management_form }}
+
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Preparation</th>
+                                            <th>Start</th>
+                                            <th>Ongoing</th>
+                                            <th>End</th>
+                                            <th>Dose</th>
+                                            <th>Frequency</th>
+                                            <th>Remarks</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="herbal-body">
+                                        {% for f in herbal_formset %}
+                                        <tr class="herbal-row">
+                                            <td>{{ f.herbal_preparation }}</td>
+                                            <td>{{ f.herbal_start }}</td>
+                                            <td>{{ f.herbal_ongoing }}</td>
+                                            <td>{{ f.herbal_end }}</td>
+                                            <td>{{ f.herbal_dose }}</td>
+                                            <td>{{ f.herbal_frequency }}</td>
+                                            <td>{{ f.herbal_remarks }}</td>
+                                            <td>
+                                                {{ f.DELETE|add_class:"d-none" }}
+                                                <button type="button"
+                                                    class="btn btn-sm btn-danger remove-herbal">✕</button>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+
+                                <script type="text/template" id="herbal-empty-form">
+                            <tr class="herbal-row">
+                                <td>{{ herbal_formset.empty_form.herbal_preparation }}</td>
+                                <td>{{ herbal_formset.empty_form.herbal_start }}</td>
+                                <td>{{ herbal_formset.empty_form.herbal_ongoing }}</td>
+                                <td>{{ herbal_formset.empty_form.herbal_end }}</td>
+                                <td>{{ herbal_formset.empty_form.herbal_dose }}</td>
+                                <td>{{ herbal_formset.empty_form.herbal_frequency }}</td>
+                                <td>{{ herbal_formset.empty_form.herbal_remarks }}</td>
+                                <td>
+                                    {{ herbal_formset.empty_form.DELETE|add_class:"d-none" }}
+                                    <button type="button" class="btn btn-sm btn-danger remove-herbal">✕</button>
+                                </td>
+                            </tr>
+                            </script>
+
+                                <button type="button" class="btn btn-primary btn-sm" id="add-herbal">
+                                    + Add Herbal
+                                </button>
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -310,4 +462,6 @@
 {% block scripts %}
 <script src="{% static 'js/crf/crf1.js' %}"></script>
 <script src="{% static 'js/crf/crf1_other_medications.js' %}"></script>
+<script src="{% static 'js/crf/crf1_nimregenin.js' %}"></script>
+<script src="{% static 'js/crf/crf1_other_herbal.js' %}"></script>
 {% endblock %}
