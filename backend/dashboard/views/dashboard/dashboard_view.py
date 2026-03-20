@@ -15,9 +15,11 @@ def dashboard_view(request):
     profile = user.staff_profile
     role = profile.role
 
+    # =========================
+    # SUBJECT FILTERING
+    # =========================
     subjects = Subject.objects.all()
 
-    # 🔒 Role filtering
     if role in ["data_clerk", "coordinator"]:
         subjects = subjects.filter(site=profile.site)
 
@@ -53,27 +55,28 @@ def dashboard_view(request):
     ).count()
 
     # =========================
-    # 🎯 OVERALL PROGRESS
+    # 🎯 TARGET FILTERING (IMPORTANT FIX)
     # =========================
     targets = StudyTarget.objects.all()
 
-    # 🔒 Apply SAME role filtering
     if role in ["data_clerk", "coordinator"]:
         targets = targets.filter(site=profile.site)
 
     elif role in ["monitor", "reviewer", "pi"]:
         targets = targets.filter(site__in=profile.assigned_sites.all())
 
+    # =========================
+    # 🎯 OVERALL
+    # =========================
     total_target = targets.aggregate(
         total=Sum("target_enrollment")
     )["total"] or 0
-
     overall_percent = int((enrolled_subjects / total_target) * 100) if total_target > 0 else 0
 
     # =========================
-    # 🏥 SITE PROGRESS
+    # 🏥 SITE PROGRESS (FIXED: use targets)
     # =========================
-    site_progress = StudyTarget.objects.values(
+    site_progress = targets.values(
         "site__name"
     ).annotate(
         target=Sum("target_enrollment"),
@@ -84,9 +87,9 @@ def dashboard_view(request):
     )
 
     # =========================
-    # 🧬 CANCER PROGRESS
+    # 🧬 CANCER PROGRESS (FIXED)
     # =========================
-    cancer_progress = StudyTarget.objects.values(
+    cancer_progress = targets.values(
         "cancer_type__name"
     ).annotate(
         target=Sum("target_enrollment"),
@@ -97,9 +100,9 @@ def dashboard_view(request):
     )
 
     # =========================
-    # 🔬 SITE × CANCER
+    # 🔬 SITE × CANCER (FIXED)
     # =========================
-    detailed_progress = StudyTarget.objects.values(
+    detailed_progress = targets.values(
         "site__name",
         "cancer_type__name",
         "target_enrollment"
@@ -111,25 +114,64 @@ def dashboard_view(request):
     )
 
     # =========================
-    # % CALCULATIONS
+    # PATIENT STATS
     # =========================
+    patient_category_stats = enrollments.values(
+        "pt_category__name"
+    ).annotate(
+        total=Count("id")
+    ).order_by("pt_category__name")
+
+
+    patient_type_stats = enrollments.values(
+        "pt_type__name"
+    ).annotate(
+        total=Count("id")
+    ).order_by("pt_type__name")
+
+
+    patient_combined_stats = enrollments.values(
+        "pt_category__name",
+        "pt_type__name"
+    ).annotate(
+        total=Count("id")
+    ).order_by("pt_category__name", "pt_type__name")
+
+    # =========================
+    # % HELPERS
+    # =========================
+    total_enrolled = enrolled_subjects
+
+    def add_percentage(data, total):
+        results = []
+        for row in data:
+            count = row.get("total", 0)
+            percent = int((count / total) * 100) if total > 0 else 0
+            row["percent"] = percent
+            results.append(row)
+        return results
+
     def add_percent(data, target_field):
         results = []
         for row in data:
             target = row.get(target_field, 0) or 0
             enrolled = row.get("enrolled", 0) or 0
             percent = int((enrolled / target) * 100) if target > 0 else 0
-
             row["percent"] = percent
             results.append(row)
         return results
 
+    # Apply %
     site_progress = add_percent(site_progress, "target")
     cancer_progress = add_percent(cancer_progress, "target")
     detailed_progress = add_percent(detailed_progress, "target_enrollment")
 
+    patient_category_stats = add_percentage(patient_category_stats, total_enrolled)
+    patient_type_stats = add_percentage(patient_type_stats, total_enrolled)
+    patient_combined_stats = add_percentage(patient_combined_stats, total_enrolled)  # ✅ FIXED
+
     # =========================
-    # SITE SUMMARY
+    # OTHER
     # =========================
     site_summary = subjects.values("site__name").annotate(
         total=Count("id")
@@ -137,6 +179,9 @@ def dashboard_view(request):
 
     latest_subjects = subjects.select_related("site").order_by("-created_at")[:10]
 
+    # =========================
+    # RESPONSE
+    # =========================
     return render(request, "dashboard/dashboard.html", {
         "role": role,
 
@@ -162,6 +207,11 @@ def dashboard_view(request):
         "site_progress": site_progress,
         "cancer_progress": cancer_progress,
         "detailed_progress": detailed_progress,
+
+        # Patient
+        "patient_category_stats": patient_category_stats,
+        "patient_type_stats": patient_type_stats,
+        "patient_combined_stats": patient_combined_stats,
 
         # Other
         "site_summary": site_summary,

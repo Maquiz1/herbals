@@ -29,8 +29,8 @@ class Subject(BaseModel):
     
     sex = models.ForeignKey(Sex, on_delete=models.PROTECT)
     
-    hid = models.CharField(max_length=100,blank=True, null=True)
-    idn = models.CharField(max_length=100, blank=True, null=True)
+    hid = models.CharField(max_length=100, unique=True, null=True, blank=True)
+    idn = models.CharField(max_length=100, unique=True, null=True, blank=True)
     
     identification_type = models.ForeignKey(
         IDType,

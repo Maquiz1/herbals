@@ -84,9 +84,16 @@ class Screening(BaseModel):
     def save(self, *args, **kwargs):
 
         # =========================
-        # ✅ SAFE SEX ACCESS
+        # ✅ SAFE SUBJECT ACCESS
         # =========================
-        sex = self.subject.sex_id if self.subject else None
+        subject = getattr(self, "subject", None)
+
+        if not subject:
+            # Save without crashing if subject not yet assigned
+            super().save(*args, **kwargs)
+            return
+
+        sex = subject.sex_id
 
         # =========================
         # 🔥 FORCE NULL FOR NON-APPLICABLE
@@ -109,7 +116,7 @@ class Screening(BaseModel):
         )
 
         # =========================
-        # ✅ SEX-AWARE CANCER LOGIC
+        # ✅ CANCER LOGIC
         # =========================
         common_cancers = [
             self.breast_cancer,
@@ -118,39 +125,31 @@ class Screening(BaseModel):
 
         if sex == 1:
             specific_cancers = [self.prostate_cancer]
-
         elif sex == 2:
             specific_cancers = [self.cervical_cancer]
-
         else:
             specific_cancers = []
 
-        # 🔥 Remove None safely
-        cancer_fields = [
-            f for f in (common_cancers + specific_cancers) if f is not None
-        ]
+        cancer_fields = [f for f in (common_cancers + specific_cancers) if f is not None]
 
-        has_cancer = any(
-            field == YesNoChoices.YES for field in cancer_fields
-        )
+        has_cancer = any(field == YesNoChoices.YES for field in cancer_fields)
 
         self.inclusion_criteria_met = basic_inclusion and has_cancer
 
         # =========================
-        # ✅ SEX-AWARE EXCLUSIONS
+        # ✅ EXCLUSIONS
         # =========================
         exclusion_fields = [
             self.ckd,
             self.liver_disease,
         ]
 
-        if sex == 2:  # Female only
+        if sex == 2:
             exclusion_fields.extend([
                 self.pregnant,
                 self.breast_feeding,
             ])
 
-        # 🔥 Remove None safely
         exclusion_fields = [f for f in exclusion_fields if f is not None]
 
         self.exclusion_criteria_present = any(
@@ -169,12 +168,13 @@ class Screening(BaseModel):
     def clean(self):
         super().clean()
 
-        if not self.subject or not self.subject.sex:
+        subject = getattr(self, "subject", None)
+
+        if not subject or not subject.sex:
             return
 
-        sex_id = self.subject.sex.id
+        sex_id = subject.sex.id
 
-        # ⚠️ This only works AFTER save (M2M exists)
         cancers = self.cancer_types.all()
 
         if sex_id == 1 and cancers.filter(code="CC").exists():
