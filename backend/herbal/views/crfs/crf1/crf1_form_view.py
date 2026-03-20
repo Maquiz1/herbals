@@ -88,19 +88,16 @@ def crf1_form_view(request, pk):
             prefix="otherherbals"
         )
         radio_formset = CRF1RadiotherapyFormSet(
-            request.POST,
             instance=crf_instance,
             prefix="radiotherapies"
         )
 
         chemo_formset = CRF1ChemotherapyFormSet(
-            request.POST,
             instance=crf_instance,
             prefix="chemotherapies"
         )
 
         surgery_formset = CRF1SurgeryFormSet(
-            request.POST,
             instance=crf_instance,
             prefix="surgeries"
         )
