@@ -8,6 +8,10 @@ from django.db import IntegrityError
 from herbal.forms.crfs.crf1_other_medications_form import CRF1OtherMedicalFormSet
 from herbal.forms.crfs.crf1_nimregenin_form import CRF1NimregeninFormSet
 from herbal.forms.crfs.crf1_other_herbal_form import CRF1OtherHerbalFormSet
+from herbal.forms.crfs.crf1_radiotherapy_form import CRF1RadiotherapyFormSet
+from herbal.forms.crfs.crf1_chemotherapy_form import CRF1ChemotherapyFormSet
+from herbal.forms.crfs.crf1_surgery_form import CRF1SurgeryFormSet
+
 
 @login_required
 def crf1_form_view(request, pk):
@@ -23,24 +27,25 @@ def crf1_form_view(request, pk):
 
     if request.method == "POST":
         form = CRF1Form(request.POST, instance=crf_instance)
-        formset = CRF1OtherMedicalFormSet(
-            request.POST,
-            instance=crf_instance,
-            prefix="othermedicals"
-        )
-        nim_formset = CRF1NimregeninFormSet(
-            request.POST,
-            instance=crf_instance,
-            prefix="nimregenins"
-        )
 
-        herbal_formset = CRF1OtherHerbalFormSet(
-            request.POST,
-            instance=crf_instance,
-            prefix="otherherbals"
-        )
-        
-        if form.is_valid() and formset.is_valid() and nim_formset.is_valid() and herbal_formset.is_valid():
+        formset = CRF1OtherMedicalFormSet(request.POST, instance=crf_instance, prefix="othermedicals")
+        nim_formset = CRF1NimregeninFormSet(request.POST, instance=crf_instance, prefix="nimregenins")
+        herbal_formset = CRF1OtherHerbalFormSet(request.POST, instance=crf_instance, prefix="otherherbals")
+
+        # ✅ FIXED HERE
+        radio_formset = CRF1RadiotherapyFormSet(request.POST, instance=crf_instance, prefix="radiotherapies")
+        chemo_formset = CRF1ChemotherapyFormSet(request.POST, instance=crf_instance, prefix="chemotherapies")
+        surgery_formset = CRF1SurgeryFormSet(request.POST, instance=crf_instance, prefix="surgeries")
+
+        if (
+            form.is_valid() and
+            formset.is_valid() and
+            nim_formset.is_valid() and
+            herbal_formset.is_valid() and
+            radio_formset.is_valid() and
+            chemo_formset.is_valid() and
+            surgery_formset.is_valid()
+        ):
             crf = form.save(commit=False)
             crf.visit = visit
 
@@ -50,10 +55,16 @@ def crf1_form_view(request, pk):
                 formset.instance = crf
                 nim_formset.instance = crf
                 herbal_formset.instance = crf
+                radio_formset.instance = crf
+                chemo_formset.instance = crf
+                surgery_formset.instance = crf
 
                 formset.save()
                 nim_formset.save()
                 herbal_formset.save()
+                radio_formset.save()
+                chemo_formset.save()
+                surgery_formset.save()
 
                 update_visit_status(visit)
 
@@ -76,6 +87,23 @@ def crf1_form_view(request, pk):
             instance=crf_instance,
             prefix="otherherbals"
         )
+        radio_formset = CRF1RadiotherapyFormSet(
+            request.POST,
+            instance=crf_instance,
+            prefix="radiotherapies"
+        )
+
+        chemo_formset = CRF1ChemotherapyFormSet(
+            request.POST,
+            instance=crf_instance,
+            prefix="chemotherapies"
+        )
+
+        surgery_formset = CRF1SurgeryFormSet(
+            request.POST,
+            instance=crf_instance,
+            prefix="surgeries"
+        )
 
     return render(
         request,
@@ -85,6 +113,9 @@ def crf1_form_view(request, pk):
             "formset": formset,
             "nim_formset": nim_formset,
             "herbal_formset": herbal_formset,
+            "radio_formset": radio_formset,
+            "chemo_formset": chemo_formset,
+            "surgery_formset": surgery_formset,
             "visit": visit,
             "is_update": crf_instance is not None
         }

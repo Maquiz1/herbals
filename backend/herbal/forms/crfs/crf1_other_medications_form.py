@@ -11,7 +11,7 @@ CRF1OtherMedicalFormSet = inlineformset_factory(
         "other_specify",
         "other_medical_medicatn",
         "other_medicatn_name",
-        "remarks"
+        "medication_remarks"
     ],
     extra=0,
     can_delete=True

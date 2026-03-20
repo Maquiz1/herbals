@@ -24,7 +24,7 @@ class CRF1OtherMedical(models.Model):
 
     other_medicatn_name = models.CharField(max_length=255, blank=True)
 
-    remarks = models.TextField(blank=True)
+    medication_remarks = models.TextField(blank=True)
 
     def __str__(self):
         return self.other_specify

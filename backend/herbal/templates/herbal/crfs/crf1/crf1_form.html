@@ -228,7 +228,7 @@
                                         <td>{{ f.other_specify }}</td>
                                         <td>{{ f.other_medical_medicatn }}</td>
                                         <td>{{ f.other_medicatn_name }}</td>
-                                        <td>{{ f.remarks }}</td>
+                                        <td>{{ f.medication_remarks }}</td>
                                         <td>
                                             {{ f.DELETE|add_class:"d-none" }}
                                             <button type="button" class="btn btn-sm btn-danger remove-row">
@@ -244,7 +244,7 @@
                                 <td>{{ formset.empty_form.other_specify }}</td>
                                 <td>{{ formset.empty_form.other_medical_medicatn }}</td>
                                 <td>{{ formset.empty_form.other_medicatn_name }}</td>
-                                <td>{{ formset.empty_form.remarks }}</td>
+                                <td>{{ formset.empty_form.medication_remarks }}</td>
                                 <td>
                                     {{ formset.empty_form.DELETE|add_class:"d-none" }}
                                     <button type="button" class="btn btn-sm btn-danger remove-row">
@@ -406,7 +406,6 @@
                         <strong>🏥 Prior Treatment</strong>
                     </div>
                     <div class="card-body">
-
                         <div class="row g-3">
                             <div class="col-md-4">
                                 {{ form.radiotherapy_performed.label_tag }}
@@ -421,7 +420,199 @@
                                 {{ form.surgery_performed|add_class:"form-select" }}
                             </div>
                         </div>
+                        <div id="radio-table" class="card mb-4 border-0 shadow-sm">
 
+                            <div class="card-header bg-light">
+                                <strong>📡 Radiotherapy</strong>
+                            </div>
+
+                            <div class="card-body">
+
+                                {{ radio_formset.management_form }}
+
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Type</th>
+                                            <th>Start</th>
+                                            <th>Ongoing</th>
+                                            <th>End</th>
+                                            <th>Dose</th>
+                                            <th>Frequency</th>
+                                            <th>Remarks</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="radio-body">
+                                        {% for f in radio_formset %}
+                                        <tr class="radio-row">
+                                            <td>{{ f.radiotherapy }}</td>
+                                            <td>{{ f.radiotherapy_start }}</td>
+                                            <td>{{ f.radiotherapy_ongoing }}</td>
+                                            <td>{{ f.radiotherapy_end }}</td>
+                                            <td>{{ f.radiotherapy_dose }}</td>
+                                            <td>{{ f.radiotherapy_frequency }}</td>
+                                            <td>{{ f.radiotherapy_remarks }}</td>
+                                            <td>
+                                                {{ f.DELETE|add_class:"d-none" }}
+                                                <button type="button"
+                                                    class="btn btn-sm btn-danger remove-radio">✕</button>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+
+                                <script type="text/template" id="radio-empty">
+                                <tr class="radio-row">
+                                    <td>{{ radio_formset.empty_form.radiotherapy }}</td>
+                                    <td>{{ radio_formset.empty_form.radiotherapy_start }}</td>
+                                    <td>{{ radio_formset.empty_form.radiotherapy_ongoing }}</td>
+                                    <td>{{ radio_formset.empty_form.radiotherapy_end }}</td>
+                                    <td>{{ radio_formset.empty_form.radiotherapy_dose }}</td>
+                                    <td>{{ radio_formset.empty_form.radiotherapy_frequency }}</td>
+                                    <td>{{ radio_formset.empty_form.radiotherapy_remarks }}</td>
+                                    <td>
+                                        {{ radio_formset.empty_form.DELETE|add_class:"d-none" }}
+                                        <button type="button" class="btn btn-sm btn-danger remove-radio">✕</button>
+                                    </td>
+                                </tr>
+                                </script>
+
+                                <button type="button" class="btn btn-primary btn-sm" id="add-radio">
+                                    + Add Radiotherapy
+                                </button>
+
+                            </div>
+                        </div>
+                        <hr>
+                        <div id="chemo-table" class="card mb-4 border-0 shadow-sm">
+
+                            <div class="card-header bg-light">
+                                <strong>💉 Chemotherapy</strong>
+                            </div>
+
+                            <div class="card-body">
+
+                                {{ chemo_formset.management_form }}
+
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Type</th>
+                                            <th>Start</th>
+                                            <th>Ongoing</th>
+                                            <th>End</th>
+                                            <th>Dose</th>
+                                            <th>Frequency</th>
+                                            <th>Remarks</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="chemo-body">
+                                        {% for f in chemo_formset %}
+                                        <tr class="chemo-row">
+                                            <td>{{ f.chemotherapy }}</td>
+                                            <td>{{ f.chemotherapy_start }}</td>
+                                            <td>{{ f.chemotherapy_ongoing }}</td>
+                                            <td>{{ f.chemotherapy_end }}</td>
+                                            <td>{{ f.chemotherapy_dose }}</td>
+                                            <td>{{ f.chemotherapy_frequency }}</td>
+                                            <td>{{ f.chemotherapy_remarks }}</td>
+                                            <td>
+                                                {{ f.DELETE|add_class:"d-none" }}
+                                                <button type="button"
+                                                    class="btn btn-sm btn-danger remove-chemo">✕</button>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+
+                                <script type="text/template" id="chemo-empty">
+                                <tr class="chemo-row">
+                                    <td>{{ chemo_formset.empty_form.chemotherapy }}</td>
+                                    <td>{{ chemo_formset.empty_form.chemotherapy_start }}</td>
+                                    <td>{{ chemo_formset.empty_form.chemotherapy_ongoing }}</td>
+                                    <td>{{ chemo_formset.empty_form.chemotherapy_end }}</td>
+                                    <td>{{ chemo_formset.empty_form.chemotherapy_dose }}</td>
+                                    <td>{{ chemo_formset.empty_form.chemotherapy_frequency }}</td>
+                                    <td>{{ chemo_formset.empty_form.chemotherapy_remarks }}</td>
+                                    <td>
+                                        {{ chemo_formset.empty_form.DELETE|add_class:"d-none" }}
+                                        <button type="button" class="btn btn-sm btn-danger remove-chemo">✕</button>
+                                    </td>
+                                </tr>
+                                </script>
+
+                                <button type="button" class="btn btn-primary btn-sm" id="add-chemo">
+                                    + Add Chemotherapy
+                                </button>
+
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div id="surgery-table" class="card mb-4 border-0 shadow-sm">
+
+                            <div class="card-header bg-light">
+                                <strong>🔪 Surgery</strong>
+                            </div>
+
+                            <div class="card-body">
+
+                                {{ surgery_formset.management_form }}
+
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Procedure</th>
+                                            <th>Date</th>
+                                            <th>Number</th>
+                                            <th>Remarks</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="surgery-body">
+                                        {% for f in surgery_formset %}
+                                        <tr class="surgery-row">
+                                            <td>{{ f.surgery }}</td>
+                                            <td>{{ f.surgery_start }}</td>
+                                            <td>{{ f.surgery_number }}</td>
+                                            <td>{{ f.surgery_remarks }}</td>
+                                            <td>
+                                                {{ f.DELETE|add_class:"d-none" }}
+                                                <button type="button"
+                                                    class="btn btn-sm btn-danger remove-surgery">✕</button>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+
+                                <script type="text/template" id="surgery-empty">
+                                    <tr class="surgery-row">
+                                        <td>{{ surgery_formset.empty_form.surgery }}</td>
+                                        <td>{{ surgery_formset.empty_form.surgery_start }}</td>
+                                        <td>{{ surgery_formset.empty_form.surgery_number }}</td>
+                                        <td>{{ surgery_formset.empty_form.surgery_remarks }}</td>
+                                        <td>
+                                            {{ surgery_formset.empty_form.DELETE|add_class:"d-none" }}
+                                            <button type="button" class="btn btn-sm btn-danger remove-surgery">✕</button>
+                                        </td>
+                                    </tr>
+                                    </script>
+
+                                <button type="button" class="btn btn-primary btn-sm" id="add-surgery">
+                                    + Add Surgery
+                                </button>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <hr>
@@ -464,4 +655,7 @@
 <script src="{% static 'js/crf/crf1_other_medications.js' %}"></script>
 <script src="{% static 'js/crf/crf1_nimregenin.js' %}"></script>
 <script src="{% static 'js/crf/crf1_other_herbal.js' %}"></script>
+<script src="{% static 'js/crf/crf1_radiotherapy.js' %}"></script>
+<script src="{% static 'js/crf/crf1_chemotherapy.js' %}"></script>
+<script src="{% static 'js/crf/crf1_surgery.js' %}"></script>
 {% endblock %}
