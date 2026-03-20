@@ -12,7 +12,7 @@ CRF1ChemotherapyFormSet = inlineformset_factory(
         "chemotherapy_ongoing",
         "chemotherapy_end",
         "chemotherapy_dose",
-        "chemotherapy_frequecy",
+        "chemotherapy_frequency",
         "chemotherapy_remarks"
     ],
     extra=0,

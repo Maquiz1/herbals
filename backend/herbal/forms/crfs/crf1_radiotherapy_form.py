@@ -12,7 +12,7 @@ CRF1RadiotherapyFormSet = inlineformset_factory(
         "radiotherapy_ongoing",
         "radiotherapy_end",
         "radiotherapy_dose",
-        "radiotherapy_frequecy",
+        "radiotherapy_frequency",
         "radiotherapy_remarks"
     ],
     extra=0,
