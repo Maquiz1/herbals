@@ -64,18 +64,25 @@
                 <!-- ===================== -->
                 <!-- NEW TREATMENT -->
                 <!-- ===================== -->
-                <h5>New Treatment</h5>
-                <hr>
+                <div id="new-section">
+                    <h5>New Treatment</h5>
+                    <hr>
 
-                <div class="row">
-                    <div class="col-md-6" id="new-treatment-wrapper">
-                        {{ form.treatment_type.label_tag }}
-                        {{ form.treatment_type }}
-                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            {{ form.treatment_type.label_tag }}
+                            {{ form.treatment_type }}
+                        </div>
 
-                    <div class="col-md-6" id="new-date-wrapper">
-                        {{ form.treatment_date.label_tag }}
-                        {{ form.treatment_date }}
+                        <div class="col-md-4" id="new-date-wrapper">
+                            {{ form.treatment_date.label_tag }}
+                            {{ form.treatment_date }}
+                        </div>
+
+                        <div class="col-md-4" id="new-other-wrapper">
+                            {{ form.treatment_other.label_tag }}
+                            {{ form.treatment_other }}
+                        </div>
                     </div>
                 </div>
 
@@ -84,36 +91,47 @@
                 <!-- ===================== -->
                 <!-- PREVIOUS TREATMENT -->
                 <!-- ===================== -->
-                <h5>Previous Treatment</h5>
-                <hr>
+                <div id="previous-section">
+                    <h5>Previous Treatment</h5>
+                    <hr>
 
-                <div class="row">
-                    <div class="col-md-6" id="previous-treatment-wrapper">
-                        {{ form.previous_treatment.label_tag }}
-                        {{ form.previous_treatment }}
-                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            {{ form.previous_treatment.label_tag }}
+                            {{ form.previous_treatment }}
+                        </div>
 
-                    <div class="col-md-6" id="previous-date-wrapper">
-                        {{ form.previous_date.label_tag }}
-                        {{ form.previous_date }}
+                        <div class="col-md-4" id="previous-date-wrapper">
+                            {{ form.previous_date.label_tag }}
+                            {{ form.previous_date }}
+                        </div>
+
+                        <div class="col-md-4" id="previous-other-wrapper">
+                            {{ form.previous_other.label_tag }}
+                            {{ form.previous_other }}
+                        </div>
                     </div>
                 </div>
+
                 <hr>
+
                 <!-- ===================== -->
                 <!-- CYCLES -->
                 <!-- ===================== -->
-                <h5>Cycles</h5>
-                <hr>
+                <div id="cycle-section">
+                    <h5>Cycles</h5>
+                    <hr>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ form.total_cycle.label_tag }}
-                        {{ form.total_cycle }}
-                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.total_cycle.label_tag }}
+                            {{ form.total_cycle }}
+                        </div>
 
-                    <div class="col-md-6">
-                        {{ form.cycle_number.label_tag }}
-                        {{ form.cycle_number }}
+                        <div class="col-md-6">
+                            {{ form.cycle_number.label_tag }}
+                            {{ form.cycle_number }}
+                        </div>
                     </div>
                 </div>
 
@@ -149,7 +167,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'js/enrollments/sex.js' %}"></script>
-<script src="{% static 'js/enrollments/consent.js' %}"></script>
-<script src="{% static 'js/enrollments/nimregenin.js' %}"></script>
+<script src="{% static 'js/enrollments/pt_type.js' %}"></script>
+<script src="{% static 'js/enrollments/treatment_type.js' %}"></script>
+<script src="{% static 'js/enrollments/previous_treatment.js' %}"></script>
 {% endblock %}
