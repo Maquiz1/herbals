@@ -14,11 +14,20 @@ class EnrollmentForm(forms.ModelForm):
             "pt_category",
             "pt_type",
             "treatment_type",
+            "treatment_date",
+            "previous_treatment",
             "previous_date",
             "total_cycle",
             "cycle_number",
             "remarks",
         ]
+        
+        labels={
+            "treatment_type":"New Treatment type",
+            "treatment_date":"Date Started New Treatment type",
+            "previous_treatment":"Previous(Past) Treatment type",
+            "previous_date":"Date Started Previous(Past) Treatment"
+        }
 
         widgets = {
             "enrollment_date": forms.DateInput(
@@ -37,6 +46,13 @@ class EnrollmentForm(forms.ModelForm):
                 attrs={"class": "form-select"}
             ),
 
+            "treatment_date": forms.DateInput(
+                attrs={"type": "date", "class": "form-control"}
+            ),
+            
+            "previous_treatment": forms.Select(
+                attrs={"class": "form-select"}
+            ),
             "previous_date": forms.DateInput(
                 attrs={"type": "date", "class": "form-control"}
             ),

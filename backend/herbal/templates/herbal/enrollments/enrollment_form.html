@@ -57,13 +57,31 @@
                 <hr>
 
                 <!-- ===================== -->
-                <!-- TREATMENT -->
+                <!-- NEW TREATMENT -->
                 <!-- ===================== -->
-                <h5>Treatment</h5>
+                <h5>New Treatment</h5>
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-4" id="new-treatment-wrapper">
                         {{ form.treatment_type.label_tag }}
                         {{ form.treatment_type }}
+                    </div>
+
+                    <div class="col-md-4" id="new-date-wrapper">
+                        {{ form.treatment_date.label_tag }}
+                        {{ form.treatment_date }}
+                    </div>
+                </div>
+
+                <hr>
+
+                <!-- ===================== -->
+                <!-- PREVIOUS TREATMENT -->
+                <!-- ===================== -->
+                <h5>Previous Treatment</h5>
+                <div class="row">
+                    <div class="col-md-4"  id="previous-treatment-wrapper">
+                        {{ form.previous_treatment.label_tag }}
+                        {{ form.previous_treatment }}
                     </div>
 
                     <div class="col-md-4" id="previous-date-wrapper">
@@ -71,8 +89,6 @@
                         {{ form.previous_date }}
                     </div>
                 </div>
-
-                <hr>
 
                 <!-- ===================== -->
                 <!-- CYCLES -->

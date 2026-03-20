@@ -4,7 +4,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from ..screening.screening_model import Screening
 from core.models import BaseModel
-
+from choices.models import PatientType,PatientCategory,TreatmentType
 
 class Enrollment(BaseModel):
 
@@ -16,50 +16,45 @@ class Enrollment(BaseModel):
 
     enrollment_date = models.DateField()
 
-    # =========================
-    # ✅ PATIENT CATEGORY
-    # =========================
-    PT_CATEGORY_CHOICES = [
-        ("intervention", "Intervention"),
-        ("control", "Control"),
-    ]
-
-    pt_category = models.CharField(
-        max_length=20,
-        choices=PT_CATEGORY_CHOICES
+    pt_category = models.ForeignKey(
+        PatientCategory,
+        on_delete=models.PROTECT,
+        related_name="subject_categories"
     )
 
-    # =========================
-    # ✅ PATIENT TYPE
-    # =========================
-    PT_TYPE_CHOICES = [
-        ("new", "New"),
-        ("follow_up", "Follow Up"),
-    ]
-
-    pt_type = models.CharField(
-        max_length=20,
-        choices=PT_TYPE_CHOICES
+    pt_type = models.ForeignKey(
+        PatientType,
+        on_delete=models.PROTECT,
+        related_name="subject_types"
     )
 
     # =========================
     # ✅ TREATMENT TYPE
     # =========================
-    TREATMENT_TYPE_CHOICES = [
-        ("chemo", "Chemotherapy"),
-        ("radiation", "Radiation"),
-        ("surgery", "Surgery"),
-        ("other", "Other"),
-    ]
-
-    treatment_type = models.CharField(
-        max_length=50,
-        choices=TREATMENT_TYPE_CHOICES
+    treatment_type = models.ForeignKey(
+        TreatmentType,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="subject_treatments"
     )
 
+    treatment_date = models.DateField(
+        null=True,
+        blank=True
+    )
+    
     # =========================
     # ✅ PREVIOUS VISIT DATE
     # =========================
+    previous_treatment = models.ForeignKey(
+        TreatmentType,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="subject_previous_treatment"
+    )
+        
     previous_date = models.DateField(
         null=True,
         blank=True
