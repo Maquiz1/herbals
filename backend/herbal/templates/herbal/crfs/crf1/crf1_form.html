@@ -1,37 +1,254 @@
 {% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
 
 {% block content %}
 
-<div class="container">
+<div class="container mt-4">
 
-    <h3>
+    <!-- ===================== -->
+    <!-- SUBJECT HEADER -->
+    <!-- ===================== -->
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="mb-1 text-primary">
+                    <i class="bi bi-file-earmark-medical"></i> CRF1
+                </h5>
+                <small class="text-muted">
+                    Subject: <strong>{{ visit.subject.subject_id }}</strong> |
+                    Visit: <strong>{{ visit.get_visit_day_display }}</strong>
+                </small>
+            </div>
 
-        {% if is_update %}
-        Edit CRF1
-        {% else %}
-        Create CRF1
-        {% endif %}
+            <div>
+                <span class="badge bg-{% if is_update %}warning{% else %}success{% endif %}">
+                    {% if is_update %}Update Mode{% else %}New Entry{% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
 
-        — {{ visit.get_visit_day_display }}
+    <!-- ===================== -->
+    <!-- FORM CARD -->
+    <!-- ===================== -->
+    <div class="card shadow border-0">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                {% if is_update %}
+                    <i class="bi bi-pencil-square"></i> Update CRF1
+                {% else %}
+                    <i class="bi bi-plus-circle"></i> Create CRF1
+                {% endif %}
+            </h5>
+        </div>
 
-    </h3>
+        <div class="card-body">
 
-    <form method="post">
+            <form method="post" novalidate>
+                {% csrf_token %}
 
-        {% csrf_token %}
+                <!-- ERRORS -->
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
 
-        {{ form.as_p }}
+                {% for field in form %}
+                    {% if field.errors %}
+                        <div class="alert alert-danger py-2">
+                            <strong>{{ field.label }}:</strong> {{ field.errors|striptags }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
 
-        <button class="btn btn-success">
-            Save
-        </button>
+                <!-- ===================== -->
+                <!-- DIAGNOSIS -->
+                <!-- ===================== -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <strong>📅 Diagnosis</strong>
+                    </div>
+                    <div class="card-body">
+                        {{ form.diagnosis_date.label_tag }}
+                        {{ form.diagnosis_date|add_class:"form-control" }}
+                    </div>
+                </div>
 
-        <a href="{% url 'herbal:subjects-detail' visit.subject.pk %}" class="btn btn-secondary">
-            Cancel
-        </a>
+                <!-- ===================== -->
+                <!-- MEDICAL CONDITIONS -->
+                <!-- ===================== -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <strong>🩺 Medical Conditions</strong>
+                    </div>
 
-    </form>
+                    <div class="card-body">
+
+                        <!-- Diabetes -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                {{ form.diabetic.label_tag }}
+                                {{ form.diabetic|add_class:"form-select" }}
+                            </div>
+                            <div class="col-md-4 diabetic-med">
+                                {{ form.diabetic_medicatn.label_tag }}
+                                {{ form.diabetic_medicatn|add_class:"form-select" }}
+                            </div>
+                            <div class="col-md-4 diabetic-name">
+                                {{ form.diabetic_medicatn_name.label_tag }}
+                                {{ form.diabetic_medicatn_name|add_class:"form-control" }}
+                            </div>
+                        </div>
+
+                        <!-- Hypertension -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                {{ form.hypertension.label_tag }}
+                                {{ form.hypertension|add_class:"form-select" }}
+                            </div>
+                            <div class="col-md-4 hypertension-med">
+                                {{ form.hypertension_medicatn|add_class:"form-select" }}
+                            </div>
+                            <div class="col-md-4 hypertension-name">
+                                {{ form.hypertension_medicatn_name|add_class:"form-control" }}
+                            </div>
+                        </div>
+
+                        <!-- Heart -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                {{ form.heart.label_tag }}
+                                {{ form.heart|add_class:"form-select" }}
+                            </div>
+                            <div class="col-md-4 heart-med">
+                                {{ form.heart_medicatn|add_class:"form-select" }}
+                            </div>
+                            <div class="col-md-4 heart-name">
+                                {{ form.heart_medicatn_name|add_class:"form-control" }}
+                            </div>
+                        </div>
+
+                        <!-- Asthma -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                {{ form.asthma.label_tag }}
+                                {{ form.asthma|add_class:"form-select" }}
+                            </div>
+                            <div class="col-md-4 asthma-med">
+                                {{ form.asthma_medicatn|add_class:"form-select" }}
+                            </div>
+                            <div class="col-md-4 asthma-name">
+                                {{ form.asthma_medicatn_name|add_class:"form-control" }}
+                            </div>
+                        </div>
+
+                        <!-- HIV -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                {{ form.hiv_aids.label_tag }}
+                                {{ form.hiv_aids|add_class:"form-select" }}
+                            </div>
+                            <div class="col-md-4 hiv-med">
+                                {{ form.hiv_aids_medicatn|add_class:"form-select" }}
+                            </div>
+                            <div class="col-md-4 hiv-name">
+                                {{ form.hiv_aids_medicatn_name|add_class:"form-control" }}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ===================== -->
+                <!-- OTHER -->
+                <!-- ===================== -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <strong>🌿 Other Information</strong>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                {{ form.other_medical.label_tag }}
+                                {{ form.other_medical|add_class:"form-select" }}
+                            </div>
+
+                            <div class="col-md-4">
+                                {{ form.nimregenin_herbal.label_tag }}
+                                {{ form.nimregenin_herbal|add_class:"form-select" }}
+                            </div>
+
+                            <div class="col-md-4">
+                                {{ form.other_herbal.label_tag }}
+                                {{ form.other_herbal|add_class:"form-select" }}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ===================== -->
+                <!-- PRIOR TREATMENT -->
+                <!-- ===================== -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <strong>🏥 Prior Treatment</strong>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                {{ form.radiotherapy_performed.label_tag }}
+                                {{ form.radiotherapy_performed|add_class:"form-select" }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.chemotherapy_performed.label_tag }}
+                                {{ form.chemotherapy_performed|add_class:"form-select" }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.surgery_performed.label_tag }}
+                                {{ form.surgery_performed|add_class:"form-select" }}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ===================== -->
+                <!-- REMARKS -->
+                <!-- ===================== -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <strong>📝 Remarks</strong>
+                    </div>
+                    <div class="card-body">
+                        {{ form.remarks|add_class:"form-control" }}
+                    </div>
+                </div>
+
+                <!-- ACTIONS -->
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'herbal:subjects-detail' visit.subject.pk %}" class="btn btn-outline-secondary">
+                        ← Cancel
+                    </a>
+
+                    <button class="btn btn-success px-4">
+                        {% if is_update %} Update {% else %} Save {% endif %}
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
 
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/crf/crf1.js' %}"></script>
 {% endblock %}
