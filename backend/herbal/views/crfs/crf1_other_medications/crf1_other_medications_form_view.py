@@ -5,50 +5,38 @@ from herbal.models import VisitSchedule
 from herbal.forms.crfs.crf1_form import CRF1Form
 from herbal.services.visit_completion import update_visit_status
 from django.db import IntegrityError
+
 from herbal.forms.crfs.crf1_other_medications_form import CRF1OtherMedicalFormSet
 
-
 @login_required
-def crf1_form_view(request, pk):
+def crf1_other_meication_form_view(request, pk):
 
     visit = get_object_or_404(VisitSchedule, pk=pk)
 
-    # Only allow Day 0
     if visit.visit_day != "D0":
         return redirect("herbal:subjects-detail", pk=visit.subject.pk)
 
-    # Check if CRF already exists
     crf_instance = getattr(visit, "crf1", None)
 
     if request.method == "POST":
         form = CRF1Form(request.POST, instance=crf_instance)
-        formset = CRF1OtherMedicalFormSet(
-            request.POST,
-            instance=crf_instance,
-            prefix="othermedicals"
-        )
+        formset = CRF1OtherMedicalFormSet(request.POST, instance=crf_instance)
 
         if form.is_valid() and formset.is_valid():
             crf = form.save(commit=False)
             crf.visit = visit
+            crf.save()
+
             formset.instance = crf
+            formset.save()
 
-            try:
-                crf.save()
-                formset.save()
-                update_visit_status(visit)
+            update_visit_status(visit)
 
-                return redirect("herbal:subjects-detail", pk=visit.subject.pk)
-
-            except IntegrityError:
-                form.add_error(None, "CRF1 already exists for this visit.")
+            return redirect("herbal:subjects-detail", pk=visit.subject.pk)
 
     else:
         form = CRF1Form(instance=crf_instance)
-        formset = CRF1OtherMedicalFormSet(
-            instance=crf_instance,
-            prefix="othermedicals"   # ✅ ADD THIS
-        )
+        formset = CRF1OtherMedicalFormSet(instance=crf_instance)
 
     return render(
         request,
