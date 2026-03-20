@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const otherMedical = document.getElementById("id_other_medical");
     const tableCard = document.getElementById("other-medical-table");
     const addBtn = document.getElementById("add-row");
-    const tbody = document.getElementById("formset-body");
+    const tbody = document.getElementById("other-body");
     const totalForms = document.getElementById("id_othermedicals-TOTAL_FORMS");
 
     // =========================
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function toggleTable() {
         const valText = otherMedical.options[otherMedical.selectedIndex].text.toLowerCase();
 
-        const hasRows = tbody.querySelectorAll(".formset-row:not([style*='display: none'])").length > 0;
+        const hasRows = tbody.querySelectorAll(".other-row:not([style*='display: none'])").length > 0;
 
         if (valText === "yes" || hasRows) {
             tableCard.style.display = "";
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let formCount = parseInt(totalForms.value);
 
-        let template = document.getElementById("empty-form-template")?.innerHTML;
+        let template = document.getElementById("other-empty-form")?.innerHTML;
 
         if (!template) {
             console.error("Empty form template not found!");
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 row.remove();
 
                 // update TOTAL_FORMS
-                totalForms.value = tbody.querySelectorAll(".formset-row").length;
+                totalForms.value = tbody.querySelectorAll(".other-row").length;
             }
 
             toggleTable();
@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // =========================
     document.querySelector("form").addEventListener("submit", function () {
 
-        document.querySelectorAll(".formset-row").forEach(row => {
+        document.querySelectorAll(".other-row").forEach(row => {
 
             const inputs = row.querySelectorAll("input, select, textarea");
 

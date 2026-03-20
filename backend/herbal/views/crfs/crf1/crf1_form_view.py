@@ -28,7 +28,7 @@ def crf1_form_view(request, pk):
     if request.method == "POST":
         form = CRF1Form(request.POST, instance=crf_instance)
 
-        formset = CRF1OtherMedicalFormSet(request.POST, instance=crf_instance, prefix="othermedicals")
+        other_formset = CRF1OtherMedicalFormSet(request.POST, instance=crf_instance, prefix="othermedicals")
         nim_formset = CRF1NimregeninFormSet(request.POST, instance=crf_instance, prefix="nimregenins")
         herbal_formset = CRF1OtherHerbalFormSet(request.POST, instance=crf_instance, prefix="otherherbals")
 
@@ -39,7 +39,7 @@ def crf1_form_view(request, pk):
 
         if (
             form.is_valid() and
-            formset.is_valid() and
+            other_formset.is_valid() and
             nim_formset.is_valid() and
             herbal_formset.is_valid() and
             radio_formset.is_valid() and
@@ -52,14 +52,14 @@ def crf1_form_view(request, pk):
             try:
                 crf.save()
 
-                formset.instance = crf
+                other_formset.instance = crf
                 nim_formset.instance = crf
                 herbal_formset.instance = crf
                 radio_formset.instance = crf
                 chemo_formset.instance = crf
                 surgery_formset.instance = crf
 
-                formset.save()
+                other_formset.save()
                 nim_formset.save()
                 herbal_formset.save()
                 radio_formset.save()
@@ -75,7 +75,7 @@ def crf1_form_view(request, pk):
 
     else:
         form = CRF1Form(instance=crf_instance)
-        formset = CRF1OtherMedicalFormSet(
+        other_formset = CRF1OtherMedicalFormSet(
             instance=crf_instance,
             prefix="othermedicals"   # ✅ ADD THIS
         )
@@ -107,7 +107,7 @@ def crf1_form_view(request, pk):
         "herbal/crfs/crf1/crf1_form.html",
         {
             "form": form,
-            "formset": formset,
+            "other_formset": other_formset,
             "nim_formset": nim_formset,
             "herbal_formset": herbal_formset,
             "radio_formset": radio_formset,

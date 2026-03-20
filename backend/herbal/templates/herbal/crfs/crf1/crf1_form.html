@@ -209,7 +209,7 @@
 
                         <div class="card-body">
 
-                            {{ formset.management_form }}
+                            {{ other_formset.management_form }}
 
                             <table class="table table-bordered">
                                 <thead>
@@ -222,9 +222,9 @@
                                     </tr>
                                 </thead>
 
-                                <tbody id="formset-body">
-                                    {% for f in formset %}
-                                    <tr class="formset-row">
+                                <tbody id="other-body">
+                                    {% for f in other_formset %}
+                                    <tr class="other-row">
                                         <td>{{ f.other_specify }}</td>
                                         <td>{{ f.other_medical_medicatn }}</td>
                                         <td>{{ f.other_medicatn_name }}</td>
@@ -239,14 +239,14 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
-                            <script type="text/template" id="empty-form-template">
-                            <tr class="formset-row">
-                                <td>{{ formset.empty_form.other_specify }}</td>
-                                <td>{{ formset.empty_form.other_medical_medicatn }}</td>
-                                <td>{{ formset.empty_form.other_medicatn_name }}</td>
-                                <td>{{ formset.empty_form.medication_remarks }}</td>
+                            <script type="text/template" id="other-empty-form">
+                            <tr class="other-row">
+                                <td>{{ other_formset.empty_form.other_specify }}</td>
+                                <td>{{ other_formset.empty_form.other_medical_medicatn }}</td>
+                                <td>{{ other_formset.empty_form.other_medicatn_name }}</td>
+                                <td>{{ other_formset.empty_form.medication_remarks }}</td>
                                 <td>
-                                    {{ formset.empty_form.DELETE|add_class:"d-none" }}
+                                    {{ other_formset.empty_form.DELETE|add_class:"d-none" }}
                                     <button type="button" class="btn btn-sm btn-danger remove-row">
                                         ✕
                                     </button>
