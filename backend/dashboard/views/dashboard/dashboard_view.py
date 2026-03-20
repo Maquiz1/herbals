@@ -1,11 +1,11 @@
-from django.conf import settings
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from django.db.models import Count
+from django.db.models import Count, Sum
 
 from herbal.models import Subject, Screening, Enrollment, VisitSchedule
 from herbal.models.crfs.crf5.crf5_model import CRF5
+from herbal.models import StudyTarget
 
 
 @login_required
@@ -17,14 +17,13 @@ def dashboard_view(request):
 
     subjects = Subject.objects.all()
 
-    # 🔒 Role-based filtering
+    # 🔒 Role filtering
     if role in ["data_clerk", "coordinator"]:
         subjects = subjects.filter(site=profile.site)
 
     elif role in ["monitor", "reviewer", "pi"]:
         subjects = subjects.filter(site__in=profile.assigned_sites.all())
 
-    # Related datasets
     screenings = Screening.objects.filter(subject__in=subjects)
     enrollments = Enrollment.objects.filter(screening__subject__in=subjects)
     visits = VisitSchedule.objects.filter(
@@ -33,7 +32,9 @@ def dashboard_view(request):
 
     today = timezone.now().date()
 
-    # 📊 KPI counts
+    # =========================
+    # KPI
+    # =========================
     total_subjects = subjects.count()
     screened_subjects = screenings.count()
     enrolled_subjects = enrollments.count()
@@ -51,25 +52,95 @@ def dashboard_view(request):
         enrollment__screening__subject__in=subjects
     ).count()
 
-    # 📈 Recruitment progress
-    target_enrollment = settings.STUDY_TARGET_ENROLLMENT
-    recruitment_percent = 0
+    # =========================
+    # 🎯 OVERALL PROGRESS
+    # =========================
+    targets = StudyTarget.objects.all()
 
-    if target_enrollment > 0:
-        recruitment_percent = int((enrolled_subjects / target_enrollment) * 100)
+    # 🔒 Apply SAME role filtering
+    if role in ["data_clerk", "coordinator"]:
+        targets = targets.filter(site=profile.site)
 
-    # 🏥 Site performance (based on registered subjects)
+    elif role in ["monitor", "reviewer", "pi"]:
+        targets = targets.filter(site__in=profile.assigned_sites.all())
+
+    total_target = targets.aggregate(
+        total=Sum("target_enrollment")
+    )["total"] or 0
+
+    overall_percent = int((enrolled_subjects / total_target) * 100) if total_target > 0 else 0
+
+    # =========================
+    # 🏥 SITE PROGRESS
+    # =========================
+    site_progress = StudyTarget.objects.values(
+        "site__name"
+    ).annotate(
+        target=Sum("target_enrollment"),
+        enrolled=Count(
+            "cancer_type__screening_cancer__enrollment",
+            distinct=True
+        )
+    )
+
+    # =========================
+    # 🧬 CANCER PROGRESS
+    # =========================
+    cancer_progress = StudyTarget.objects.values(
+        "cancer_type__name"
+    ).annotate(
+        target=Sum("target_enrollment"),
+        enrolled=Count(
+            "cancer_type__screening_cancer__enrollment",
+            distinct=True
+        )
+    )
+
+    # =========================
+    # 🔬 SITE × CANCER
+    # =========================
+    detailed_progress = StudyTarget.objects.values(
+        "site__name",
+        "cancer_type__name",
+        "target_enrollment"
+    ).annotate(
+        enrolled=Count(
+            "cancer_type__screening_cancer__enrollment",
+            distinct=True
+        )
+    )
+
+    # =========================
+    # % CALCULATIONS
+    # =========================
+    def add_percent(data, target_field):
+        results = []
+        for row in data:
+            target = row.get(target_field, 0) or 0
+            enrolled = row.get("enrolled", 0) or 0
+            percent = int((enrolled / target) * 100) if target > 0 else 0
+
+            row["percent"] = percent
+            results.append(row)
+        return results
+
+    site_progress = add_percent(site_progress, "target")
+    cancer_progress = add_percent(cancer_progress, "target")
+    detailed_progress = add_percent(detailed_progress, "target_enrollment")
+
+    # =========================
+    # SITE SUMMARY
+    # =========================
     site_summary = subjects.values("site__name").annotate(
         total=Count("id")
-    ).order_by("site__name")
+    )
 
-    # 🆕 Latest subjects (status comes from model property)
     latest_subjects = subjects.select_related("site").order_by("-created_at")[:10]
 
-    context = {
+    return render(request, "dashboard/dashboard.html", {
         "role": role,
 
-        # KPIs
+        # KPI
         "total_subjects": total_subjects,
         "screened_subjects": screened_subjects,
         "enrolled_subjects": enrolled_subjects,
@@ -83,13 +154,16 @@ def dashboard_view(request):
         # Safety
         "adverse_events": adverse_events,
 
-        # Recruitment
-        "target_enrollment": target_enrollment,
-        "recruitment_percent": recruitment_percent,
+        # Overall
+        "total_target": total_target,
+        "overall_percent": overall_percent,
 
-        # Tables
+        # Progress
+        "site_progress": site_progress,
+        "cancer_progress": cancer_progress,
+        "detailed_progress": detailed_progress,
+
+        # Other
         "site_summary": site_summary,
         "latest_subjects": latest_subjects,
-    }
-
-    return render(request, "dashboard/dashboard.html", context)
+    })

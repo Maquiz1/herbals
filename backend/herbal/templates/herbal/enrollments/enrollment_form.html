@@ -12,31 +12,36 @@
 
     <h3>
         {% if is_update %}
-            Update Enrollment
+        Update Enrollment
         {% else %}
-            Create Enrollment
+        Create Enrollment
         {% endif %}
     </h3>
+    <hr>
 
     <div class="card">
         <div class="card-body">
 
             <form method="post" novalidate>
                 {% csrf_token %}
+                <hr>
 
                 <!-- GLOBAL ERRORS -->
                 {% for field in form %}
-                    {% if field.errors %}
-                        <div class="alert alert-danger">
-                            <strong>{{ field.label }}:</strong> {{ field.errors|striptags }}
-                        </div>
-                    {% endif %}
+                {% if field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ field.label }}:</strong> {{ field.errors|striptags }}
+                </div>
+                {% endif %}
                 {% endfor %}
+                <hr>
 
                 <!-- ===================== -->
                 <!-- BASIC INFO -->
                 <!-- ===================== -->
                 <h5>Enrollment Info</h5>
+                <hr>
+
                 <div class="row">
                     <div class="col-md-4">
                         {{ form.enrollment_date.label_tag }}
@@ -60,13 +65,15 @@
                 <!-- NEW TREATMENT -->
                 <!-- ===================== -->
                 <h5>New Treatment</h5>
+                <hr>
+
                 <div class="row">
-                    <div class="col-md-4" id="new-treatment-wrapper">
+                    <div class="col-md-6" id="new-treatment-wrapper">
                         {{ form.treatment_type.label_tag }}
                         {{ form.treatment_type }}
                     </div>
 
-                    <div class="col-md-4" id="new-date-wrapper">
+                    <div class="col-md-6" id="new-date-wrapper">
                         {{ form.treatment_date.label_tag }}
                         {{ form.treatment_date }}
                     </div>
@@ -78,29 +85,33 @@
                 <!-- PREVIOUS TREATMENT -->
                 <!-- ===================== -->
                 <h5>Previous Treatment</h5>
+                <hr>
+
                 <div class="row">
-                    <div class="col-md-4"  id="previous-treatment-wrapper">
+                    <div class="col-md-6" id="previous-treatment-wrapper">
                         {{ form.previous_treatment.label_tag }}
                         {{ form.previous_treatment }}
                     </div>
 
-                    <div class="col-md-4" id="previous-date-wrapper">
+                    <div class="col-md-6" id="previous-date-wrapper">
                         {{ form.previous_date.label_tag }}
                         {{ form.previous_date }}
                     </div>
                 </div>
-
+                <hr>
                 <!-- ===================== -->
                 <!-- CYCLES -->
                 <!-- ===================== -->
                 <h5>Cycles</h5>
+                <hr>
+
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         {{ form.total_cycle.label_tag }}
                         {{ form.total_cycle }}
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         {{ form.cycle_number.label_tag }}
                         {{ form.cycle_number }}
                     </div>
