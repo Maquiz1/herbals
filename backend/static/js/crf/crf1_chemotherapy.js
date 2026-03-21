@@ -1,50 +1,44 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    const btn = document.getElementById("add-chemo");
-    const body = document.getElementById("chemo-body");
-    const total = document.getElementById("id_chemotherapies-TOTAL_FORMS");
-    const toggle = document.getElementById("id_chemotherapy_performed");
-    const table = document.getElementById("chemo-table");
-
-    if (!btn || !body || !total) return;
+    const ChemotherapyPerformed = document.getElementById("id_chemotherapy_performed");
+    const tableCard = document.getElementById("chemo-table");
+    const addBtn = document.getElementById("add-chemo");
+    const tbody = document.getElementById("chemo-body");
+    const totalForms = document.getElementById("id_chemotherapies-TOTAL_FORMS");
 
     function toggleTable() {
-        const isYes = toggle?.value === "1";
+        const valText = ChemotherapyPerformed.options[ChemotherapyPerformed.selectedIndex].text.toLowerCase();
 
-        table.style.display = isYes ? "" : "none";
+        const hasRows = tbody.querySelectorAll(".chemo-row:not([style*='display: none'])").length > 0;
 
-        if (isYes && body.children.length === 0) {
-            btn.click();
+        if (valText === "yes" || hasRows) {
+            tableCard.style.display = "";
+        } else {
+            tableCard.style.display = "none";
         }
 
-        btn.disabled = !isYes;
+        // ✅ HERE
+        addBtn.disabled = valText !== "yes";
     }
 
-    toggle?.addEventListener("change", toggleTable);
+    ChemotherapyPerformed.addEventListener("change", toggleTable);
     toggleTable();
 
-    btn.addEventListener("click", function () {
-
-        let count = parseInt(total.value);
-
-        let template = document.getElementById("chemo-empty")?.innerHTML;
-
-        if (!template) return;
-
-        template = template.replace(/__prefix__/g, count);
+    addBtn.addEventListener("click", function () {
+        let count = parseInt(totalForms.value);
+        let template = document.getElementById("chemo-empty").innerHTML.replace(/__prefix__/g, count);
 
         const temp = document.createElement("tbody");
         temp.innerHTML = template;
 
-        body.appendChild(temp.firstElementChild);
+        tbody.appendChild(temp.firstElementChild);
+        totalForms.value = count + 1;
 
-        total.value = count + 1;
+        toggleTable();
     });
 
-    body.addEventListener("click", function (e) {
-
+    tbody.addEventListener("click", function (e) {
         if (e.target.classList.contains("remove-chemo")) {
-
             const row = e.target.closest("tr");
             const del = row.querySelector("input[type='checkbox']");
 
@@ -53,7 +47,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 row.style.display = "none";
             } else {
                 row.remove();
-                total.value = body.querySelectorAll(".chemo-row").length;
+                totalForms.value = tbody.querySelectorAll(".chemo-row").length;
+            }
+
+            toggleTable();
+        }
+    });
+
+    tbody.addEventListener("change", function (e) {
+        if (e.target.name.includes("chemotherapy_ongoing")) {
+            const row = e.target.closest("tr");
+            const end = row.querySelector("input[name*='chemotherapy_end']");
+
+            if (e.target.value === "1") {
+                end.value = "";
+                end.closest("td").style.display = "none";
+            } else {
+                end.closest("td").style.display = "";
             }
         }
     });

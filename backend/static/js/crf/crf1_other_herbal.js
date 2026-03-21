@@ -1,59 +1,39 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    const btn = document.getElementById("add-herbal");
-    const body = document.getElementById("herbal-body");
-    const total = document.getElementById("id_otherherbals-TOTAL_FORMS");
     const toggle = document.getElementById("id_other_herbal");
-    const table = document.getElementById("herbal-table");
+    const tableCard = document.getElementById("herbal-table");
+    const addBtn = document.getElementById("add-herbal");
+    const tbody = document.getElementById("herbal-body");
+    const totalForms = document.getElementById("id_herbals-TOTAL_FORMS");
 
-    if (!btn || !body || !total) return;
+    if (!toggle || !tableCard || !addBtn || !tbody || !totalForms) return;
 
-    // =========================
-    // TOGGLE
-    // =========================
     function toggleTable() {
-        if (!toggle || !table) return;
-        table.style.display = toggle.value === "1" ? "" : "none";
+        const isYes = toggle.value === "1";
+        const hasRows = tbody.querySelectorAll(".herbal-row:not([style*='display: none'])").length > 0;
 
-        // ✅ AUTO-ADD FIRST ROW
-        if (isYes && body.children.length === 0) {
-            btn.click();
-        }
-
-        btn.disabled = !isYes;
+        tableCard.style.display = (isYes || hasRows) ? "" : "none";
+        addBtn.disabled = !isYes;
     }
 
-    toggle?.addEventListener("change", toggleTable);
+    toggle.addEventListener("change", toggleTable);
     toggleTable();
 
-    // =========================
-    // ADD ROW
-    // =========================
-    btn.addEventListener("click", function () {
-
-        let count = parseInt(total.value);
-
-        let template = document.getElementById("herbal-empty-form")?.innerHTML;
-
-        if (!template) return;
-
-        template = template.replace(/__prefix__/g, count);
+    addBtn.addEventListener("click", function () {
+        let count = parseInt(totalForms.value);
+        let template = document.getElementById("herbal-empty-form").innerHTML.replace(/__prefix__/g, count);
 
         const temp = document.createElement("tbody");
         temp.innerHTML = template;
 
-        body.appendChild(temp.firstElementChild);
+        tbody.appendChild(temp.firstElementChild);
+        totalForms.value = count + 1;
 
-        total.value = count + 1;
+        toggleTable();
     });
 
-    // =========================
-    // REMOVE
-    // =========================
-    body.addEventListener("click", function (e) {
-
+    tbody.addEventListener("click", function (e) {
         if (e.target.classList.contains("remove-herbal")) {
-
             const row = e.target.closest("tr");
             const del = row.querySelector("input[type='checkbox']");
 
@@ -62,8 +42,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 row.style.display = "none";
             } else {
                 row.remove();
-                total.value = body.querySelectorAll(".herbal-row").length;
+                totalForms.value = tbody.querySelectorAll(".herbal-row").length;
             }
+
+            toggleTable();
         }
     });
 

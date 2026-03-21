@@ -1,54 +1,39 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    const btn = document.getElementById("add-radio");
-    const body = document.getElementById("radio-body");
-    const total = document.getElementById("id_radiotherapies-TOTAL_FORMS");
-    const toggle = document.getElementById("id_radiotherapy_performed");
-    const table = document.getElementById("radio-table");
-
-    if (!btn || !body || !total || !toggle || !table) return;
+    const RadiotherapyPerformed = document.getElementById("id_radiotherapy_performed");
+    const tableCard = document.getElementById("radio-table");
+    const addBtn = document.getElementById("add-radio");
+    const tbody = document.getElementById("radio-body");
+    const totalForms = document.getElementById("id_radiotherapies-TOTAL_FORMS");
 
     // =========================
-    // HELPER: CHECK YES (SAFE FK)
+    // SHOW / HIDE TABLE
     // =========================
-    function isYes(select) {
-        return select.options[select.selectedIndex].text.toLowerCase() === "yes";
-    }
 
-    // =========================
-    // TOGGLE TABLE (CONSISTENT WITH OTHER MEDICAL)
-    // =========================
     function toggleTable() {
+        const valText = RadiotherapyPerformed.options[RadiotherapyPerformed.selectedIndex].text.toLowerCase();
 
-        const yesSelected = isYes(toggle);
+        const hasRows = tbody.querySelectorAll(".radio-row:not([style*='display: none'])").length > 0;
 
-        const hasRows =
-            body.querySelectorAll(".radio-row:not([style*='display: none'])").length > 0;
-
-        if (yesSelected || hasRows) {
-            table.style.display = "";
+        if (valText === "yes" || hasRows) {
+            tableCard.style.display = "";
         } else {
-            table.style.display = "none";
+            tableCard.style.display = "none";
         }
 
-        // disable add button if not YES
-        btn.disabled = !yesSelected;
-
-        // auto-add first row if YES and empty
-        if (yesSelected && body.children.length === 0) {
-            btn.click();
-        }
+        // ✅ HERE
+        addBtn.disabled = valText !== "yes";
     }
 
-    toggle.addEventListener("change", toggleTable);
+    RadiotherapyPerformed.addEventListener("change", toggleTable);
     toggleTable();
 
     // =========================
     // ADD ROW
     // =========================
-    btn.addEventListener("click", function () {
+    addBtn.addEventListener("click", function () {
 
-        let count = parseInt(total.value);
+        let formCount = parseInt(totalForms.value);
 
         let template = document.getElementById("radio-empty")?.innerHTML;
 
@@ -57,58 +42,56 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        template = template.replace(/__prefix__/g, count);
+        template = template.replace(/__prefix__/g, formCount);
 
-        const temp = document.createElement("tbody");
-        temp.innerHTML = template;
+        const tempDiv = document.createElement("tbody");
+        tempDiv.innerHTML = template;
 
-        body.appendChild(temp.firstElementChild);
+        tbody.appendChild(tempDiv.firstElementChild);
 
-        total.value = count + 1;
+        totalForms.value = formCount + 1;
 
-        toggleTable(); // refresh visibility
+        toggleTable();
     });
 
     // =========================
-    // REMOVE ROW (SMART DELETE)
+    // REMOVE ROW (SMART)
     // =========================
-    body.addEventListener("click", function (e) {
+    tbody.addEventListener("click", function (e) {
 
         if (e.target.classList.contains("remove-radio")) {
 
             const row = e.target.closest("tr");
-            const del = row.querySelector("input[type='checkbox']");
 
-            if (del) {
-                // existing row → soft delete
-                del.checked = true;
+            const deleteInput = row.querySelector("input[type='checkbox']");
+
+            if (deleteInput) {
+                // EXISTING ROW → soft delete
+                deleteInput.checked = true;
                 row.style.display = "none";
             } else {
-                // new row → remove
+                // NEW ROW → remove
                 row.remove();
-                total.value = body.querySelectorAll(".radio-row").length;
+                totalForms.value = tbody.querySelectorAll(".radio-row").length;
             }
 
-            toggleTable(); // refresh after delete
+            toggleTable();
         }
     });
 
     // =========================
-    // AUTO-HIDE END DATE IF ONGOING = YES
+    // AUTO-HIDE END DATE (ONGOING = YES)
     // =========================
-    body.addEventListener("change", function (e) {
+    tbody.addEventListener("change", function (e) {
 
         if (e.target.name.includes("radiotherapy_ongoing")) {
 
             const row = e.target.closest("tr");
-
-            const ongoingSelect = e.target;
             const endInput = row.querySelector("input[name*='radiotherapy_end']");
 
             if (!endInput) return;
 
-            const isOngoingYes =
-                ongoingSelect.options[ongoingSelect.selectedIndex].text.toLowerCase() === "yes";
+            const isOngoingYes = e.target.value === "1";
 
             if (isOngoingYes) {
                 endInput.value = "";
@@ -120,20 +103,17 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // =========================
-    // INITIALIZE EXISTING ROWS (UPDATE MODE)
+    // INIT EXISTING ROWS (UPDATE MODE)
     // =========================
     function initExistingRows() {
-        body.querySelectorAll(".radio-row").forEach(row => {
+        tbody.querySelectorAll(".radio-row").forEach(row => {
 
             const ongoingSelect = row.querySelector("select[name*='radiotherapy_ongoing']");
             const endInput = row.querySelector("input[name*='radiotherapy_end']");
 
             if (!ongoingSelect || !endInput) return;
 
-            const isOngoingYes =
-                ongoingSelect.options[ongoingSelect.selectedIndex].text.toLowerCase() === "yes";
-
-            if (isOngoingYes) {
+            if (ongoingSelect.value === "1") {
                 endInput.closest("td").style.display = "none";
             }
         });
@@ -142,11 +122,11 @@ document.addEventListener("DOMContentLoaded", function () {
     initExistingRows();
 
     // =========================
-    // PREVENT EMPTY ROWS ON SUBMIT
+    // PREVENT EMPTY ROWS
     // =========================
     document.querySelector("form").addEventListener("submit", function () {
 
-        body.querySelectorAll(".radio-row").forEach(row => {
+        tbody.querySelectorAll(".radio-row").forEach(row => {
 
             const inputs = row.querySelectorAll("input, select, textarea");
 
@@ -158,7 +138,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
 
-            // mark empty rows for deletion
             if (!hasValue) {
                 const del = row.querySelector("input[type='checkbox']");
                 if (del) del.checked = true;

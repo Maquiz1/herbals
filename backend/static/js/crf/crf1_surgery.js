@@ -1,50 +1,44 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    const btn = document.getElementById("add-surgery");
-    const body = document.getElementById("surgery-body");
-    const total = document.getElementById("id_surgeries-TOTAL_FORMS");
-    const toggle = document.getElementById("id_surgery_performed");
-    const table = document.getElementById("surgery-table");
-
-    if (!btn || !body || !total) return;
+    const SurgeryPerformed = document.getElementById("id_surgery_performed");
+    const tableCard = document.getElementById("surgery-table");
+    const addBtn = document.getElementById("add-surgery");
+    const tbody = document.getElementById("surgery-body");
+    const totalForms = document.getElementById("id_surgeries-TOTAL_FORMS");
 
     function toggleTable() {
-        const isYes = toggle?.value === "1";
+        const valText = SurgeryPerformed.options[SurgeryPerformed.selectedIndex].text.toLowerCase();
 
-        table.style.display = isYes ? "" : "none";
+        const hasRows = tbody.querySelectorAll(".surgery-row:not([style*='display: none'])").length > 0;
 
-        if (isYes && body.children.length === 0) {
-            btn.click();
+        if (valText === "yes" || hasRows) {
+            tableCard.style.display = "";
+        } else {
+            tableCard.style.display = "none";
         }
 
-        btn.disabled = !isYes;
+        // ✅ HERE
+        addBtn.disabled = valText !== "yes";
     }
 
-    toggle?.addEventListener("change", toggleTable);
+    SurgeryPerformed.addEventListener("change", toggleTable);
     toggleTable();
 
-    btn.addEventListener("click", function () {
-
-        let count = parseInt(total.value);
-
-        let template = document.getElementById("surgery-empty")?.innerHTML;
-
-        if (!template) return;
-
-        template = template.replace(/__prefix__/g, count);
+    addBtn.addEventListener("click", function () {
+        let count = parseInt(totalForms.value);
+        let template = document.getElementById("surgery-empty").innerHTML.replace(/__prefix__/g, count);
 
         const temp = document.createElement("tbody");
         temp.innerHTML = template;
 
-        body.appendChild(temp.firstElementChild);
+        tbody.appendChild(temp.firstElementChild);
+        totalForms.value = count + 1;
 
-        total.value = count + 1;
+        toggleTable();
     });
 
-    body.addEventListener("click", function (e) {
-
+    tbody.addEventListener("click", function (e) {
         if (e.target.classList.contains("remove-surgery")) {
-
             const row = e.target.closest("tr");
             const del = row.querySelector("input[type='checkbox']");
 
@@ -53,8 +47,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 row.style.display = "none";
             } else {
                 row.remove();
-                total.value = body.querySelectorAll(".surgery-row").length;
+                totalForms.value = tbody.querySelectorAll(".surgery-row").length;
             }
+
+            toggleTable();
         }
     });
 

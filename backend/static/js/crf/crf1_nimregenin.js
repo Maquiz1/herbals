@@ -1,72 +1,51 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    const nimBtn = document.getElementById("add-nim");
-    const nimBody = document.getElementById("nimregenin-body");
-    const nimTotal = document.getElementById("id_nimregenins-TOTAL_FORMS");
-    const nimToggle = document.getElementById("id_nimregenin_herbal");
-    const nimTable = document.getElementById("nimregenin-table");
+    const toggle = document.getElementById("id_nimregenin_herbal");
+    const tableCard = document.getElementById("nimregenin-table");
+    const addBtn = document.getElementById("add-nim");
+    const tbody = document.getElementById("nimregenin-body");
+    const totalForms = document.getElementById("id_nimregenins-TOTAL_FORMS");
 
-    // =========================
-    // SAFETY CHECK (🔥 IMPORTANT)
-    // =========================
-    if (!nimBtn || !nimBody || !nimTotal) {
-        console.warn("Nimregenin formset not initialized");
-        return;
+    if (!toggle || !tableCard || !addBtn || !tbody || !totalForms) return;
+
+    function toggleTable() {
+        const isYes = toggle.value === "1";
+        const hasRows = tbody.querySelectorAll(".nim-row:not([style*='display: none'])").length > 0;
+
+        tableCard.style.display = (isYes || hasRows) ? "" : "none";
+        addBtn.disabled = !isYes;
     }
 
-    // =========================
-    // TOGGLE TABLE
-    // =========================
-    function toggleNimTable() {
-        if (!nimToggle || !nimTable) return;
+    toggle.addEventListener("change", toggleTable);
+    toggleTable();
 
-        nimTable.style.display = nimToggle.value === "1" ? "" : "none";
-    }
-
-    nimToggle?.addEventListener("change", toggleNimTable);
-    toggleNimTable();
-
-    // =========================
-    // ADD ROW
-    // =========================
-    nimBtn.addEventListener("click", function () {
-
-        let count = parseInt(nimTotal.value);
-
-        let template = document.getElementById("nim-empty-form")?.innerHTML;
-
-        if (!template) {
-            console.error("Nim template not found");
-            return;
-        }
-
-        template = template.replace(/__prefix__/g, count);
+    addBtn.addEventListener("click", function () {
+        let count = parseInt(totalForms.value);
+        let template = document.getElementById("nim-empty-form").innerHTML.replace(/__prefix__/g, count);
 
         const temp = document.createElement("tbody");
         temp.innerHTML = template;
 
-        nimBody.appendChild(temp.firstElementChild);
+        tbody.appendChild(temp.firstElementChild);
+        totalForms.value = count + 1;
 
-        nimTotal.value = count + 1;
+        toggleTable();
     });
 
-    // =========================
-    // REMOVE ROW
-    // =========================
-    nimBody.addEventListener("click", function (e) {
-
+    tbody.addEventListener("click", function (e) {
         if (e.target.classList.contains("remove-nim")) {
-
             const row = e.target.closest("tr");
-            const deleteInput = row.querySelector("input[type='checkbox']");
+            const del = row.querySelector("input[type='checkbox']");
 
-            if (deleteInput) {
-                deleteInput.checked = true;
+            if (del) {
+                del.checked = true;
                 row.style.display = "none";
             } else {
                 row.remove();
-                nimTotal.value = nimBody.querySelectorAll(".nim-row").length;
+                totalForms.value = tbody.querySelectorAll(".nim-row").length;
             }
+
+            toggleTable();
         }
     });
 
