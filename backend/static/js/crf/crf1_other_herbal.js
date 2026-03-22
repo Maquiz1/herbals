@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const tableCard = document.getElementById("herbal-table");
     const addBtn = document.getElementById("add-herbal");
     const tbody = document.getElementById("herbal-body");
-    const totalForms = document.getElementById("id_herbals-TOTAL_FORMS");
+    const totalForms = document.getElementById("id_herbal-TOTAL_FORMS");
 
     function toggleTable() {
         const valText = OtherHerbal.options[OtherHerbal.selectedIndex].text.toLowerCase();

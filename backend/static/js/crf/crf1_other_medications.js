@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const tableCard = document.getElementById("other-medical-table");
     const addBtn = document.getElementById("add-row");
     const tbody = document.getElementById("other-body");
-    const totalForms = document.getElementById("id_othermedicals-TOTAL_FORMS");
+    const totalForms = document.getElementById("id_othermedical-TOTAL_FORMS");
 
     // =========================
     // SHOW / HIDE TABLE

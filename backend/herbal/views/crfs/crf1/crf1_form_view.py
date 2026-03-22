@@ -29,7 +29,7 @@ def crf1_form_view(request, pk):
         form = CRF1Form(request.POST, instance=crf_instance)
 
         other_formset = CRF1OtherMedicalFormSet(request.POST, instance=crf_instance, prefix="othermedicals")
-        nim_formset = CRF1NimregeninFormSet(request.POST, instance=crf_instance, prefix="nimregenins")
+        nimregenin_formset = CRF1NimregeninFormSet(request.POST, instance=crf_instance, prefix="nimregenins")
         herbal_formset = CRF1OtherHerbalFormSet(request.POST, instance=crf_instance, prefix="otherherbals")
 
         # ✅ FIXED HERE
@@ -40,7 +40,7 @@ def crf1_form_view(request, pk):
         if (
             form.is_valid() and
             other_formset.is_valid() and
-            nim_formset.is_valid() and
+            nimregenin_formset.is_valid() and
             herbal_formset.is_valid() and
             radio_formset.is_valid() and
             chemo_formset.is_valid() and
@@ -53,14 +53,14 @@ def crf1_form_view(request, pk):
                 crf.save()
 
                 other_formset.instance = crf
-                nim_formset.instance = crf
+                nimregenin_formset.instance = crf
                 herbal_formset.instance = crf
                 radio_formset.instance = crf
                 chemo_formset.instance = crf
                 surgery_formset.instance = crf
 
                 other_formset.save()
-                nim_formset.save()
+                nimregenin_formset.save()
                 herbal_formset.save()
                 radio_formset.save()
                 chemo_formset.save()
@@ -79,7 +79,7 @@ def crf1_form_view(request, pk):
             instance=crf_instance,
             prefix="othermedicals"   # ✅ ADD THIS
         )
-        nim_formset = CRF1NimregeninFormSet(
+        nimregenin_formset = CRF1NimregeninFormSet(
             instance=crf_instance,
             prefix="nimregenins"
         )
@@ -108,7 +108,7 @@ def crf1_form_view(request, pk):
         {
             "form": form,
             "other_formset": other_formset,
-            "nim_formset": nim_formset,
+            "nimregenin_formset": nimregenin_formset,
             "herbal_formset": herbal_formset,
             "radio_formset": radio_formset,
             "chemo_formset": chemo_formset,
