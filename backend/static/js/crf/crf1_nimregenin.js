@@ -1,22 +1,27 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    const toggle = document.getElementById("id_nimregenin_herbal");
+    const NimregeninHerbal = document.getElementById("id_nimregenin_herbal");
     const tableCard = document.getElementById("nimregenin-table");
     const addBtn = document.getElementById("add-nim");
     const tbody = document.getElementById("nimregenin-body");
     const totalForms = document.getElementById("id_nimregenins-TOTAL_FORMS");
 
-    if (!toggle || !tableCard || !addBtn || !tbody || !totalForms) return;
-
     function toggleTable() {
-        const isYes = toggle.value === "1";
-        const hasRows = tbody.querySelectorAll(".nim-row:not([style*='display: none'])").length > 0;
+        const valText = NimregeninHerbal.options[NimregeninHerbal.selectedIndex].text.toLowerCase();
 
-        tableCard.style.display = (isYes || hasRows) ? "" : "none";
-        addBtn.disabled = !isYes;
+        const hasRows = tbody.querySelectorAll(".nimr-row:not([style*='display: none'])").length > 0;
+
+        if (valText === "yes" || hasRows) {
+            tableCard.style.display = "";
+        } else {
+            tableCard.style.display = "none";
+        }
+
+        // ✅ HERE
+        addBtn.disabled = valText !== "yes";
     }
 
-    toggle.addEventListener("change", toggleTable);
+    NimregeninHerbal.addEventListener("change", toggleTable);
     toggleTable();
 
     addBtn.addEventListener("click", function () {

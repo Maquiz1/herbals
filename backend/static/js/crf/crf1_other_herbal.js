@@ -1,22 +1,27 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    const toggle = document.getElementById("id_other_herbal");
+    const OtherHerbal = document.getElementById("id_other_herbal");
     const tableCard = document.getElementById("herbal-table");
     const addBtn = document.getElementById("add-herbal");
     const tbody = document.getElementById("herbal-body");
     const totalForms = document.getElementById("id_herbals-TOTAL_FORMS");
 
-    if (!toggle || !tableCard || !addBtn || !tbody || !totalForms) return;
-
     function toggleTable() {
-        const isYes = toggle.value === "1";
+        const valText = OtherHerbal.options[OtherHerbal.selectedIndex].text.toLowerCase();
+
         const hasRows = tbody.querySelectorAll(".herbal-row:not([style*='display: none'])").length > 0;
 
-        tableCard.style.display = (isYes || hasRows) ? "" : "none";
-        addBtn.disabled = !isYes;
+        if (valText === "yes" || hasRows) {
+            tableCard.style.display = "";
+        } else {
+            tableCard.style.display = "none";
+        }
+
+        // ✅ HERE
+        addBtn.disabled = valText !== "yes";
     }
 
-    toggle.addEventListener("change", toggleTable);
+    OtherHerbal.addEventListener("change", toggleTable);
     toggleTable();
 
     addBtn.addEventListener("click", function () {
